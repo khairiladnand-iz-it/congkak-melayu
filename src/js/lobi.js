@@ -183,9 +183,17 @@ const Lobi={
     const n=document.getElementById('lbn');if(n)n.textContent=this.count();
     const nk=document.getElementById('lbnk');if(nk)nk.textContent=this.nick();
     const er=document.getElementById('lberr');
+    const art=(typeof P2P!=='undefined'&&!P2P.avail()&&/WebRTC/.test(P2P.why||''));
     if(er)er.innerHTML=this.err
-      ?`<p class="nerr">${this.esc(this.err)}</p>
-        <div class="lbanon"><b>Tiada akaun Claude? Masih boleh main.</b>
+      ?(art
+        ?`<div class="lbsite"><b>Anda sedang membuka salinan pratonton.</b>
+            <p>Lobi dalam talian tidak boleh berjalan di sini — pratonton ini tidak membenarkan
+               sambungan terus antara pelayar, dan ia meminta log masuk Claude.
+               <b>Laman penuh tidak meminta apa-apa log masuk.</b></p>
+            <a class="btn" href="${SITE}" target="_blank" rel="noopener">🌐 Buka Laman Penuh</a>
+            <small>Kongsi pautan ini dengan kawan anda — bukan pautan pratonton.</small></div>`
+        :`<p class="nerr">${this.esc(this.err)}</p>`)
+        +`<div class="lbanon"><b>Mahu main sekarang juga?</b>
           <p>Mod Mesej berfungsi pada mana-mana pelayar tanpa log masuk — setiap giliran jadi kod pendek yang anda hantar melalui WhatsApp.</p>
           <button class="btn" data-l="anon">✉️ Main Tanpa Akaun</button></div>`
       :(!this.ready?'<p class="hnote">Menyambung ke lobi…</p>':'');

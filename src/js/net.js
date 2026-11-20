@@ -309,7 +309,11 @@ const Net={
     if(this.stage==='menu'||this.stage==='gone'){
       const rmOn=Rm.avail(),rtc=this.supported();
       b=(this.stage==='gone'?'<p class="nerr">Sambungan terputus. Mula semula untuk bermain lagi.</p>':'')
-      +((!rmOn&&!rtc&&Rm.tried)?'<p class="nlead">Paparan ini tidak menyokong sambungan terus. <b>Main Melalui Mesej</b> di bawah berfungsi tanpa log masuk dan tanpa akaun.</p>':'')
+      +((!rmOn&&!rtc&&Rm.tried)?`<div class="lbsite"><b>Anda sedang membuka salinan pratonton.</b>
+          <p>Bilik pantas perlu sambungan terus antara pelayar, yang tidak dibenarkan di sini.
+             <b>Laman penuh tidak meminta log masuk</b> dan membenarkannya.</p>
+          <a class="btn" href="${SITE}" target="_blank" rel="noopener">🌐 Buka Laman Penuh</a>
+          <small>Kongsi pautan laman penuh dengan kawan, bukan pautan pratonton.</small></div>`:'')
       +`<div class="nsec${rmOn?' ok':''}"><h3>⚡ Bilik Pantas <small>${this.p2p()?'tanpa akaun':'disyorkan'}</small></h3>`
       +(rmOn?`<p class="hnote">Terus bersambung — tiada kod panjang, tidak perlu WiFi yang sama. Seorang tekan Cipta Bilik dan beritahu rakan <b>5 aksara</b> kod itu.</p>
         <div class="nbtn"><button class="btn" data-n="rmhost"${this.busy?' disabled':''}>🏠 Cipta Bilik</button><button class="btn" data-n="rmjoinui">🔗 Masukkan Kod</button></div>

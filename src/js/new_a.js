@@ -1,3 +1,7 @@
+/* Alamat laman penuh. Artifact Claude tiada WebRTC, jadi lobi dalam talian
+   hanya berfungsi di sini. Ditunjukkan kepada pemain bila mereka berada
+   dalam artifact. */
+const SITE='https://khairiladnand-iz-it.github.io/congkak-melayu/';
 const SEEDS=[['saga','Biji Saga'],['guli','Guli Kaca'],['batu','Batu Sungai'],['kulit','Cangkerang'],['emas','Emas'],['mutiara','Mutiara'],['zamrud','Zamrud'],['delima','Delima'],['nilam','Nilam'],['bara','Bara Api'],['planet','Planet'],['bintang','Bintang Bercahaya']];
 const WOODN=[['jati','Jati'],['hitam','Kayu Hitam'],['merah','Merbau Merah'],['emas','Nangka Emas'],['cendana','Cendana'],['giok','Giok Hijau'],['nilam','Nilam Biru'],['perak','Perak Ukir'],['bara','Bara Menyala'],['angkasa','Angkasa Malam'],['diraja','Songket Diraja']];
 const KD={multi:['🗡️','#f2c14e','Hujan Senjata'],x:['⚔️','#ff5a5a','Tetakan Silang'],rain:['🏹','#7affc8','Hujan Panah'],rings:['👑','#ffd45a','Gelombang Diraja'],stamp:['TITAH','#ffd45a','Cop Titah'],stomp:['🐘','#c8a070','Hentakan Berat'],petals:['🌸','#ff9ac8','Kelopak Berputar'],ink:['✒️','#8a6aff','Percikan Tinta'],aura:['👊','#e8f0ff','Aura Silat'],wave:['🔱','#6ac8ff','Ombak Besar']};

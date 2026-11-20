@@ -103,3 +103,10 @@
   margin:0 0 .6rem;font-size:.8rem;color:#f0d9a8;line-height:1.45}
 .nlead b{color:#ffd98a}
 .lbdg{display:block;text-align:center;font-size:.6rem;letter-spacing:.06em;color:#8a7049;margin:-.2rem 0 .5rem}
+.lbsite{background:linear-gradient(135deg,#12293d,#0c1a28);border:1px solid #2f6f9a;border-radius:11px;
+  padding:.7rem;margin:.1rem 0 .6rem;text-align:center}
+.lbsite b{display:block;color:#8fd4f5;font-size:.92rem;margin-bottom:.3rem}
+.lbsite p{margin:0 0 .6rem;font-size:.74rem;color:#bcd8e8;line-height:1.5}
+.lbsite p b{display:inline;color:#ffe9b0}
+.lbsite .btn{display:inline-block;text-decoration:none}
+.lbsite small{display:block;margin-top:.45rem;font-size:.63rem;color:#86a6ba}
