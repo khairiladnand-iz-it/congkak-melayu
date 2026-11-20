@@ -1,0 +1,9 @@
+# Dependabot akan buka PR sendiri bila aksi GitHub ada versi baharu.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "CI"
