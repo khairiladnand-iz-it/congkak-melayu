@@ -93,7 +93,7 @@ async def mk_page(ctx, login):
     if login:
         await pg.add_init_script(CLAUDE_SHIM)
     await pg.goto(f'http://127.0.0.1:{PORT}/', wait_until='domcontentloaded', timeout=60000)
-    await pg.wait_for_timeout(2500)
+    await pg.wait_for_timeout(int(2500 * float(os.environ.get('SLOW','1'))))
     if not login:
         # pasang Trystero tiruan sebelum mod dalam talian dibuka
         await pg.evaluate(MOCK)
@@ -101,6 +101,7 @@ async def mk_page(ctx, login):
     return pg
 
 async def wait_for(pg, expr, ms=9000, step=200):
+    ms = int(ms * float(os.environ.get('SLOW', '1')))
     for _ in range(ms // step):
         try:
             if await pg.evaluate(expr):
