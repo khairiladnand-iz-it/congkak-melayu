@@ -51,7 +51,14 @@ jobs:
         continue-on-error: true      # runner perlahan boleh tersasar masa; jangan sekat penyiaran
         env:
           SLOW: '3'
-          REAL: '1'              # penguji 5: kenari Trystero sebenar atas relay Nostr
+        run: python3 tests/online.py
+
+      - name: Kenari Trystero sebenar (relay Nostr + WebRTC)
+        continue-on-error: true      # memberitahu sama ada pengangkutan berfungsi; tidak menyekat
+        env:
+          SLOW: '3'
+          REAL: '1'
+          ONLY5: '1'
         run: python3 tests/online.py
 
       - name: Saiz keluaran

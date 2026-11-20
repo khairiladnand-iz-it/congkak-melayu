@@ -257,10 +257,11 @@ async def main():
     runs = []
     async with async_playwright() as p:
         b = await p.chromium.launch()
-        if not os.environ.get('ONLY4'): runs.append(await scenario(b, 'PENGUJI 1 — tanpa ID log masuk (P2P), desktop', False, DESK))
-        if not os.environ.get('ONLY4'): runs.append(await scenario(b, 'PENGUJI 2 — dengan ID log masuk (bilik Claude), desktop', True, DESK))
-        if not os.environ.get('ONLY4'): runs.append(await scenario(b, 'PENGUJI 3 — tanpa ID log masuk (P2P), telefon', False, PHONE))
-        runs.append(await share_code(b, 'PENGUJI 4 — kod perkongsian (P2P)', False))
+        solo = os.environ.get('ONLY5')
+        if not solo and not os.environ.get('ONLY4'): runs.append(await scenario(b, 'PENGUJI 1 — tanpa ID log masuk (P2P), desktop', False, DESK))
+        if not solo and not os.environ.get('ONLY4'): runs.append(await scenario(b, 'PENGUJI 2 — dengan ID log masuk (bilik Claude), desktop', True, DESK))
+        if not solo and not os.environ.get('ONLY4'): runs.append(await scenario(b, 'PENGUJI 3 — tanpa ID log masuk (P2P), telefon', False, PHONE))
+        if not solo: runs.append(await share_code(b, 'PENGUJI 4 — kod perkongsian (P2P)', False))
         if os.environ.get('REAL'):
             runs.append(await real_trystero(b))
         await b.close()
