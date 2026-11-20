@@ -206,7 +206,9 @@ const Lobi={
           <small><i class="lv">Lv ${lv}</i> ${this.esc(st)}</small></div>
         ${meRow?'':`<button class="btn sm${wait?' wait':''}" data-l="chal" data-p="${this.esc(p.peer)}"${wait||pr.st==='main'?' disabled':''}>${wait?'Menunggu…':'⚔️ Cabar'}</button>`}</div>`;
     }).join('');
-    if(rows.length<=1)h+='<p class="hnote">Belum ada pemain lain. Kongsi pautan permainan ini dengan kawan — mereka perlu log masuk ke Claude dan dijemput ke halaman ini.</p>';
+    if(rows.length<=1)h+='<p class="hnote">'+(Rm.mode==='p2p'
+      ?'Belum ada pemain lain dalam lobi. Kongsi pautan permainan ini — sesiapa sahaja boleh masuk, tanpa akaun.'
+      :'Belum ada pemain lain. Kongsi pautan permainan ini dengan kawan — mereka perlu log masuk ke Claude dan dijemput ke halaman ini.')+'</p>';
     e.innerHTML=h;
   },
   paintChat(){

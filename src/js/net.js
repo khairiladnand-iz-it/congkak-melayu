@@ -58,12 +58,20 @@ const SDPC={
 };
 /* ===== BILIK PANTAS: saluran masa nyata artifact (tanpa WebRTC) ===== */
 const Rm={
-  ns:null,room:null,code:'',host:false,tried:false,why:'',off:[],
+  ns:null,room:null,code:'',host:false,tried:false,why:'',off:[],mode:'',
   async init(){
     if(this.tried)return this.ns;this.tried=true;
+    /* laluan utama: P2P terus antara pelayar — tiada akaun, tiada pelayan */
+    if(typeof P2P!=='undefined'&&P2P.avail()){
+      try{const ns=await P2P.ns();
+        if(ns){this.ns=ns;this.mode='p2p';return ns}
+        this.why=P2P.why||'Sambungan terus gagal dimulakan.';
+      }catch(e){this.why=P2P.why||'Pustaka P2P gagal dimuatkan (perlu internet).'}
+    }
     try{
       if(typeof claude==='undefined'||!claude||typeof claude.use!=='function'){this.why='Halaman ini tidak disiarkan sebagai artifact.';return null}
       this.ns=await claude.use('room');
+      if(this.ns)this.mode='claude';
       if(!this.ns)this.why='Saluran bilik tidak dibuka untuk paparan ini. Rakan perlu log masuk ke Claude dan dijemput ke artifact ini (menu Share).';
     }catch(e){this.ns=null;this.why='Saluran bilik gagal dimuatkan.'}
     return this.ns;
@@ -217,6 +225,7 @@ const Net={
     catch(e){this.err=e.message;this.stage='menu';this.tx=''}
     this.busy=false;this.ui();
   },
+  p2p(){return Rm.mode==='p2p'},
   roomPeers(c){
     if(this.tx!=='room')return;
     const o=Rm.others();
@@ -291,10 +300,12 @@ const Net={
       const rmOn=Rm.avail(),rtc=this.supported();
       b=(this.stage==='gone'?'<p class="nerr">Sambungan terputus. Mula semula untuk bermain lagi.</p>':'')
       +((!rmOn&&!rtc&&Rm.tried)?'<p class="nlead">Paparan ini tidak menyokong sambungan terus. <b>Main Melalui Mesej</b> di bawah berfungsi tanpa log masuk dan tanpa akaun.</p>':'')
-      +`<div class="nsec${rmOn?' ok':''}"><h3>⚡ Bilik Pantas <small>disyorkan</small></h3>`
+      +`<div class="nsec${rmOn?' ok':''}"><h3>⚡ Bilik Pantas <small>${this.p2p()?'tanpa akaun':'disyorkan'}</small></h3>`
       +(rmOn?`<p class="hnote">Terus bersambung — tiada kod panjang, tidak perlu WiFi yang sama. Seorang tekan Cipta Bilik dan beritahu rakan <b>5 aksara</b> kod itu.</p>
         <div class="nbtn"><button class="btn" data-n="rmhost"${this.busy?' disabled':''}>🏠 Cipta Bilik</button><button class="btn" data-n="rmjoinui">🔗 Masukkan Kod</button></div>
-        <p class="hnote">Rakan perlu log masuk ke Claude dan dijemput ke halaman ini melalui menu <b>Share</b> (beri kebenaran mengedit). Pautan awam sahaja tidak mencukupi.</p>`
+        <p class="hnote">${this.p2p()
+          ?'Sambungan terus antara pelayar melalui WebRTC. Tiada akaun, tiada pelayan — rakan hanya perlu buka pautan permainan yang sama.'
+          :'Rakan perlu log masuk ke Claude dan dijemput ke halaman ini melalui menu <b>Share</b> (beri kebenaran mengedit). Pautan awam sahaja tidak mencukupi.'}</p>`
         :(Rm.tried?`<p class="nerr">${esc(Rm.why||'Tidak tersedia dalam paparan ini.')}</p>`:'<p class="hnote">Memeriksa saluran bilik…</p>'))
       +`</div>`
       +`<div class="nsec${rtc?'':' off'}"><h3>📋 Kod WiFi (WebRTC)</h3>`

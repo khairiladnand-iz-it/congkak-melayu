@@ -15,7 +15,7 @@ tiada pemasangan. 16 pahlawan Nusantara, duel silat berasaskan kemahiran, Kembar
 - **Gamelan prosedural** — gong, saron, bonang, suling, serunai, rebab dan gendang disintesis terus dalam pelayar. Lima mood yang bertukar mengikut keadaan permainan.
 - **Istana Melaka 3D** — latar dipapar dengan pemapar mini-3D tulisan tangan (tiada pustaka luar).
 - **Boleh dipasang (PWA)** — tambah ke skrin utama pada Android atau iPhone untuk skrin penuh sebenar dan main di luar talian.
-- **Mod dalam talian** — lobi dengan frasa tetap (tiada taip bebas, jadi tiada bot atau kata kesat), bilik pantas, dan main melalui kod mesej tanpa akaun.
+- **Mod dalam talian tanpa akaun** — lobi awam terus antara pelayar melalui WebRTC. Tiada pendaftaran, tiada pelayan: buka pautan, tukar nama, cari lawan. Sembang guna frasa tetap sahaja, jadi tiada bot mahupun kata kesat. Ada juga main melalui kod mesej bila sambungan terus tidak boleh.
 
 ## Binaan
 
@@ -60,6 +60,7 @@ melalui `.github/workflows/deploy.yml`. Hidupkan sekali sahaja di
 ## Penghargaan
 
 - [three.js](https://github.com/mrdoob/three.js) — papan 3D (MIT)
+- [Trystero](https://github.com/dmotz/trystero) — perlawanan P2P tanpa pelayan (MIT)
 - Seni pahlawan dijana untuk projek ini
 
 ## Lesen
