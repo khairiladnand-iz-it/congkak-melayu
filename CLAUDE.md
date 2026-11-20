@@ -45,6 +45,17 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 `/* ===== BUNYI ===== */`, `/* ===== BIJI ===== */`,
 `/* ===== PERTARUNGAN TIKAM ===== */`, `/* ===== PERSIAPAN ===== */`.
 
+## Prestasi (telefon panas)
+
+Gelung paparan dulu berjalan tanpa henti pada kadar skrin penuh walaupun tiada apa
+yang bergerak. Sekarang `World.shouldDraw()` menghadkan papan kepada **30 fps**,
+Istana (pemapar perisian, bahagian paling mahal) kepada separuh daripada itu, dan
+melangkau lukisan sepenuhnya apabila tab tersembunyi atau lapisan penuh menutup papan.
+Tween tetap dikemas kini setiap bingkai supaya tiada gerakan tergantung.
+`MenuFx` dihadkan sama. Diuji oleh `tests/perftest.js`.
+
+**Jangan naikkan `World.fps`** tanpa sebab kukuh — ini permainan bergilir.
+
 ## Animasi
 
 Sistem tween sendiri dalam `world.js` sudah memadai — **jangan tambah GSAP atau pustaka animasi lain**.

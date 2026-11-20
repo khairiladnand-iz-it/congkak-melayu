@@ -26,7 +26,15 @@ const MenuFx={
     else{clearInterval(this.sw);this.halt();document.body.style.setProperty('--px',0);document.body.style.setProperty('--py',0)}
     if(m)m.classList.toggle('live',v&&!this.still);
   },
-  run(){if(this.raf||this.still||!this.g)return;this.last=(window.performance||Date).now();const f=t=>{this.raf=requestAnimationFrame(f);this.frame(t)};this.raf=requestAnimationFrame(f)},
+  /* kelopak menu juga dihadkan 30 fps, dan berhenti bila lapisan menutupnya */
+  fps:30,_next:0,
+  run(){if(this.raf||this.still||!this.g)return;this.last=(window.performance||Date).now();
+    const f=t=>{this.raf=requestAnimationFrame(f);
+      if(t<this._next)return;
+      this._next=t+1000/this.fps;
+      try{if(World.covered&&World.covered())return}catch(e){}
+      this.frame(t)};
+    this.raf=requestAnimationFrame(f)},
   halt(){if(this.raf)cancelAnimationFrame(this.raf);this.raf=0},
   frame(t){
     const dt=Math.min(.05,(t-this.last)/1000);this.last=t;const g=this.g,W=this.w,H=this.h;

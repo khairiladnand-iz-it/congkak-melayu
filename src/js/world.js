@@ -290,11 +290,35 @@ const World={
     if(!this.ok)return -1;this.ray.setFromCamera({x:x/this.w*2-1,y:-(y/this.h)*2+1},this.cam);
     const hs=this.ray.intersectObjects(this.picks,false);return hs.length?this.picks.indexOf(hs[0].object):-1;
   },
+  /* ===== had kadar bingkai =====
+     Congkak ialah permainan bergilir. Memapar 60-120 kali sesaat tanpa henti
+     memanaskan telefon tanpa sebab. Papan dihadkan kepada 30 fps, Istana
+     (pemapar perisian, bahagian paling mahal) kepada separuh daripada itu.
+     Tween tetap dikemas kini setiap bingkai supaya tiada gerakan tergantung. */
+  fps:30, istEvery:2, _nextDraw:0, _istN:0,
+  /* adakah bingkai ini patut dilukis? Tulen, supaya boleh diuji. */
+  shouldDraw(now, hidden, covered){
+    if(hidden)return false;                    /* tab di belakang: tiada guna melukis */
+    if(covered)return false;                   /* lapisan penuh menutup papan */
+    if(now < this._nextDraw)return false;      /* belum sampai masa bingkai seterusnya */
+    this._nextDraw = now + 1000/this.fps;
+    return true;
+  },
+  covered(){
+    try{
+      if(document.body.classList.contains('duel'))return true;
+      for(const o of document.querySelectorAll('.ov'))if(!o.hidden)return true;
+    }catch(e){}
+    return false;
+  },
   frame(){
     const now=Date.now(),dt=Math.min(.05,(now-this.last)/1000);this.last=now;
     for(let k=this.tw.length-1;k>=0;k--){const t=this.tw[k],u=Math.min(1,(now-t.t0)/t.dur),e=(EASE[t.ez]||EASE.inout)(u);
       t.s.m.position.set(t.f.x+(t.to.x-t.f.x)*e,t.f.y+(t.to.y-t.f.y)*e+t.arc*4*u*(1-u),t.f.z+(t.to.z-t.f.z)*e);
       if(u>=1){t.s.p=t.to;this.tw.splice(k,1);t.res()}}
+    /* selepas ini semuanya melukis; langkau bila tidak kelihatan atau terlalu awal */
+    let hid=false;try{hid=!!document.hidden}catch(e){}
+    if(!this.shouldDraw(now,hid,this.covered()))return;
     if(this.mode==='menu')this.az+=dt*.12;
     let rr=0,cc=0;if(this.mode==='setup'){if(this.port)cc=this.dist*.3;else rr=this.dist*.16}else if(this.mode==='menu'&&!this.port)rr=-this.dist*.2;
     const tx=rr*Math.cos(this.az)+cc*Math.sin(this.az),tz=-rr*Math.sin(this.az)+cc*Math.cos(this.az);
@@ -302,7 +326,8 @@ const World={
     const pulse=.55+.4*Math.sin(now*.006);for(const r of this.rings)if(r.visible)r.material.opacity=pulse;
     if(this.fMat&&this.fId==='langit')this.fMat.emissiveIntensity=.45+.25*Math.sin(now*.0016);
     this.R.render(this.scene,this.cam);
-    if(this.mode!=='menu'&&this.rugR){const r=this.rugR;let a=1e9,b=-1e9;for(const x of[-r.x,r.x])for(const z of[-r.z,r.z]){const q=this.screen(x,0,z);if(q.y<a)a=q.y;if(q.y>b)b=q.y}this.rugTop=this.rugTop==null?a:this.rugTop+(a-this.rugTop)*.25;this.rugBot=b;Istana.frame(now,this.az,this.rugTop,this.w,this.h)}
+    /* Istana pada separuh kadar: pemapar perisian, paling mahal */
+    if(this.mode!=='menu'&&this.rugR&&(++this._istN%this.istEvery===0)){const r=this.rugR;let a=1e9,b=-1e9;for(const x of[-r.x,r.x])for(const z of[-r.z,r.z]){const q=this.screen(x,0,z);if(q.y<a)a=q.y;if(q.y>b)b=q.y}this.rugTop=this.rugTop==null?a:this.rugTop+(a-this.rugTop)*.25;this.rugBot=b;Istana.frame(now,this.az,this.rugTop,this.w,this.h)}
     if(this.mode!=='menu'&&this.lab.length){
       for(let i=0;i<this.H.length;i++){const h=this.H[i],q=this.screen(h.lx,this.TOP+.05,h.lz);this.lab[i].style.transform=`translate(${q.x.toFixed(1)}px,${q.y.toFixed(1)}px) translate(-50%,-50%)`}
       const hd=this.lab[this.H.length];
