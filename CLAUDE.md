@@ -30,6 +30,7 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 | `ui.js` | HEROES, ELEM, SK, skrin, dan **Duel** (dipotong oleh build mengikut penanda komen) |
 | `new_a.js` | `DEF` tetapan lalai, `fixCfg()`, `SITE` |
 | `harian.js` | `RNG` boleh benih + `Harian` — teka-teki harian |
+| `kisah.js` | `KISAH` 18 kad pahlawan (sejarah/lagenda/dipertikai) + `Kisah` |
 | `prof.js`→`prog.js` | `Prof` (XP, biji permata, nick), `Store` (keupayaan `db`) |
 | `quest.js` | `CAMP` 16 peringkat Kembara, misi harian, lencana |
 | `music.js` | `Mus` gamelan prosedural (5 mood) + `Snd` kesan bunyi |
@@ -45,6 +46,17 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 `ui.js` dipotong pada dua penanda; **jangan padam** komen ini:
 `/* ===== BUNYI ===== */`, `/* ===== BIJI ===== */`,
 `/* ===== PERTARUNGAN TIKAM ===== */`, `/* ===== PERSIAPAN ===== */`.
+
+## Kisah Pahlawan (bahan sekolah)
+
+`kisah.js` ada satu kad untuk setiap pahlawan, selari dengan indeks `HEROES`.
+Setiap kad **mesti** menyatakan `j` (sejarah / lagenda / pertikai), zaman, tempat, kisah,
+satu fakta "Tahukah anda", dan **sumber cerita**. Inilah yang menjadikannya berguna di
+sekolah: pelajar belajar membezakan catatan daripada cerita rakyat.
+
+**Jangan tambah atau ubah kisah tanpa sumber.** Jangan naikkan sesuatu daripada `lagenda`
+kepada `sejarah` tanpa rujukan. Kad ditunjukkan selepas menewaskan pahlawan dalam Kembara,
+dan boleh dilayari melalui jubin **Kisah** di menu.
 
 ## Congkak Harian
 

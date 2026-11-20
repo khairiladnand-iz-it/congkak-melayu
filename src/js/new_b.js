@@ -147,6 +147,11 @@ const Match={
     const r=document.getElementById('result');
     r.innerHTML=`<div class="panel">${body}${campHtml}<div class="xpbox"><small>${res==='win'?'Anda menang!':res==='draw'?'Seri':'Anda tewas'}</small>${Prof.resultHtml(aw)}</div><div class="center"><button class="btn" data-r="again">Main Semula</button></div>${this.online?'':'<button class="btn sm" data-r="set">Tukar Tetapan</button> '}<button class="btn sm" data-r="menu">Menu Utama</button></div>`;
     if(aw.up.some(g=>g.gem))setTimeout(()=>Snd.fanfare(),900);
+    /* Kembara: selepas menewaskan pahlawan, tunjuk kisahnya */
+    if(res==='win'&&this.camp!=null&&typeof Kisah!=='undefined'){
+      const lawan=cfg.p[1];
+      if(Kisah.ada(lawan))setTimeout(()=>Kisah.menang(lawan),1400);
+    }
     r.hidden=false;
   }
 };

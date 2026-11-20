@@ -12,7 +12,7 @@ SRC  = os.path.join(ROOT, 'src')
 rd   = lambda *p: open(os.path.join(SRC, *p), encoding='utf-8').read()
 
 # ---------- susunan fail ----------
-JS_ORDER  = ['heroes2', 'new_a', 'prog', 'quest', 'harian', '@snd', 'music', 'hist', 'p2p', 'net',
+JS_ORDER  = ['heroes2', 'new_a', 'prog', 'quest', 'harian', 'kisah', '@snd', 'music', 'hist', 'p2p', 'net',
              'lobi', 'msg', 'menufx', 'mobile', 'istana', 'world', 'new_b', '@duel', 'new_c']
 CSS_ORDER = ['extra', 'menu', 'duel', 'lobi']
 
