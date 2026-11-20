@@ -8,8 +8,11 @@ PORT = 8799
 
 def serve():
     h = functools.partial(http.server.SimpleHTTPRequestHandler, directory=DIST)
-    socketserver.TCPServer.allow_reuse_address = True
-    httpd = socketserver.TCPServer(('127.0.0.1', PORT), h)
+    # mesti berbilang benang: pelayan satu-benang tersekat apabila beberapa
+    # tab dan service worker membuka sambungan serentak
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
+    socketserver.ThreadingTCPServer.daemon_threads = True
+    httpd = socketserver.ThreadingTCPServer(('127.0.0.1', PORT), h)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     return httpd
 

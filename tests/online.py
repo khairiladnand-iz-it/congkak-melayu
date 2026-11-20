@@ -71,8 +71,11 @@ DESK = {'width': 1280, 'height': 860}
 
 def serve():
     h = functools.partial(http.server.SimpleHTTPRequestHandler, directory=DIST)
-    socketserver.TCPServer.allow_reuse_address = True
-    httpd = socketserver.TCPServer(('127.0.0.1', PORT), h)
+    # mesti berbilang benang: pelayan satu-benang tersekat apabila beberapa
+    # tab dan service worker membuka sambungan serentak
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
+    socketserver.ThreadingTCPServer.daemon_threads = True
+    httpd = socketserver.ThreadingTCPServer(('127.0.0.1', PORT), h)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     return httpd
 
@@ -234,7 +237,7 @@ async def real_trystero(browser):
     B = await mk_page(ctx, False, real=True)
     for p in (A, B):
         await p.evaluate("() => { try{localStorage.setItem('cm15lobi','1')}catch(e){} }")
-        await p.evaluate("() => document.querySelector('[data-go=\'lobi\']').click()")
+        await p.evaluate("() => document.querySelector('[data-go=lobi]').click()")
     loaded = await wait_for(A, "() => !!P2P.lib", 30000)
     r.chk(loaded, 'pustaka Trystero dimuatkan dari CDN')
     if loaded:
