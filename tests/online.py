@@ -87,15 +87,20 @@ class Run:
         else:
             print(f'    ok     {msg}')
 
-async def mk_page(ctx, login):
+async def mk_page(ctx, login, real=False):
     pg = await ctx.new_page()
     pg.on('pageerror', lambda e: print('    [ralat js]', str(e)[:140]))
     if login:
         await pg.add_init_script(CLAUDE_SHIM)
     await pg.goto(f'http://127.0.0.1:{PORT}/', wait_until='domcontentloaded', timeout=60000)
     await pg.wait_for_timeout(int(2500 * float(os.environ.get('SLOW','1'))))
-    if not login:
-        # pasang Trystero tiruan sebelum mod dalam talian dibuka
+    if login:
+        # tanpa ini, Rm.init memilih P2P dahulu bila rangkaian ada,
+        # jadi penguji 2 diam-diam menguji benda yang salah
+        await pg.evaluate("() => { P2P.avail = () => false }")
+    elif real:
+        pass                      # biar Trystero sebenar dimuatkan dari CDN
+    else:
         await pg.evaluate(MOCK)
         await pg.evaluate("() => { P2P.lib = window.__trysteroMock; P2P.URL = 'mock'; }")
     return pg
@@ -218,6 +223,31 @@ async def share_code(browser, label, login):
     await ctx.close()
     return r
 
+async def real_trystero(browser):
+    """Kenari: adakah Trystero sebenar (relay Nostr + WebRTC) menyambungkan dua tab?
+    Kegagalan di sini BUKAN pepijat permainan — ia bermakna lapisan pengangkutan
+    tidak berfungsi dalam persekitaran ini."""
+    r = Run('PENGUJI 5 — Trystero SEBENAR (relay Nostr), kenari pengangkutan')
+    print(f'\n=== {r.label} ===')
+    ctx = await browser.new_context(viewport=DESK)
+    A = await mk_page(ctx, False, real=True)
+    B = await mk_page(ctx, False, real=True)
+    for p in (A, B):
+        await p.evaluate("() => { try{localStorage.setItem('cm15lobi','1')}catch(e){} }")
+        await p.evaluate("() => document.querySelector('[data-go=\'lobi\']').click()")
+    loaded = await wait_for(A, "() => !!P2P.lib", 30000)
+    r.chk(loaded, 'pustaka Trystero dimuatkan dari CDN')
+    if loaded:
+        r.chk(await wait_for(A, "() => Lobi.ready === true", 30000), 'bilik Nostr disertai')
+        found = await wait_for(A, "() => Lobi.peers.filter(p=>!p.isMe).length > 0", 45000)
+        r.chk(found, 'dua tab saling menemui melalui relay Nostr')
+        if not found:
+            print('    [maklumat] P2P.why =', await A.evaluate("() => P2P.why || ''"),
+                  '| Rm.mode =', await A.evaluate("() => Rm.mode"),
+                  '| err =', await A.evaluate("() => Lobi.err || ''"))
+    await ctx.close()
+    return r
+
 async def main():
     from playwright.async_api import async_playwright
     httpd = serve()
@@ -228,6 +258,8 @@ async def main():
         if not os.environ.get('ONLY4'): runs.append(await scenario(b, 'PENGUJI 2 — dengan ID log masuk (bilik Claude), desktop', True, DESK))
         if not os.environ.get('ONLY4'): runs.append(await scenario(b, 'PENGUJI 3 — tanpa ID log masuk (P2P), telefon', False, PHONE))
         runs.append(await share_code(b, 'PENGUJI 4 — kod perkongsian (P2P)', False))
+        if os.environ.get('REAL'):
+            runs.append(await real_trystero(b))
         await b.close()
     httpd.shutdown()
 
