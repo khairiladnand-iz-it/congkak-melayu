@@ -55,7 +55,17 @@ const Lobi={
   esc(t){return esc(String(t||''))},
   nick(){return Prof.nick()},
   count(){return this.peers.filter(p=>p.kind!=='agent').length},
-  async init(){
+  /* Dua pemanggil boleh tiba serentak (Lobi.auto selepas 1.2s dan ketukan
+     butang Lobi). Tanpa menyimpan janji yang sedang berjalan, kedua-duanya
+     melepasi pemeriksa 'ready' dan melanggan sembang dua kali — mesej
+     kelihatan berganda. */
+  init(){
+    if(this.ready)return Promise.resolve(this.ns);
+    if(this._p)return this._p;
+    this._p=this._init().then(v=>{this._p=null;return v},e=>{this._p=null;throw e});
+    return this._p;
+  },
+  async _init(){
     if(this.ready)return this.ns;
     const ns=await Rm.init();
     if(!ns){this.err=Rm.why||'Lobi tidak tersedia dalam paparan ini.';return null}
@@ -193,9 +203,10 @@ const Lobi={
             <a class="btn" href="${SITE}" target="_blank" rel="noopener">🌐 Buka Laman Penuh</a>
             <small>Kongsi pautan ini dengan kawan anda — bukan pautan pratonton.</small></div>`
         :`<p class="nerr">${this.esc(this.err)}</p>`)
-        +`<div class="lbanon"><b>Mahu main sekarang juga?</b>
-          <p>Mod Mesej berfungsi pada mana-mana pelayar tanpa log masuk — setiap giliran jadi kod pendek yang anda hantar melalui WhatsApp.</p>
-          <button class="btn" data-l="anon">✉️ Main Tanpa Akaun</button></div>`
+        +`<div class="lbanon"><b>Dua cara yang tidak perlukan pelayan</b>
+          <p><b>WiFi Sama</b> — kedua-dua peranti pada WiFi yang sama bercakap terus antara satu sama lain. Tiada pelayan di tengah.</p>
+          <p><b>Mod Mesej</b> — setiap giliran jadi kod pendek yang anda hantar melalui WhatsApp. Berfungsi di mana-mana.</p>
+          <button class="btn" data-l="anon">📶 Buka Kedua-duanya</button></div>`
       :(!this.ready?'<p class="hnote">Menyambung ke lobi…</p>':'');
     const dg=document.getElementById('lbdg');
     if(dg){

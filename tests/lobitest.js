@@ -75,4 +75,25 @@ for(const k of['gong','kempul','bonang','saron','petik','drum','serunai','suling
 for(const k of['knock','sow','tikam','parry','block','level','lose','fanfare','chime','clang','whoosh','ui','hit'])
   chk(typeof Snd[k]==='function','snd '+k);
 Snd.mute=true;Snd.knock(4);Snd.sow(7);Snd.tikam(6);Snd.parry();Snd.block();Snd.level();Snd.lose();Snd.ui(1);
+/* REGRESI: dua Lobi.init() serentak mesti melanggan SEKALI sahaja.
+   Dulu Lobi.auto() dan ketukan butang berlumba, kedua-duanya melepasi
+   pemeriksa 'ready', dan setiap mesej muncul dua kali. */
+await (async()=>{
+  let subs=0,chatCb=[];
+  const fakeNs={
+    on(t,f){subs++;if(t==='chat')chatCb.push(f);return()=>{}},
+    onPeers(){return()=>{}},onConnection(){return()=>{}},
+    presence(){return Promise.resolve()},peers(){return[]},connected(){return false}
+  };
+  Rm.tried=false;Rm.ns=null;Rm._p=null;Rm.mode='p2p';
+  Rm.init=async()=>{await new Promise(r=>setTimeout(r,5));return fakeNs};
+  Lobi.ready=false;Lobi.ns=null;Lobi._p=null;Lobi.off=[];Lobi.chat=[];
+  await Promise.all([Lobi.init(),Lobi.init(),Lobi.init()]);
+  chk(Lobi.ready===true,'lobi sedia selepas init serentak');
+  chk(chatCb.length===1,'saluran sembang dilanggan sekali, bukan '+chatCb.length);
+  /* satu mesej masuk mesti muncul sekali */
+  for(const f of chatCb)f({peer:'x',isMe:false,data:{i:2}});
+  chk(Lobi.chat.length===1,'mesej muncul sekali, bukan '+Lobi.chat.length+' kali');
+})();
+
 console.log(ok?'LOBI OK':'LOBI FAILED');

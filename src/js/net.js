@@ -314,7 +314,12 @@ const Net={
              <b>Laman penuh tidak meminta log masuk</b> dan membenarkannya.</p>
           <a class="btn" href="${SITE}" target="_blank" rel="noopener">🌐 Buka Laman Penuh</a>
           <small>Kongsi pautan laman penuh dengan kawan, bukan pautan pratonton.</small></div>`:'')
-      +`<div class="nsec${rmOn?' ok':''}"><h3>⚡ Bilik Pantas <small>${this.p2p()?'tanpa akaun':'disyorkan'}</small></h3>`
+      +`<div class="nsec${rtc?'':' off'}"><h3>📶 WiFi Sama <small>tiada pelayan</small></h3>`
+      +(rtc?`<p class="hnote"><b>Paling boleh diharap.</b> Dua peranti pada WiFi yang sama bercakap terus antara satu sama lain — tiada pelayan di tengah, jadi tiada apa yang boleh tergendala. Kod dihantar dua kali: kod bilik kepada rakan, kod jawapan balik kepada hos.</p>
+        <div class="nbtn"><button class="btn" data-n="host"${this.busy?' disabled':''}>🏠 Cipta Bilik</button><button class="btn" data-n="joinui">🔗 Sertai Bilik</button></div>
+        <label class="nchk"><input type="checkbox" id="nlong"${cfg.longcode?' checked':''}> Guna kod panjang (jika kod pendek gagal)</label>`
+        :`<p class="hnote">Tidak tersedia di sini: halaman ini berjalan dalam bingkai yang menyekat WebRTC. Cara ini hanya berfungsi jika fail permainan dibuka terus dalam pelayar.</p>`)
+      +`</div>`      +`<div class="nsec${rmOn?' ok':''}"><h3>⚡ Bilik Pantas <small>perlu pelayan isyarat</small></h3>`
       +(rmOn?`<p class="hnote">Terus bersambung — tiada kod panjang, tidak perlu WiFi yang sama. Seorang tekan Cipta Bilik dan beritahu rakan <b>5 aksara</b> kod itu.</p>
         <div class="nbtn"><button class="btn" data-n="rmhost"${this.busy?' disabled':''}>🏠 Cipta Bilik</button><button class="btn" data-n="rmjoinui">🔗 Masukkan Kod</button></div>
         <p class="hnote">${this.p2p()
@@ -322,12 +327,7 @@ const Net={
           :'Rakan perlu log masuk ke Claude dan dijemput ke halaman ini melalui menu <b>Share</b> (beri kebenaran mengedit). Pautan awam sahaja tidak mencukupi.'}</p>`
         :(Rm.tried?`<p class="nerr">${esc(Rm.why||'Tidak tersedia dalam paparan ini.')}</p>`:'<p class="hnote">Memeriksa saluran bilik…</p>'))
       +`</div>`
-      +`<div class="nsec${rtc?'':' off'}"><h3>📋 Kod WiFi (WebRTC)</h3>`
-      +(rtc?`<p class="hnote">Dua peranti pada WiFi yang sama, bertukar kod melalui mesej. Kod perlu dihantar dua kali: kod bilik ke rakan, kod jawapan balik ke hos.</p>
-        <div class="nbtn"><button class="btn" data-n="host"${this.busy?' disabled':''}>🏠 Cipta Bilik</button><button class="btn" data-n="joinui">🔗 Sertai Bilik</button></div>
-        <label class="nchk"><input type="checkbox" id="nlong"${cfg.longcode?' checked':''}> Guna kod panjang (jika kod pendek gagal)</label>`
-        :`<p class="hnote">Tidak tersedia di sini: halaman ini berjalan dalam bingkai yang menyekat WebRTC. Cara ini hanya berfungsi jika fail permainan dibuka terus dalam pelayar.</p>`)
-      +`</div>`
+
       +`<div class="nsec"><h3>✉️ Main Melalui Mesej <small class="any">tanpa akaun</small></h3>
         <p class="hnote">Tiada sambungan langsung. Setiap giliran menghasilkan kod pendek (4–6 aksara) yang anda hantar melalui WhatsApp. Berfungsi pada mana-mana pelayar, mana-mana rangkaian, tanpa log masuk.</p>
         <div class="nbtn"><button class="btn" data-n="msgnew">▶ Mula (saya Pemain 1)</button><button class="btn" data-n="msgjoinui">🔗 Sertai dengan Kod</button></div>
