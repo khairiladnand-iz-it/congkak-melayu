@@ -15,7 +15,7 @@ import asyncio, os, sys, http.server, socketserver, threading, functools
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST = os.path.join(ROOT, 'dist')
 PORT = 8801
-MOCK = open(os.path.join(ROOT, 'tests', 'mock_trystero.js'), encoding='utf-8').read()
+MOCK = open(os.path.join(ROOT, 'tests', 'mock_peerjs.js'), encoding='utf-8').read()
 
 # bilik Claude tiruan: API ruang nama `room` keupayaan artifact, atas BroadcastChannel
 CLAUDE_SHIM = """
@@ -105,7 +105,7 @@ async def mk_page(ctx, login, real=False):
         pass                      # biar Trystero sebenar dimuatkan dari CDN
     else:
         await pg.evaluate(MOCK)
-        await pg.evaluate("() => { P2P.lib = window.__trysteroMock; P2P.URL = 'mock'; }")
+        await pg.evaluate("() => { P2P.lib = window.__peerjsMock; P2P.URL = 'mock'; }")
     return pg
 
 async def wait_for(pg, expr, ms=9000, step=200):
@@ -230,7 +230,7 @@ async def real_trystero(browser):
     """Kenari: adakah Trystero sebenar (relay Nostr + WebRTC) menyambungkan dua tab?
     Kegagalan di sini BUKAN pepijat permainan — ia bermakna lapisan pengangkutan
     tidak berfungsi dalam persekitaran ini."""
-    r = Run('PENGUJI 5 — Trystero SEBENAR (relay Nostr), kenari pengangkutan')
+    r = Run('PENGUJI 5 — PeerJS SEBENAR (PeerServer awam), kenari pengangkutan')
     print(f'\n=== {r.label} ===')
     ctx = await browser.new_context(viewport=DESK)
     A = await mk_page(ctx, False, real=True)
@@ -239,11 +239,11 @@ async def real_trystero(browser):
         await p.evaluate("() => { try{localStorage.setItem('cm15lobi','1')}catch(e){} }")
         await p.evaluate("() => document.querySelector('[data-go=lobi]').click()")
     loaded = await wait_for(A, "() => !!P2P.lib", 30000)
-    r.chk(loaded, 'pustaka Trystero dimuatkan dari CDN')
+    r.chk(loaded, 'pustaka PeerJS dimuatkan dari CDN')
     if loaded:
-        r.chk(await wait_for(A, "() => Lobi.ready === true", 30000), 'bilik Nostr disertai')
+        r.chk(await wait_for(A, "() => Lobi.ready === true", 30000), 'bilik PeerServer disertai')
         found = await wait_for(A, "() => Lobi.peers.filter(p=>!p.isMe).length > 0", 45000)
-        r.chk(found, 'dua tab saling menemui melalui relay Nostr')
+        r.chk(found, 'dua tab saling menemui melalui PeerServer')
         if not found:
             print('    [maklumat] P2P.why =', await A.evaluate("() => P2P.why || ''"),
                   '| Rm.mode =', await A.evaluate("() => Rm.mode"),

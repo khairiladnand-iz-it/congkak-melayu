@@ -32,7 +32,7 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 | `prof.js`→`prog.js` | `Prof` (XP, biji permata, nick), `Store` (keupayaan `db`) |
 | `quest.js` | `CAMP` 16 peringkat Kembara, misi harian, lencana |
 | `music.js` | `Mus` gamelan prosedural (5 mood) + `Snd` kesan bunyi |
-| `p2p.js` | `P2P` — Trystero (MIT) dibungkus menjadi ruang nama gaya bilik Claude |
+| `p2p.js` | `P2P` — PeerJS (MIT) dibungkus menjadi ruang nama gaya bilik Claude; topologi bintang |
 | `net.js` | `Rm` (pilih P2P dahulu, jatuh balik ke keupayaan `room`), `Net`, kodek SDP |
 | `lobi.js` | `Tapis` (tapisan bahasa), `FRASA`, `Lobi` (lobi awam) |
 | `msg.js` | `Msg` — main melalui kod mesej, tanpa sambungan |
@@ -63,6 +63,15 @@ tiada gerakan boleh tergantung apabila tab disembunyikan.
 Di GitHub Pages tiada had ini — WebRTC berfungsi penuh, jadi `Rm.mode` menjadi `'p2p'`
 dan lobi terbuka kepada sesiapa sahaja tanpa akaun.
 
+## Pengangkutan P2P
+
+PeerJS 1.5.5, isyarat melalui PeerServer awam (`0.peerjs.com:443`), data melalui WebRTC.
+**Topologi bintang**: orang pertama yang menuntut ID bilik menjadi hos dan menyampaikan
+semula setiap mesej; yang mendapat ralat `unavailable-id` menyambung kepadanya sebagai
+klien. Bila hos pergi, klien berebut menuntut ID itu semula selepas jeda rawak.
+Menyambung kepada hos dicuba sehingga lima kali — hos yang baru menuntut ID mungkin
+belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
+
 ## Ujian
 
 `tests/h.js` ialah harness `vm` yang memuatkan `tests/chk.js` (dijana) dengan DOM tiruan.
@@ -74,7 +83,7 @@ dan lobi terbuka kepada sesiapa sahaja tanpa akaun.
 `tests/online.py` ialah **penguji dalam talian**: dua pemain sebenar dalam dua tab, melalui
 kod keluaran sebenar (P2P -> Rm -> Net -> Lobi -> Match). Empat senario — tanpa ID log masuk,
 dengan ID log masuk (bilik Claude), telefon, dan kod perkongsian — 68 semakan.
-Pengangkutan Nostr/WebRTC diganti dengan `tests/mock_trystero.js` (BroadcastChannel) yang
-API-nya sama persis dengan Trystero 0.27. Ia menguji semua KECUALI rangkaian sebenar:
+Pengangkutan PeerServer/WebRTC diganti dengan `tests/mock_peerjs.js` (BroadcastChannel +
+timbang tara tuntutan ID melalui localStorage) yang API-nya sama dengan PeerJS 1.5.5. Ia menguji semua KECUALI rangkaian sebenar:
 kegagalan di sini bermakna pepijat logik; lulus di sini tetapi gagal pada telefon sebenar
 bermakna masalah relay atau WebRTC, bukan kod permainan.
