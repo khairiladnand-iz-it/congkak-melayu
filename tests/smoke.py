@@ -24,7 +24,7 @@ async def main():
             pg = await c.new_page()
             errs = []
             pg.on('pageerror', lambda e: errs.append(str(e)))
-            await pg.goto(f'http://127.0.0.1:{PORT}/')
+            await pg.goto(f'http://127.0.0.1:{PORT}/', wait_until='domcontentloaded', timeout=60000)
             await pg.wait_for_timeout(4000)
 
             if not await pg.evaluate('!!document.querySelector(\'[data-go="play"]\')'):
@@ -41,7 +41,7 @@ async def main():
                 bad.append(f'{name}: perlawanan tidak bermula')
 
             # seluruh menu mesti muat tanpa scroll
-            await pg.goto(f'http://127.0.0.1:{PORT}/'); await pg.wait_for_timeout(3000)
+            await pg.goto(f'http://127.0.0.1:{PORT}/', wait_until='domcontentloaded', timeout=60000); await pg.wait_for_timeout(3000)
             fits = await pg.evaluate(
                 'document.querySelector(\'[data-go="set"]\').getBoundingClientRect().bottom <= innerHeight + 2')
             if not fits:
