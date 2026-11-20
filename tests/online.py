@@ -22,7 +22,7 @@ CLAUDE_SHIM = """
 window.__mkClaudeRoom = (name) => {
   const me = 'c' + Math.random().toString(36).slice(2,8);
   const ch = new BroadcastChannel('claude:' + name);
-  const pres = new Map(); const subs = {}; let peerCb = [], connCb = [], mine = {};
+  const pres = new Map(); const subs = {}; let peerCb = [], connCb = [], mine = {}, alive = true;
   const list = () => { const o = [{peer:me,by:me,isMe:true,sameTab:true,kind:'viewer',guest:false,presence:mine}];
     for (const [u,p] of pres) o.push({peer:u,by:u,isMe:false,sameTab:false,kind:'viewer',guest:false,presence:p});
     return o; };
@@ -53,10 +53,14 @@ window.__mkClaudeRoom = (name) => {
     onConnection(f){ connCb.push(f); return ()=>{connCb=connCb.filter(x=>x!==f)} },
     connected(){ return pres.size > 0 },
     async join(sub){ return window.__mkClaudeRoom(name + '/' + sub) },
-    async leave(){ ch.postMessage({from:me,k:'bai'}); try{ch.close()}catch(e){} }
+    async leave(){ alive = false; try{ch.postMessage({from:me,k:'bai'})}catch(e){} try{ch.close()}catch(e){} }
   };
+  /* BroadcastChannel tiada ulang siar: terus umumkan diri sehingga ada rakan.
+     Runner CI yang perlahan membuka tab kedua jauh lewat. */
   const hai = () => { try { ch.postMessage({from:me,k:'hai',p:mine}) } catch(e){} };
-  hai(); setTimeout(hai, 400); setTimeout(hai, 1200); setTimeout(hai, 2500);
+  let n = 0;
+  const beat = setInterval(() => { if (!alive || ++n > 30) return clearInterval(beat); hai() }, 500);
+  hai();
   return ns;
 };
 window.claude = { use: async (n) => n === 'room' ? window.__mkClaudeRoom('lobi') : null };
