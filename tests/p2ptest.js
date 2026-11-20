@@ -135,11 +135,19 @@ await (async()=>{
   await ns.leave(); chk(H.left===true,'leave menutup bilik');
 
   /* Rm mesti pilih P2P bila tersedia */
-  P2P.avail=()=>true; P2P.root=null; P2P.ns=async()=>ns;
-  Rm.tried=false; Rm.ns=null; Rm.mode='';
+  P2P.avail=()=>true; P2P.root=null;
+  let calls=0; P2P.ns=async()=>{calls++;await new Promise(r=>setTimeout(r,5));return ns};
+  Rm.tried=false; Rm.ns=null; Rm.mode=''; Rm._p=null;
   const got2=await Rm.init();
   chk(got2===ns&&Rm.mode==='p2p','Rm.init memilih P2P: mode='+Rm.mode);
   chk(Rm.avail()===true,'Rm.avail true melalui P2P');
+
+  /* REGRESI: dua pemanggil serentak mesti dapat sambungan yang sama,
+     bukan null. Dulu pemanggil kedua gagal dengan "Bilik pantas tidak tersedia". */
+  Rm.tried=false; Rm.ns=null; Rm.mode=''; Rm._p=null; calls=0;
+  const [r1,r2]=await Promise.all([Rm.init(),Rm.init()]);
+  chk(r1===ns&&r2===ns,'dua init serentak kedua-duanya berjaya');
+  chk(calls===1,'sambungan dibuat sekali sahaja, bukan '+calls);
 
   console.log(ok?'P2P OK':'P2P FAILED');
 })();

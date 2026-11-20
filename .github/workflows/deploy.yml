@@ -47,6 +47,9 @@ jobs:
       - name: Ujian asap dalam pelayar
         run: python3 tests/smoke.py
 
+      - name: Penguji dalam talian (dua pemain, empat senario)
+        run: python3 tests/online.py
+
       - name: Saiz keluaran
         run: du -h dist/* | sort -h
 

@@ -58,9 +58,19 @@ const SDPC={
 };
 /* ===== BILIK PANTAS: saluran masa nyata artifact (tanpa WebRTC) ===== */
 const Rm={
-  ns:null,room:null,code:'',host:false,tried:false,why:'',off:[],mode:'',
-  async init(){
-    if(this.tried)return this.ns;this.tried=true;
+  ns:null,room:null,code:'',host:false,tried:false,why:'',off:[],mode:'',_p:null,
+  /* Dua pemanggil boleh meminta sambungan serentak (Net.show dan Lobi.auto).
+     Tanpa menyimpan janji yang sedang berjalan, pemanggil kedua melihat
+     tried=true tetapi ns masih null, lalu gagal dengan "tidak tersedia". */
+  init(){
+    if(this.ns)return Promise.resolve(this.ns);
+    if(this._p)return this._p;
+    this._p=this._init().then(ns=>{this._p=null;return ns},e=>{this._p=null;throw e});
+    return this._p;
+  },
+  async _init(){
+    if(this.tried&&!this.ns&&this.why)return this.ns;
+    this.tried=true;
     /* laluan utama: P2P terus antara pelayar — tiada akaun, tiada pelayan */
     if(typeof P2P!=='undefined'&&P2P.avail()){
       try{const ns=await P2P.ns();

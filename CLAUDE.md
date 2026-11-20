@@ -70,3 +70,11 @@ dan lobi terbuka kepada sesiapa sahaja tanpa akaun.
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
 `p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
+
+`tests/online.py` ialah **penguji dalam talian**: dua pemain sebenar dalam dua tab, melalui
+kod keluaran sebenar (P2P -> Rm -> Net -> Lobi -> Match). Empat senario — tanpa ID log masuk,
+dengan ID log masuk (bilik Claude), telefon, dan kod perkongsian — 68 semakan.
+Pengangkutan Nostr/WebRTC diganti dengan `tests/mock_trystero.js` (BroadcastChannel) yang
+API-nya sama persis dengan Trystero 0.27. Ia menguji semua KECUALI rangkaian sebenar:
+kegagalan di sini bermakna pepijat logik; lulus di sini tetapi gagal pada telefon sebenar
+bermakna masalah relay atau WebRTC, bukan kod permainan.
