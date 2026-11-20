@@ -167,7 +167,7 @@ const Lobi={
         <div><small>Nama anda</small><b id="lbnk">${this.esc(this.nick())}</b></div>
         <button class="btn sm" data-l="nick">✏️ Tukar</button>
       </div>
-      <div id="lberr"></div>
+      <div id="lberr"></div><small class="lbdg" id="lbdg"></small>
       <div class="lbgrid">
         <div class="lbcol"><h3>Pemain</h3><div class="lblist" id="lbps"></div></div>
         <div class="lbcol"><h3>Sembang Pantas</h3><div class="lbchat" id="lbch"></div>
@@ -189,6 +189,14 @@ const Lobi={
           <p>Mod Mesej berfungsi pada mana-mana pelayar tanpa log masuk — setiap giliran jadi kod pendek yang anda hantar melalui WhatsApp.</p>
           <button class="btn" data-l="anon">✉️ Main Tanpa Akaun</button></div>`
       :(!this.ready?'<p class="hnote">Menyambung ke lobi…</p>':'');
+    const dg=document.getElementById('lbdg');
+    if(dg){
+      let c=false;try{c=!!(this.ns&&this.ns.connected&&this.ns.connected())}catch(e){}
+      dg.textContent=this.ready
+        ?[Rm.mode==='p2p'?'P2P':'Bilik Claude','ID '+String(this.me||'?').slice(0,6),
+          this.count()+' dalam bilik',c?'bersambung':'menunggu rakan'].join(' · ')
+        : '';
+    }
     this.paintPeers();this.paintChat();
   },
   paintPeers(){

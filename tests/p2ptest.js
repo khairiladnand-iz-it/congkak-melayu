@@ -78,6 +78,60 @@ await (async()=>{
   const sub=await ns.join('cm5-ab12c');
   chk(sub&&typeof sub.emit==='function','join() memulangkan bilik anak');
 
+  /* ---- REGRESI: onPeers mesti membawa 'joined' dan 'left' ----
+     Tanpa 'joined', Net.roomPeers tidak menghantar pertukaran pahlawan,
+     jadi perlawanan tersangkut pada "bersambung". Inilah pepijat sebenar. */
+  {
+    const {room:r2,H:H2}=mkRoom();
+    P2P.lib={joinRoom:()=>r2};
+    const n2=await P2P._wrap('ujian2');
+    let last=null; n2.onPeers(c=>{last=c});
+    await new Promise(r=>setTimeout(r,20));
+    chk(last&&Array.isArray(last.joined),'onPeers membawa tatasusunan joined');
+    chk(last&&Array.isArray(last.left),'onPeers membawa tatasusunan left');
+    chk(last.joined.some(p=>p.peer==='jebat'),'rakan sedia ada muncul dalam joined');
+
+    last=null; H2.join[0]({userId:'tuah',peerId:'p9',roles:[]});
+    chk(last&&last.joined.length===1&&last.joined[0].peer==='tuah',
+        'kemasukan baharu dilaporkan sekali sahaja dalam joined');
+    chk(last.left.length===0,'tiada left palsu');
+
+    last=null; H2.leave[0]({userId:'tuah',peerId:'p9'});
+    chk(last&&last.left.some(p=>p.peer==='tuah'),'keluar dilaporkan dalam left');
+
+    /* ---- REGRESI: protokol sebenar Net mesti bertindak atas onPeers ---- */
+    Net.tx='room';Net.open=false;Net.stage='rmwait';Net.role='host';
+    Net.mine={h:0};Net.peer={h:-1,lv:1};
+    const sent=[];Rm.room={emit:(t,d)=>{sent.push(d);return Promise.resolve()},
+                            presence:()=>Promise.resolve(),
+                            peers:()=>[{peer:'me',isMe:true,sameTab:true,kind:'viewer',presence:{}},
+                                       {peer:'jebat',isMe:false,kind:'viewer',presence:{h:2,lv:5}}],
+                            connected:()=>true};
+    Net.roomPeers({peers:Rm.room.peers(),
+                   joined:[{peer:'jebat',isMe:false,kind:'viewer',presence:{h:2,lv:5}}],left:[]});
+    chk(Net.stage==='lobby','Net masuk pentas lobi: '+Net.stage);
+    chk(sent.some(d=>d&&d.t==='pick'),'Net menghantar pertukaran pahlawan selepas joined');
+    chk(sent.some(d=>d&&d.t==='cfg'),'hos menghantar tetapan selepas joined');
+    chk(Net.peer.h===2,'pahlawan lawan dibaca dari presence: '+Net.peer.h);
+    Rm.room=null;Net.tx='';Net.open=false;
+
+    /* ---- REGRESI: rakan yang sudah ada SEBELUM kita melanggan ----
+       onUserJoin tidak berbunyi untuk mereka; penyelarasan berkala mesti jumpa. */
+    const {room:r3,H:H3}=mkRoom();
+    let peers3={};
+    r3.getPeers=()=>peers3;
+    P2P.lib={joinRoom:()=>r3};
+    const n3=await P2P._wrap('ujian3');
+    let seen=null; n3.onPeers(c=>{seen=c});
+    await new Promise(r=>setTimeout(r,20));
+    chk(seen&&seen.peers.length===1,'bermula seorang diri: '+(seen&&seen.peers.length));
+    peers3={pX:{userId:'mahsuri'}};              /* rakan muncul tanpa peristiwa */
+    chk(n3._sync()===true,'penyelarasan mengesan perubahan');  /* pemasa memanggil ini setiap 2s */
+    chk(seen.peers.some(p=>p.peer==='mahsuri'),'penyelarasan berkala jumpa rakan senyap');
+    chk(seen.joined.some(p=>p.peer==='mahsuri'),'rakan senyap dilaporkan dalam joined');
+    await n3.leave();
+  }
+
   await ns.leave(); chk(H.left===true,'leave menutup bilik');
 
   /* Rm mesti pilih P2P bila tersedia */

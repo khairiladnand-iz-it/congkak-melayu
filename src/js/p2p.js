@@ -56,6 +56,7 @@ const P2P = {
     const acts = {}, subs = { }, offs = [];
     const pres = new Map();                 /* userId -> keadaan */
     const gone = new Set();                 /* yang sudah keluar: elak baris hantu */
+    const known = new Set();                /* dilaporkan oleh onUserJoin, walau getPeers belum menyusul */
     let mine = {}, peerCb = [], connCb = [], live = false;
 
     const act = t => {
@@ -72,15 +73,38 @@ const P2P = {
     const list = () => {
       const out = [{ peer: me, by: me, isMe: true, sameTab: true, kind: 'viewer', guest: false, presence: mine }];
       for (const [id, p] of pres) if (id !== me) out.push({ peer: id, by: id, isMe: false, sameTab: false, kind: 'viewer', guest: false, presence: p });
-      try {
-        for (const info of Object.values(room.getPeers() || {})) {
-          const id = (info && info.userId) || '';
-          if (id && id !== me && !pres.has(id) && !gone.has(id)) out.push({ peer: id, by: id, isMe: false, sameTab: false, kind: 'viewer', guest: false, presence: {} });
-        }
-      } catch (e) {}
+      const add = id => {
+        if (id && id !== me && !pres.has(id) && !gone.has(id) && !out.some(p => p.peer === id))
+          out.push({ peer: id, by: id, isMe: false, sameTab: false, kind: 'viewer', guest: false, presence: {} });
+      };
+      for (const id of known) add(id);
+      try { for (const info of Object.values(room.getPeers() || {})) add((info && info.userId) || '') } catch (e) {}
       return out;
     };
-    const pushPeers = () => { const c = { peers: list() }; for (const f of peerCb) { try { f(c) } catch (e) {} } };
+    /* Bilik Claude menghantar {peers, joined, left}; Net.roomPeers bergantung pada
+       'joined' untuk menghantar pertukaran pahlawan & tetapan. Tanpanya perlawanan
+       tersangkut pada "bersambung". Jadi kita kira bezanya sendiri. */
+    let prevIds = new Set();
+    const pushPeers = () => {
+      const ps = list(), ids = new Set(ps.map(p => p.peer));
+      const joined = ps.filter(p => !prevIds.has(p.peer));
+      const left = [...prevIds].filter(id => !ids.has(id))
+        .map(id => ({ peer: id, by: id, isMe: false, sameTab: false, kind: 'viewer', guest: false, presence: {} }));
+      prevIds = ids;
+      const c = { peers: ps, joined, left };
+      for (const f of peerCb) { try { f(c) } catch (e) {} }
+    };
+    /* BUG 2: onUserJoin hanya berbunyi untuk kemasukan BAHARU. Rakan yang sudah
+       berada dalam bilik sebelum kita melanggan tidak mencetuskan apa-apa, jadi
+       lobi kelihatan kosong walaupun mereka ada. Penyelarasan berkala menutup
+       jurang itu, dan juga sebarang peristiwa yang tercicir. */
+    const sync = () => {
+      const ids = new Set(list().map(p => p.peer));
+      if (ids.size !== prevIds.size || [...ids].some(x => !prevIds.has(x))) { pushPeers(); return true }
+      return false;
+    };
+    const tick = setInterval(sync, 2000);
+    offs.push(() => clearInterval(tick));
     const pushConn = () => { for (const f of connCb) { try { f() } catch (e) {} } };
 
     /* keadaan pemain disiarkan melalui makeUserState bila ada, jika tidak melalui tindakan biasa */
@@ -90,7 +114,8 @@ const P2P = {
       offs.push(this._sub(st, 'onChange', (val, ctx) => {
         const id = (ctx && (ctx.userId || ctx.peerId)) || '';
         if (!id) return;
-        if (ctx && ctx.removed) { pres.delete(id); gone.add(id) } else { pres.set(id, val || {}); gone.delete(id) }
+        if (ctx && ctx.removed) { pres.delete(id); known.delete(id); gone.add(id) }
+        else { pres.set(id, val || {}); gone.delete(id); known.add(id) }
         pushPeers();
       }));
       try { const all = st.getAll && st.getAll(); if (all) for (const [k, v] of Object.entries(all)) if (k !== me) pres.set(k, v) } catch (e) {}
@@ -101,14 +126,14 @@ const P2P = {
 
     offs.push(this._sub(room, 'onUserJoin', ctx => {
       live = true;
-      const jid = (ctx && (ctx.userId || ctx.peerId)) || ''; if (jid) gone.delete(jid);
+      const jid = (ctx && (ctx.userId || ctx.peerId)) || ''; if (jid) { gone.delete(jid); known.add(jid) }
       /* beritahu pendatang baharu keadaan saya */
       if (st) { try { st.set(mine) } catch (e) {} } else { try { act('pres').send(mine) } catch (e) {} }
       pushPeers(); pushConn();
     }));
     offs.push(this._sub(room, 'onUserLeave', ctx => {
       const id = (ctx && (ctx.userId || ctx.peerId)) || '';
-      if (id) { pres.delete(id); gone.add(id) }
+      if (id) { pres.delete(id); known.delete(id); gone.add(id) }
       pushPeers();
     }));
     offs.push(this._sub(room, 'onError', () => {}));
@@ -116,6 +141,8 @@ const P2P = {
     const self = {
       kind: 'p2p',
       me,
+      /* selaraskan senarai rakan sekarang juga; dipanggil setiap 2 saat oleh pemasa */
+      _sync: sync,
       emit(topic, data) {
         try { act(topic).send(data) } catch (e) { return Promise.reject(e) }
         /* bilik Claude memulangkan mesej sendiri; tiru itu supaya UI sama */
@@ -134,7 +161,7 @@ const P2P = {
         return Promise.resolve();
       },
       peers() { return list() },
-      onPeers(fn) { peerCb.push(fn); setTimeout(() => { try { fn({ peers: list() }) } catch (e) {} }, 0); return () => { peerCb = peerCb.filter(f => f !== fn) } },
+      onPeers(fn) { peerCb.push(fn); setTimeout(() => pushPeers(), 0); return () => { peerCb = peerCb.filter(f => f !== fn) } },
       onConnection(fn) { connCb.push(fn); return () => { connCb = connCb.filter(f => f !== fn) } },
       connected() { try { return live || Object.keys(room.getPeers() || {}).length > 0 } catch (e) { return live } },
       async join(sub) { return P2P._wrap(P2P.APP + '-' + sub) },
