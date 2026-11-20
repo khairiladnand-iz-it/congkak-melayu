@@ -80,7 +80,7 @@ const Match={
         else if(e.t==='chain'){this._ch=(this._ch||1)+1;v[e.i]=0;this.render();Snd.whoosh(.25);this.say('Berlari… ambil biji dan teruskan!');await World.pick(e.i,420*sp)}
         else if(e.t==='nocap'){Snd.block();Fx.pop(e.i,'✋');this.say('Belum satu pusingan — biji belum melepasi rumah ibu, jadi tikam tidak dikira.');await sleep(620*sp)}
         else if(e.t==='capture'){
-          Snd.tikam(e.gain);Haptic.cap();s.caps[p]++;this.capN=(this.capN||0)+1;
+          Snd.tikam(e.gain);Haptic.cap();World.slomo(2.1,520);s.caps[p]++;this.capN=(this.capN||0)+1;
           if(this.owner(p)){Prof.d.cap=(Prof.d.cap|0)+1;if(e.gain>(Prof.d.best|0))Prof.d.best=e.gain;Quest.bump('cap',1,'add');Quest.bump('big',e.gain,'max')}
           /* mod mesej: peranti yang menyerang menentukan mata, peranti lawan hanya menayang semula */
           const mine2=Rules.store(n,1-p);

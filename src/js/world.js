@@ -1,4 +1,18 @@
 /* ===== DUNIA 3D (three.js r128) ===== */
+/* Lengkung pelonggaran: memberi berat dan watak pada gerakan biji.
+   'out' angkat laju lalu reda · 'back' mendarat dengan sedikit lajak
+   'bounce' melantun ketika ditikam · 'inout' sapuan biasa */
+const EASE={
+  lin:u=>u,
+  inout:u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2,
+  out:u=>1-Math.pow(1-u,3),
+  back:u=>{const c=1.9,c3=c+1;return 1+c3*Math.pow(u-1,3)+c*Math.pow(u-1,2)},
+  bounce:u=>{const n=7.5625,d=2.75;
+    if(u<1/d)return n*u*u;
+    if(u<2/d)return n*(u-=1.5/d)*u+.75;
+    if(u<2.5/d)return n*(u-=2.25/d)*u+.9375;
+    return n*(u-=2.625/d)*u+.984375}
+};
 const WOODS={jati:['#8f5d2e','#3d200c'],hitam:['#3a2c24','#0c0806'],merah:['#74301f','#2a0c06'],emas:['#c9983f','#6e4410'],cendana:['#dcc08e','#80602f'],giok:['#3f9c70','#0e3a28'],nilam:['#2c52a6','#0a1a4a'],perak:['#c9cfd7','#5a6068'],bara:['#4c1a10','#140404'],angkasa:['#1a1a52','#04041c'],diraja:['#7c1224','#2c050c']};
 const WOODX={giok:{roughness:.2,clearcoat:1,clearcoatRoughness:.06},nilam:{roughness:.18,clearcoat:1,clearcoatRoughness:.05},perak:{metalness:.9,roughness:.3,clearcoat:.2},bara:{emissive:0xff4a10,emissiveIntensity:.55,roughness:.55},angkasa:{emissive:0x7a8aff,emissiveIntensity:.8,roughness:.4,clearcoat:.8},diraja:{roughness:.4,clearcoat:.7,metalness:.15},cendana:{roughness:.45}};
 const FLOORS={songket:{tile:3.6,mat:{roughness:.6}},jubin:{tile:2.6,mat:{roughness:.25,metalness:.05}},tikar:{tile:3.2,mat:{roughness:.95}},rebung:{tile:3.2,mat:{roughness:.6}},kawung:{tile:3.2,mat:{roughness:.55}},marmar:{tile:4,mat:{roughness:.12,metalness:.05}},langit:{tile:3.2,mat:{roughness:.2,metalness:.55,emissive:0x2a3aa0,emissiveIntensity:.5}}};
@@ -194,26 +208,36 @@ const World={
     view.forEach((c,i)=>{for(let k=0;k<c;k++){const s=this.seeds[q++];s.m.visible=true;this.put(s,this.slot(i,k));this.hold[i].push(s)}});
     for(;q<this.seeds.length;q++)this.seeds[q].m.visible=false;
   },
-  tween(s,to,dur,arc){
+  /* kadar masa papan: 1 biasa, >1 perlahan. Didarabkan ketika tween dicipta,
+     jadi jam dinding kekal memandu dan tiada gerakan boleh tergantung. */
+  rate:1,
+  /* gerak perlahan seketika — untuk saat tikam dan tangkapan besar */
+  slomo(mult,ms){
+    this.rate=mult||1;
+    clearTimeout(this._sl);
+    this._sl=setTimeout(()=>{this.rate=1},ms||420);
+  },
+  tween(s,to,dur,arc,ez){
     return new Promise(res=>{
       const old=this.tw.findIndex(t=>t.s===s);if(old>=0){this.tw[old].res();this.tw.splice(old,1)}
+      dur=dur*this.rate;
       if(!(dur>1)){this.put(s,to);res();return}
-      this.tw.push({s,f:s.p,to,t0:Date.now(),dur,arc:arc||0,res});
+      this.tw.push({s,f:s.p,to,t0:Date.now(),dur,arc:arc||0,ez:ez||'inout',res});
     });
   },
   async pick(i,dur){
     if(!this.ok)return;const a=this.hold[i];this.hold[i]=[];this.handAt=i;const ps=[];
-    for(const s of a){this.hand.push(s);ps.push(this.tween(s,this.hover(i,this.hand.length-1),dur,.25))}
+    for(const s of a){this.hand.push(s);ps.push(this.tween(s,this.hover(i,this.hand.length-1),dur,.25,'out'))}
     await Promise.all(ps);
   },
   async drop(i,dur){
     if(!this.ok)return;const s=this.hand.pop();if(!s)return;this.handAt=i;
-    this.hand.forEach((o,j)=>{this.tween(o,this.hover(i,j),dur*.85,.08)});
-    const to=this.slot(i,this.hold[i].length);this.hold[i].push(s);await this.tween(s,to,dur,.35);
+    this.hand.forEach((o,j)=>{this.tween(o,this.hover(i,j),dur*.85,.08,'out')});
+    const to=this.slot(i,this.hold[i].length);this.hold[i].push(s);await this.tween(s,to,dur,.35,'back');
   },
   async capture(i,o,st,dur){
     if(!this.ok)return;const a=this.hold[i].concat(this.hold[o]);this.hold[i]=[];this.hold[o]=[];const ps=[];
-    a.forEach((s,k)=>{const to=this.slot(st,this.hold[st].length);this.hold[st].push(s);ps.push(sleep(k*45*(dur>1?1:0)).then(()=>this.tween(s,to,dur,1.6)))});
+    a.forEach((s,k)=>{const to=this.slot(st,this.hold[st].length);this.hold[st].push(s);ps.push(sleep(k*45*(dur>1?1:0)).then(()=>this.tween(s,to,dur,1.6,'bounce')))});
     await Promise.all(ps);
   },
   async bonus(st,k,dur){
@@ -268,7 +292,7 @@ const World={
   },
   frame(){
     const now=Date.now(),dt=Math.min(.05,(now-this.last)/1000);this.last=now;
-    for(let k=this.tw.length-1;k>=0;k--){const t=this.tw[k],u=Math.min(1,(now-t.t0)/t.dur),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+    for(let k=this.tw.length-1;k>=0;k--){const t=this.tw[k],u=Math.min(1,(now-t.t0)/t.dur),e=(EASE[t.ez]||EASE.inout)(u);
       t.s.m.position.set(t.f.x+(t.to.x-t.f.x)*e,t.f.y+(t.to.y-t.f.y)*e+t.arc*4*u*(1-u),t.f.z+(t.to.z-t.f.z)*e);
       if(u>=1){t.s.p=t.to;this.tw.splice(k,1);t.res()}}
     if(this.mode==='menu')this.az+=dt*.12;

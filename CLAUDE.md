@@ -17,7 +17,7 @@ Repo ini ialah **sumber kebenaran tunggal**. Artifact Claude hanyalah keluaran b
 ```bash
 python3 tools/build.py            # -> dist/ (web + PWA)   <- untuk GitHub Pages
 python3 tools/build.py --single --out fail.html   # satu fail tanpa PWA <- untuk artifact Claude
-bash tools/test.sh                # bina + sintaks + 5 set ujian
+bash tools/test.sh                # bina + sintaks + 6 set ujian
 ```
 
 Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkaunya.
@@ -37,13 +37,21 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 | `lobi.js` | `Tapis` (tapisan bahasa), `FRASA`, `Lobi` (lobi awam) |
 | `msg.js` | `Msg` — main melalui kod mesej, tanpa sambungan |
 | `istana.js` | Pemapar mini-3D Istana Melaka (kanvas 2D, tiada three.js) |
-| `world.js` | Papan three.js, tekstur lantai |
+| `world.js` | Papan three.js, tekstur lantai, `EASE` (lengkung pelonggaran), `World.rate`/`slomo()` |
 | `new_b.js` | `Screen`, `Match` — gelung permainan |
 | `new_c.js` | `Setup`, `wire()`, urutan permulaan |
 
 `ui.js` dipotong pada dua penanda; **jangan padam** komen ini:
 `/* ===== BUNYI ===== */`, `/* ===== BIJI ===== */`,
 `/* ===== PERTARUNGAN TIKAM ===== */`, `/* ===== PERSIAPAN ===== */`.
+
+## Animasi
+
+Sistem tween sendiri dalam `world.js` sudah memadai — **jangan tambah GSAP atau pustaka animasi lain**.
+Gerakan ditala melalui `EASE` (lengkung bernama: `out` `back` `bounce` `inout`) yang dipilih per
+gerakan dalam `pick`/`drop`/`capture`, dan `World.rate` yang mendarab tempoh ketika tween dicipta.
+`World.slomo(kadar, ms)` memberi gerak perlahan seketika. Jam dinding kekal memandu tween, jadi
+tiada gerakan boleh tergantung apabila tab disembunyikan.
 
 ## Had keupayaan artifact (sudah disahkan dengan ujian langsung)
 
@@ -60,5 +68,5 @@ dan lobi terbuka kepada sesiapa sahaja tanpa akaun.
 `tests/h.js` ialah harness `vm` yang memuatkan `tests/chk.js` (dijana) dengan DOM tiruan.
 `NO3D=1` mematikan stub three.js. Set ujian: `t` (enjin, 300 perlawanan), `t2` (sejarah/jam),
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
-`p2ptest` (shim Trystero diuji terhadap bilik tiruan).
+`p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
