@@ -34,8 +34,11 @@ async def main():
                 bad.append(f'{name}: butang Main Sekarang tiada')
             if not await pg.evaluate('!!document.querySelector(\'link[rel=manifest]\')'):
                 bad.append(f'{name}: pautan manifest tiada')
-            if await pg.evaluate('document.querySelectorAll(".mt u svg").length') != 6:
-                bad.append(f'{name}: ikon koleksi tidak lengkap')
+            # setiap jubin koleksi mesti ada ikon SVG sendiri, berapa pun bilangannya
+            tiles = await pg.evaluate('document.querySelectorAll(".mt").length')
+            icons = await pg.evaluate('document.querySelectorAll(".mt u svg").length')
+            if tiles < 6 or icons != tiles:
+                bad.append(f'{name}: {tiles} jubin tetapi {icons} ikon')
 
             # klik melalui JS: pada runner CI kanvas 3D boleh melindungi butang
             await pg.evaluate('document.querySelector(\'[data-go="play"]\').click()')
