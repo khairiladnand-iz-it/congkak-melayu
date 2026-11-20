@@ -1,0 +1,60 @@
+name: Bina, uji & siar ke GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  bina:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Pasang Pillow
+        run: python -m pip install --quiet pillow
+
+      - name: Ujian penuh
+        run: bash tools/test.sh
+
+      - name: Bina keluaran web
+        run: python3 tools/build.py
+
+      - name: Saiz keluaran
+        run: du -h dist/* | sort -h
+
+      - name: Muat naik artifact Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  siar:
+    if: github.event_name != 'pull_request'
+    needs: bina
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
+        uses: actions/deploy-pages@v4

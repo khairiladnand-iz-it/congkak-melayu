@@ -1,0 +1,17 @@
+let ok=true;const chk=(c,m)=>{if(!c){ok=false;console.log('FAIL',m)}};
+Prof.d.xp=0;chk(Prof.lvl()===1,'lvl1');chk(Prof.cum(2)===80,'cum2 '+Prof.cum(2));
+chk(Prof.lvl(Prof.cum(5))===5&&Prof.lvl(Prof.cum(5)-1)===4,'lvl5 edge');
+chk(Prof.lvl(1e9)===50,'cap');
+let a=Prof.award({res:'win',caps:2,mult:1});chk(a.xp===136,'xp '+a.xp);chk(a.l1===2,'levelup '+a.l1);chk(a.up.length===1&&a.up[0].wood.length===0&&a.up[0].seed.includes('Batu Sungai'),'unlock L2 '+JSON.stringify(a.up));
+Prof.d.xp=Prof.cum(10)-1;a=Prof.award({res:'lose',caps:0,mult:1});chk(a.l0===9&&a.l1===10,'9->10');chk(a.up[0].gem&&a.up[0].gem.n==='Bayang Harimau','gem10');
+const b=Prof.bonus(50);chk(Math.abs(b.atk+b.def+b.spd-9.8)<1e-9,'bonus total '+(b.atk+b.def+b.spd));
+Prof.d.xp=Prof.cum(3);cfg.wood='angkasa';cfg.seed='bintang';fixCfg();chk(cfg.wood==='jati'&&cfg.seed==='saga','locks revert');
+cfg.wood='merah';fixCfg();chk(cfg.wood==='merah','L3 merah ok');cfg.wood='angkasa';fixCfg(true);chk(cfg.wood==='angkasa','free');cfg.wood='jati';
+chk(HEROES.length>=15&&NBASE===18&&IMGS.length===HEROES.length&&HIST.length===18,'heroes '+HEROES.length+' '+HIST.length);
+for(const h of HEROES)chk(h.sk.length===2&&KD&&FXK[h.sk[0].k]&&FXK[h.sk[1].k],'fx '+h.n);
+for(const g of GEM)chk(FXK[g.k],'gem fx '+g.k);
+Prof.d.xp=Prof.cum(50);chk(Prof.gemSel().id===9,'default gem');Prof.d.gem=2;chk(Prof.gemSel().id===2,'equip');Prof.d.gem=-1;
+for(const s of SEEDS)chk(SU[s[0]],'seed unlock '+s[0]);for(const w of WOODN)chk(WU[w[0]],'wood unlock '+w[0]);
+Prof.open();chk(document.getElementById('prof').innerHTML.length>1500,'prof html');Hist.open(-1);Hist.open(14);
+Prof.d.xp=0;Prof.save();
+console.log(ok?'T3 OK':'T3 FAILED');

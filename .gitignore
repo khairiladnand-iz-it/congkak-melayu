@@ -1,0 +1,6 @@
+dist/
+tests/chk.js
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/

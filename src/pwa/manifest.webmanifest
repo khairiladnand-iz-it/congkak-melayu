@@ -1,0 +1,20 @@
+{
+  "name": "Congkak Melayu — Warisan Agung Nusantara",
+  "short_name": "Congkak",
+  "description": "Congkak tradisional dengan 16 pahlawan Nusantara, duel silat, Kembara Nusantara dan mod dalam talian.",
+  "lang": "ms",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#26060c",
+  "theme_color": "#4a0c14",
+  "categories": ["games", "board"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

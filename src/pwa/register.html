@@ -1,0 +1,8 @@
+<script>
+/* daftar service worker hanya pada hos sebenar, bukan dalam bingkai artifact */
+if ('serviceWorker' in navigator && window.top === window.self && location.protocol === 'https:') {
+  addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
