@@ -55,7 +55,8 @@ window.__mkClaudeRoom = (name) => {
     async join(sub){ return window.__mkClaudeRoom(name + '/' + sub) },
     async leave(){ ch.postMessage({from:me,k:'bai'}); try{ch.close()}catch(e){} }
   };
-  ch.postMessage({from:me,k:'hai',p:mine});
+  const hai = () => { try { ch.postMessage({from:me,k:'hai',p:mine}) } catch(e){} };
+  hai(); setTimeout(hai, 400); setTimeout(hai, 1200); setTimeout(hai, 2500);
   return ns;
 };
 window.claude = { use: async (n) => n === 'room' ? window.__mkClaudeRoom('lobi') : null };
@@ -143,9 +144,10 @@ async def scenario(browser, label, login, viewport):
     r.chk(await wait_for(A, "() => Lobi.chat.some(m=>m.me)"), 'frasa sendiri bergema pada A')
 
     # --- 5. cabaran -> perlawanan (pepijat tersangkut pada bersambung) ---
-    await A.evaluate("""() => { const b=[...document.querySelectorAll('[data-l=\\'chal\\']')][0];
-                               Lobi.challenge(b.dataset.p); }""")
-    got = await wait_for(B, "() => !!Lobi.inv", 9000)
+    fired = await A.evaluate("""() => { const b=[...document.querySelectorAll('[data-l=\\'chal\\']')][0];
+                               if (!b) return false; Lobi.challenge(b.dataset.p); return true; }""")
+    r.chk(fired, 'cabaran dihantar')
+    got = fired and await wait_for(B, "() => !!Lobi.inv", 9000)
     r.chk(got, 'B menerima kad cabaran')
     if got:
         await B.evaluate("() => Lobi.accept()")
