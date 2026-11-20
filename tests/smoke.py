@@ -34,8 +34,9 @@ async def main():
             if await pg.evaluate('document.querySelectorAll(".mt u svg").length') != 6:
                 bad.append(f'{name}: ikon koleksi tidak lengkap')
 
-            await pg.click('[data-go="play"]')
-            await pg.wait_for_timeout(2500)
+            # klik melalui JS: pada runner CI kanvas 3D boleh melindungi butang
+            await pg.evaluate('document.querySelector(\'[data-go="play"]\').click()')
+            await pg.wait_for_timeout(3500)
             if await pg.evaluate('document.body.dataset.screen') != 'match':
                 bad.append(f'{name}: perlawanan tidak bermula')
 
