@@ -52,6 +52,7 @@ function wire(){
     else if(g==='hist')Hist.open(-1);
     else if(g==='prof')Prof.open();
     else if(g==='net')Net.show();
+    else if(g==='hari')Harian.open();
     else if(g==='lobi'){try{localStorage.setItem('cm15lobi','1')}catch(x){}Lobi.open()}
     else if(g==='mus'){cfg.music=!cfg.music;saveCfg();Mus.sync();b.textContent=cfg.music?'🎵 Muzik':'🔇 Muzik'}
     else if(g==='full')Scr.toggle();
@@ -63,6 +64,7 @@ function wire(){
   document.addEventListener('visibilitychange',()=>{const c=Mus.ctx;if(!c)return;document.hidden?c.suspend():c.resume()});
   document.getElementById('net').addEventListener('click',e=>Net.click(e));
   document.getElementById('lobi').addEventListener('click',e=>Lobi.click(e));
+  document.getElementById('hari').addEventListener('click',e=>Harian.click(e));
   document.getElementById('lobi').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='lbni'){e.preventDefault();Lobi.saveNick()}});
   document.getElementById('prof').addEventListener('click',e=>{const t=e.target;if(t.dataset&&t.dataset.h==='closeprof'||t.id==='prof')return Prof.close();const pb=t.closest&&t.closest('[data-ptab]');if(pb){Prof.tab=pb.dataset.ptab;Prof.open();return}
     if(t.dataset&&t.dataset.h==='cloudon')return void Prof.cloudOn();

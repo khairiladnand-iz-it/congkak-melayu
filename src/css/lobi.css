@@ -110,3 +110,18 @@
 .lbsite p b{display:inline;color:#ffe9b0}
 .lbsite .btn{display:inline-block;text-decoration:none}
 .lbsite small{display:block;margin-top:.45rem;font-size:.63rem;color:#86a6ba}
+/* ===== CONGKAK HARIAN ===== */
+.mb.hari{background:linear-gradient(135deg,#2a3d14,#16240c);border-color:#6f9a2f}
+.mb.hari b{color:#c7ef8a}
+.mb.hari small i{color:#f2c75c;font-style:normal}
+.panel.hari{max-width:440px}
+.hno{margin:-.2rem 0 .8rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#a98b5e}
+.hres{background:#140d06;border:1px solid #3d2a14;border-radius:12px;padding:.9rem .7rem;margin-bottom:.8rem}
+.hres>b{display:block;font-family:'Cinzel',serif;font-size:3rem;line-height:1;color:#f4dfae}
+.hres>small{display:block;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:#a98b5e;margin-top:.2rem}
+.hbar{margin:.7rem 0 .2rem;font-size:1.25rem;letter-spacing:.12em;color:#8fd44f}
+.hsub{margin:.35rem 0 0;font-size:.76rem;color:#c3a673}
+.btn.big{font-size:1.05rem;padding:.7rem 1.4rem}
+.hcopy{margin-top:.8rem}
+.hcopy textarea{width:100%;background:#1a1208;border:1px solid #4a3318;border-radius:9px;
+  padding:.5rem;color:#f0dcae;font:inherit;font-size:.82rem;line-height:1.5;resize:none}

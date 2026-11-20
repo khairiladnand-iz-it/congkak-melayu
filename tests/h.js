@@ -11,7 +11,7 @@ const RealDate=Date;
 const ctx={THREE:process.env.NO3D?undefined:U(),console,__els:els,
  document:{getElementById:s=>els['#'+s]||(els['#'+s]=mkEl()),querySelector:s=>els[s]||(els[s]=mkEl()),createElement:()=>mkEl(),querySelectorAll:()=>[],body:mkEl(),documentElement:mkEl(),addEventListener(){},removeEventListener(){}},
  localStorage:{getItem:()=>null,setItem(){}},requestAnimationFrame:f=>{if(raf++<4e6)setImmediate(f)},innerWidth:1200,innerHeight:800,devicePixelRatio:1,addEventListener(){},
- setTimeout:(f)=>{setImmediate(f);return 0},clearTimeout(){},setInterval:()=>0,clearInterval(){},Date:Object.assign(function(){return new RealDate(0)},{now:()=>(clock+=30)}),Math,JSON,Promise,Image:function(){},FileReader:function(){}};
+ setTimeout:(f)=>{setImmediate(f);return 0},clearTimeout(){},setInterval:()=>0,clearInterval(){},Date:Object.assign(function(...a){return a.length?new RealDate(...a):new RealDate(0)},{now:()=>(clock+=30),UTC:(...a)=>RealDate.UTC(...a),parse:(...a)=>RealDate.parse(...a)}),Math,JSON,Promise,Image:function(){},FileReader:function(){}};
 ctx.window=ctx;vm.createContext(ctx);
 try{vm.runInContext(src,ctx)}catch(e){console.log('LOAD ERROR',e.stack.split('\n').slice(0,4).join('\n'));process.exit(1)}
 console.log('loaded; World.ok =',vm.runInContext('World.ok',ctx));

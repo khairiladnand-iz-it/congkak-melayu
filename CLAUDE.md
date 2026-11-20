@@ -28,7 +28,8 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 |---|---|
 | `engine.js` | Peraturan congkak tulen, tiada DOM. `Rules.sow()` memulangkan `{b,ev,extra,cap,lap}` |
 | `ui.js` | HEROES, ELEM, SK, skrin, dan **Duel** (dipotong oleh build mengikut penanda komen) |
-| `new_a.js` | `DEF` tetapan lalai, `fixCfg()` |
+| `new_a.js` | `DEF` tetapan lalai, `fixCfg()`, `SITE` |
+| `harian.js` | `RNG` boleh benih + `Harian` — teka-teki harian |
 | `prof.js`→`prog.js` | `Prof` (XP, biji permata, nick), `Store` (keupayaan `db`) |
 | `quest.js` | `CAMP` 16 peringkat Kembara, misi harian, lencana |
 | `music.js` | `Mus` gamelan prosedural (5 mood) + `Snd` kesan bunyi |
@@ -44,6 +45,20 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 `ui.js` dipotong pada dua penanda; **jangan padam** komen ini:
 `/* ===== BUNYI ===== */`, `/* ===== BIJI ===== */`,
 `/* ===== PERTARUNGAN TIKAM ===== */`, `/* ===== PERSIAPAN ===== */`.
+
+## Congkak Harian
+
+Satu papan, sama untuk semua orang di dunia, bertukar setiap tengah malam, satu percubaan
+sehari. **Keadilannya bergantung sepenuhnya pada determinisme**, jadi:
+
+- `RNG` (mulberry32) dalam `harian.js` menggantikan `Math.random()` dalam AI `engine.js`.
+  Tanpa benih ia hanyalah `Math.random`, jadi permainan biasa tidak berubah.
+- Tarikh ialah satu-satunya benih — tiada pelayan. `Harian.papan(n)` dicerminkan supaya
+  kedua-dua pihak dapat susunan yang sama.
+- **Jangan masukkan apa-apa yang rawak ke dalam laluan permainan tanpa melalui `RNG`.**
+
+Skor disimpan dalam `Prof.d.hariN/hariS/hariB` (mesti ada dalam senarai kunci `Prof.apply`).
+Diuji oleh `tests/hariantest.js`.
 
 ## Prestasi (telefon panas)
 

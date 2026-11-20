@@ -45,11 +45,11 @@ const AI={
   /* tahap 1 rawak · 2 tamak · 3 carian 4 langkah */
   pick(b,n,p,lvl){
     const mv=Rules.legal(b,n,p);if(!mv.length)return -1;
-    if(lvl<=1)return mv[Math.random()*mv.length|0];
+    if(lvl<=1)return mv[RNG.next()*mv.length|0];
     let best=-1e9,bm=mv[0];
     for(const m of mv){
       const r=Rules.resolve(b,n,p,m),s=Rules.store(n,p);
-      const v=lvl===2?(r.b[s]-b[s])+(r.extra?2.5:0)+Math.random()*.6:AI.search(r.b,n,r.extra?p:1-p,4,p,-1e9,1e9)+Math.random()*.01;
+      const v=lvl===2?(r.b[s]-b[s])+(r.extra?2.5:0)+RNG.next()*.6:AI.search(r.b,n,r.extra?p:1-p,4,p,-1e9,1e9)+RNG.next()*.01;
       if(v>best){best=v;bm=m}
     }
     return bm;

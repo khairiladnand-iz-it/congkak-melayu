@@ -135,6 +135,9 @@ const Match={
     const body=w<0?`<h2>Seri!</h2><p class="winn">${a} – ${c}</p>`:`<h2>PEMENANG</h2><div class="pic"><img src="${IMGS[cfg.p[w]]}" alt=""></div><h2>${esc(hw.n)}${cfg.vs==='ai'&&w===1?' (AI)':''}</h2><p class="winn">${a} lawan ${c}</p><p><i>“${esc(hw.l)}”</i></p>`;
     const ow=this.online?this.me:0,res=w<0?'draw':w===ow?'win':'lose';
     if(res==='win')Haptic.win();
+    if(typeof Harian!=='undefined'&&Harian.on){
+      Harian.tamat(a,this.capN|0,Prof.d.chain|0);
+    }
     Quest.bump('play',1,'add');
     if(res==='win'){Quest.bump('win',1,'add');if(cfg.vs==='ai'&&cfg.lvl===3&&!this.online)Quest.bump('ai3',1,'add');
       Prof.d.cur=(Prof.d.cur|0)+1;if(Prof.d.cur>(Prof.d.str|0))Prof.d.str=Prof.d.cur}

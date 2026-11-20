@@ -37,7 +37,7 @@ const Store={
   async put(o){if(!this.on)return false;try{await this.ref().set(o);return true}catch(e){return false}}
 };
 const Prof={
-  d:{xp:0,w:0,g:0,gem:-1,gem2:-1,camp:0,cap:0,ko:0,chain:0,best:0,str:0,cur:0,seen:0},
+  d:{xp:0,w:0,g:0,gem:-1,gem2:-1,camp:0,cap:0,ko:0,chain:0,best:0,str:0,cur:0,seen:0,hariN:0,hariS:0,hariB:0},
   day:{d:'',p:[0,0,0],done:[0,0,0]},
   loaded:false,nk:'',
   key:'cm15p',
@@ -68,7 +68,7 @@ const Prof={
   /* gabung: ambil nilai tertinggi supaya kemajuan tidak pernah berundur */
   merge(o){
     if(!o)return false;let ch=false;
-    for(const k of['xp','w','g','camp','cap','ko','chain','best','str','seen']){
+    for(const k of['xp','w','g','camp','cap','ko','chain','best','str','seen','hariN','hariS','hariB']){
       const v=+o[k];if(Number.isFinite(v)&&v>(this.d[k]||0)){this.d[k]=v;ch=true}}
     if(o.day&&o.day.d===this.day.d){
       for(let i=0;i<3;i++){const v=+((o.day.p||[])[i]);if(Number.isFinite(v)&&v>this.day.p[i]){this.day.p[i]=v;ch=true}
