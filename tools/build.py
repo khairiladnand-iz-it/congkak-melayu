@@ -141,6 +141,28 @@ def build(out, webp=True, write_chk=False, pwa=True):
         open(os.path.join(ROOT, 'tests', 'chk.js'), 'w', encoding='utf-8').write(js)
     return html
 
+# ---------- Hikayat Pahlawan: halaman berdiri sendiri ----------
+HIK_ORDER = ['data', 'laga', 'main']
+HIK_POTRET = ['saadong', 'fatimah', 'siti', 'ledang', 'santubong', 'malahayati', 'mahsuri', 'teja']   # susunan HER2 dalam heroes2.js
+
+def build_hikayat(out, webp=True, art=None, write_chk=False):
+    """Hikayat Pahlawan sebagai satu fail. Guna semula engine.js (Rules, AI), RNG daripada
+    harian.js dan potret 18 pahlawan; tiada three.js, tiada kod permainan utama yang lain."""
+    box, crops = art or load_art(webp)
+    potret = box + [crops[k] for k in HIK_POTRET]
+    assert len(potret) == 18, 'potret pahlawan mesti 18'
+    hr = rd('js', 'harian.js')
+    rng = hr[hr.index('const RNG'):hr.index('const Harian')]
+    js = ("'use strict';\nconst PORTRET=" + json.dumps(potret) + ';\n'
+          + rd('js', 'engine.js') + '\n' + rng
+          + ''.join(rd('hikayat', n + '.js') + '\n' for n in HIK_ORDER))
+    html = rd('hikayat', 'tpl.html').replace('/*CSS*/', rd('hikayat', 'hikayat.css')).replace('/*JS*/', js)
+    os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
+    open(out, 'w', encoding='utf-8').write(html)
+    if write_chk:
+        open(os.path.join(ROOT, 'tests', 'hik_chk.js'), 'w', encoding='utf-8').write(js)
+    return html
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--out', default=os.path.join(ROOT, 'dist', 'index.html'))
@@ -148,6 +170,15 @@ if __name__ == '__main__':
     ap.add_argument('--chk', action='store_true', help='tulis tests/chk.js untuk node --check')
     ap.add_argument('--single', action='store_true',
                     help='satu fail sahaja tanpa PWA (untuk artifact Claude)')
+    ap.add_argument('--hikayat', action='store_true',
+                    help='bina Hikayat Pahlawan sahaja ke --out (untuk artifact Claude)')
     a = ap.parse_args()
+    if a.hikayat:
+        h = build_hikayat(a.out, webp=not a.no_webp, write_chk=a.chk)
+        print('%s  %d KB' % (a.out, len(h.encode()) // 1024)); sys.exit(0)
     h = build(a.out, webp=not a.no_webp, write_chk=a.chk, pwa=not a.single)
     print('%s  %d KB' % (a.out, len(h.encode()) // 1024))
+    if not a.single:                         # laman web: Hikayat di sebelah permainan utama
+        ho = os.path.join(os.path.dirname(a.out) or '.', 'hikayat.html')
+        hh = build_hikayat(ho, webp=not a.no_webp, write_chk=a.chk)
+        print('%s  %d KB' % (ho, len(hh.encode()) // 1024))

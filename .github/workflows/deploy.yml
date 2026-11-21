@@ -47,6 +47,9 @@ jobs:
       - name: Ujian asap dalam pelayar
         run: python3 tests/smoke.py
 
+      - name: Hikayat Pahlawan dalam pelayar
+        run: python3 tests/hikayat.py
+
       - name: Penguji dalam talian (dua pemain, empat senario)
         continue-on-error: true      # runner perlahan boleh tersasar masa; jangan sekat penyiaran
         env:

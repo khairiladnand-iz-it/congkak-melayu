@@ -95,6 +95,18 @@ Meter ketepatan: `pwr()` = 100·(1−jarak)^1.6, dipaparkan dalam `#mpw`. Bagi p
 Label TEPAT/TERSASAR dan `TEL` masih ikut tiga tahap `ACC`.
 Papan kekunci: anak panah (`AK`: ↑ Atas, →/← Tengah, ↓ Bawah) milik peranan manusia (`arR`); nombor 1/2/3 dan 7/8/9 kekal.
 
+## Hikayat Pahlawan (prototaip berdiri sendiri)
+
+Halaman berasingan `dist/hikayat.html`, dibina oleh `build_hikayat()` dalam `tools/build.py`
+(`--hikayat --out f.html` untuk artifact). Sumber dalam `src/hikayat/`: `data.js` (`HIKAYAT`, 16 pahlawan × 4
+perhentian, Hang Nadim ada prolog todak), `laga.js` (`Laga`, pembalut `Rules`/`AI`), `main.js` (UI), `hikayat.css`, `tpl.html`.
+Guna semula `engine.js`, `RNG` daripada `harian.js` dan 18 potret; **tiada** three.js atau kod permainan lain.
+Label perhentian: `sejarah` / `lagenda` / `pertikai` / **`rekaan`**. Jurang sumber (dulu "perlu semakan") diisi adegan
+atau lawan rekaan, dan **setiap rekaan wajib ada penyataan `r`** yang dipaparkan kepada pemain. Jenis lawan `o`:
+`tokoh` / `watak` / `rekaan`. Kemajuan dalam localStorage `hikayat-pahlawan.v1`. Belum dipaut dari menu utama.
+Diuji oleh `tests/hikayattest.js` (data + perlawanan) dan `tests/hikayat.py` (pelayar, telefon & desktop; CI).
+Draf penuh: Claude Doc "Draf Mod Hikayat Pahlawan".
+
 ## Kembara: peringkat seterusnya
 
 Panel keputusan Kembara memberi `▶ Peringkat N` (selepas menang), `↻ Cuba Lagi`/`Ulang`, dan

@@ -5,6 +5,16 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.17 — Hikayat Pahlawan (Prototaip)
+
+_2026-11-21_
+
+- Mod baharu di halaman tersendiri (hikayat.html): pilih satu daripada 16 pahlawan dan ikuti jalan hidupnya. Setiap perhentian ialah perlawanan congkak; menang untuk membuka kad faktanya.
+- Setiap kad berlabel sejarah, lagenda, dipertikai atau rekaan, beserta sumbernya. Bila sumber tidak mencatat sesuatu, adegan itu direka dan dinyatakan rekaan dengan jelas.
+- Kalah tidak menamatkan perjalanan: cuba semula perhentian yang sama. Kemajuan disimpan dalam pelayar anda.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.16 — Kawalan Papan Kekunci di Ruang Tikam
 
 _2026-11-21_
@@ -12,7 +22,7 @@ _2026-11-21_
 - Di komputer, anak panah ↑ → ↓ memilih garis Atas, Tengah dan Bawah dalam pertarungan tikam, sama ada menyerang atau bertahan. Kekunci nombor lama masih berfungsi.
 - Butang menunjukkan anak panahnya, dan halaman tidak lagi tertatal bila anak panah ditekan.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `524815b` · penyiaran [44889121201](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44889121201)</sub>
 
 ## 0.9.15 — Serangan Balas Mencederakan & Angka Kuasa
 

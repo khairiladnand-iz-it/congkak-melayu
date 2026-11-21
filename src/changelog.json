@@ -1,5 +1,17 @@
 [
  {
+  "v": "0.9.17",
+  "d": "2026-11-21",
+  "t": "Hikayat Pahlawan (Prototaip)",
+  "n": [
+   "Mod baharu di halaman tersendiri (hikayat.html): pilih satu daripada 16 pahlawan dan ikuti jalan hidupnya. Setiap perhentian ialah perlawanan congkak; menang untuk membuka kad faktanya.",
+   "Setiap kad berlabel sejarah, lagenda, dipertikai atau rekaan, beserta sumbernya. Bila sumber tidak mencatat sesuatu, adegan itu direka dan dinyatakan rekaan dengan jelas.",
+   "Kalah tidak menamatkan perjalanan: cuba semula perhentian yang sama. Kemajuan disimpan dalam pelayar anda."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.16",
   "d": "2026-11-21",
   "t": "Kawalan Papan Kekunci di Ruang Tikam",
@@ -7,8 +19,8 @@
    "Di komputer, anak panah ↑ → ↓ memilih garis Atas, Tengah dan Bawah dalam pertarungan tikam, sama ada menyerang atau bertahan. Kekunci nombor lama masih berfungsi.",
    "Butang menunjukkan anak panahnya, dan halaman tidak lagi tertatal bila anak panah ditekan."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "524815b",
+  "run": 44889121201
  },
  {
   "v": "0.9.15",
