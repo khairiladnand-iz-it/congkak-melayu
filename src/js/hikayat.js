@@ -216,6 +216,7 @@ const Hikayat = (() => {
       else if (k === 'seterus') { const ni = +t.dataset.i; Lapis.tutup(); lukisJalan({ belayar: true, selesai: () => { if (!document.getElementById('hik').hidden && !Lapis.terbuka()) Adegan.buka(ni) } }) }
       else if (k === 'rumah') { Lapis.tutup(); lukisRumah(); ke('hrumah') }
       else if (k === 'watak') { lukisGaleri(); ke('hgaleri') }
+      else if (k === 'kisah') { if (typeof Kisah !== 'undefined') Kisah.open() }
       else if (k === 'keluar') tutup();
     });
     document.addEventListener('keydown', e => {
@@ -229,6 +230,7 @@ const Hikayat = (() => {
   function buka(kekal) {
     pasang(); if (!sedangMain()) { Quest.restore(); pulihP() }
     const o = document.getElementById('hik'); o.hidden = false;
+    if (typeof ART2 !== 'undefined' && ART2.bg && !o.style.getPropertyValue('--hbg')) o.style.setProperty('--hbg', `url(${ART2.bg})`);
     if (!kekal) { lukisRumah(); ke('hrumah') }
   }
   function tutup() { const o = document.getElementById('hik'); if (o) o.hidden = true; Lapis.tutup() }

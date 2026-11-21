@@ -52,6 +52,12 @@ async def main():
         await pg.wait_for_timeout(120)
         tl=await pg.evaluate("()=>document.getElementById('tel').dataset.l")
         ok(tl=='2' and await pg.evaluate("()=>scrollY")==sy0,f'anak panah ↓ menikam garis Bawah tanpa menatal halaman (garis {tl})')
+        # pilihan kayu di dock yang difokus tidak boleh menelan anak panah (aduan pemain)
+        w0=await pg.evaluate("()=>{const s=document.getElementById('dWood');s.focus();return cfg.wood}")
+        await pg.wait_for_timeout(700)
+        await pg.keyboard.press('ArrowUp'); await pg.wait_for_timeout(120)
+        tl2=await pg.evaluate("()=>document.getElementById('tel').dataset.l"); w1=await pg.evaluate("()=>cfg.wood")
+        ok(tl2=='0' and w0==w1,f'anak panah ↑ berfungsi walaupun <select> difokus (garis {tl2}, kayu {w0}->{w1})')
         # kuasa: tekan dalam halaman pada saat angka >= 95 (Playwright terlalu lambat untuk penunjuk yang bergerak)
         await pg.wait_for_timeout(800)
         await pg.evaluate("""()=>new Promise(r=>{const iv=setInterval(()=>{if(parseInt(document.getElementById('mpw').textContent)>=95){clearInterval(iv);

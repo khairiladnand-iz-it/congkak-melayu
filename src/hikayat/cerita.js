@@ -117,7 +117,7 @@ const CERITA = {
  },
 
  tuah: {
-  i2: 'Perjalanan ini mengikut susunan Hikayat Hang Tuah, sebuah karya sastera. Setiap perhentian berlabel lagenda kerana kisahnya datang daripada hikayat, bukan catatan sezaman.',
+  i2: 'Hikayat Hang Tuah ialah sebuah karya sastera, bukan catatan sezaman, jadi setiap perhentian berlabel lagenda. Anda akan berguru di gunung, menundukkan pengamuk di pasar, berdepan pendekar Majapahit dan mendaki Gunung Ledang.',
   st: [
    { g: 'gunung', w: 'adiputera',
      a: ['Lima budak meninggalkan kampung mereka dan mendaki ke sebuah gunung: Tuah, Jebat, Kasturi, Lekir dan Lekiu.',

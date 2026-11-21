@@ -47,8 +47,27 @@ for r, (cy, sz, xs) in enumerate(ROWS):
         b = io.BytesIO()
         tajam(im.crop((x0, y0, x0 + s, y0 + s))).save(b, 'WEBP', quality=80, method=6)
         out[id] = 'data:image/webp;base64,' + base64.b64encode(b.getvalue()).decode()
+# roster kedua pengguna (2730x1536, wajah lebih besar): menggantikan watak yang ada di dalamnya.
+# Koordinat ditulis dalam skala 2000px paparan asal, didarab 1.365. Watak tanpa label dilangkau,
+# kecuali komander (tricorne Belanda, tidak berlabel; dipadankan ikut rupa).
+im3 = Image.open(os.path.join(ROOT, 'src', 'assets', 'watak-roster2.png')).convert('RGB')
+R2 = { # id: (cx, cy, saiz)
+'temagi':(120,250,130),'rajuna':(290,258,130),'inang':(440,272,150),'perpatih':(757,330,160),
+'rajaali':(1225,360,130),'pandak':(1375,282,120),'penghulu':(1612,322,112),'wandarus':(1738,278,118),'kapten':(1872,255,140),
+'yinqing':(122,488,150),'pires':(290,512,160),'houtman':(455,495,170),'komander':(600,495,160),'mahmud':(1340,478,150),
+'syarif':(1625,495,150),'narai':(1748,495,150),'panglimaaceh':(1895,478,160),
+'kasturi':(158,750,190),'lekir':(330,758,190),'tamingsari':(585,695,200),'tunperak':(783,632,210),'mansur':(1000,612,220),
+'tunali_b':(1205,640,210),'inongbalee':(1360,712,190),'daengchelak':(1522,728,176),'panglimasiam':(1715,730,200),'sultanaceh':(1865,712,190),
+'todak':(1172,128,140)}
+for id, v in R2.items():
+    cx, cy, sz = [round(x * 1.365) for x in v]
+    b = io.BytesIO()
+    tajam(im3.crop((cx - sz // 2, cy - sz // 2, cx + sz // 2, cy + sz // 2))).save(b, 'WEBP', quality=80, method=6)
+    out[id] = 'data:image/webp;base64,' + base64.b64encode(b.getvalue()).decode()
+print(len(R2), 'daripada roster kedua')
 # potret berasingan (lembaran watak penuh daripada pengguna): id -> (fail, kotak)
-ASING = {'rajaabdullah_j': ('watak-rajaabdullah_j.png', (250, 190, 710, 650))}
+ASING = {'rajaabdullah_j': ('watak-rajaabdullah_j.png', (250, 190, 710, 650)),
+         'adiputera': ('watak-kumpulan2.webp', (650, 162, 778, 290))}
 for id, (f, box) in ASING.items():
     b = io.BytesIO()
     im2 = Image.open(os.path.join(ROOT, 'src', 'assets', f)).convert('RGB').crop(box)

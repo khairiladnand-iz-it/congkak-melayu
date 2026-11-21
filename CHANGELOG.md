@@ -5,6 +5,18 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.21 — Ikon Jurus Baharu & Latar Hikayat
+
+_2026-11-21_
+
+- Ikon jurus, senjata dan kesan jurus kini dilukis sebagai ikon emas yang seragam, menggantikan emoji.
+- Anak panah papan kekunci dalam pertarungan tikam ditangkap lebih awal, jadi ia berfungsi walaupun pilihan kayu atau biji sedang difokus.
+- Jubin Kisah dikeluarkan dari menu hadapan. Kad Kisah Pahlawan kini dibuka dari halaman Hikayat, dan masih muncul selepas menewaskan pahlawan dalam Kembara.
+- Halaman Hikayat kini berlatarkan poster pahlawan.
+- Potret watak sampingan dikemas kini daripada roster baharu yang lebih besar dan tajam, termasuk Adi Putera sebagai guru silat tua.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.20 — Potret Pahlawan Lebih Tajam
 
 _2026-11-21_
@@ -13,7 +25,7 @@ _2026-11-21_
 - Poster pahlawan di muka hadapan kini 1920 piksel lebar.
 - Potret 54 watak sampingan Hikayat juga dibesarkan dan kini tajam pada saiz penuh.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `ef497ae` · penyiaran [44907842007](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44907842007)</sub>
 
 ## 0.9.19 — Hikayat Pahlawan dalam Congkak Melayu
 

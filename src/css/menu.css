@@ -142,7 +142,7 @@ body[data-screen=menu] #shade{background:linear-gradient(90deg,rgba(14,3,6,.9),r
   color:#d9b263;opacity:0;animation:rise .5s .62s both}
 .msec::before,.msec::after{content:'';flex:1;height:1px;
   background:linear-gradient(90deg,transparent,rgba(224,178,74,.55),transparent)}
-.mtg{grid-column:1/-1;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;
+.mtg{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;
   opacity:0;animation:rise .5s .7s both}
 .mt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   padding:8px 4px 7px;cursor:pointer;color:var(--gold2);
@@ -159,12 +159,12 @@ body[data-screen=menu] #shade{background:linear-gradient(90deg,rgba(14,3,6,.9),r
 .mt:active{transform:translateY(1px)}
 .mb.lobi::after{border-color:#8fe3f5}
 @media(max-width:700px){
-  .mtg{grid-template-columns:repeat(4,1fr)}
+  .mtg{grid-template-columns:repeat(3,1fr)}
   .mt u{width:24px;height:24px}.mt b{font-size:10.5px}
   .msec{font-size:9.5px;margin-top:5px}
 }
 @media(orientation:landscape) and (max-height:520px){
-  .mtg{grid-template-columns:repeat(7,1fr)}
+  .mtg{grid-template-columns:repeat(6,1fr)}
   .mt{padding:5px 3px}.mt u{width:20px;height:20px}.mt b{font-size:9.5px}
 }
 /* ===== TELEFON: menu mesti nampak tanpa scroll ===== */
@@ -218,7 +218,7 @@ body[data-screen=menu] #shade{background:linear-gradient(90deg,rgba(14,3,6,.9),r
  .mb b{font-size:13px}.mb small{font-size:10.5px}
  .mb.pri b{font-size:14.5px}
  .msec{margin:3px 0 -2px;font-size:9px}
- .mtg{grid-template-columns:repeat(7,1fr)}
+ .mtg{grid-template-columns:repeat(6,1fr)}
  .qm,.qt{display:none}
  .util{order:5;padding:5px 0 2px}
 }

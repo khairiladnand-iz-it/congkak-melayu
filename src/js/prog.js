@@ -129,7 +129,7 @@ const Prof={
     return{xp,l0,l1,up:this.gains(l0,l1)};
   },
   /* ---- skrin pangkat ---- */
-  perkHtml(g){const bits=[`+0.2 ${STL[g.st]}`];if(g.gem)bits.push(`${g.gem.e} ${esc(g.gem.n)}`);g.wood.forEach(w=>bits.push(`🪵 ${esc(w)}`));g.seed.forEach(s=>bits.push(`🔮 ${esc(s)}`));g.floor.forEach(f=>bits.push(`🧶 ${esc(f)}`));(g.wpn||[]).forEach(w=>bits.push(`${w.e} Senjata: ${esc(w.n)}`));return bits.map(x=>`<span>${x}</span>`).join('')},
+  perkHtml(g){const bits=[`+0.2 ${STL[g.st]}`];if(g.gem)bits.push(`${IKON.svg(g.gem.e)} ${esc(g.gem.n)}`);g.wood.forEach(w=>bits.push(`🪵 ${esc(w)}`));g.seed.forEach(s=>bits.push(`🔮 ${esc(s)}`));g.floor.forEach(f=>bits.push(`🧶 ${esc(f)}`));(g.wpn||[]).forEach(w=>bits.push(`${w.e} Senjata: ${esc(w.n)}`));return bits.map(x=>`<span>${x}</span>`).join('')},
   tab:'sum',slot:1,
   pickGem(id){const L=this.lvl(),g=GEM[id];if(!g||g.lv>L)return;
     if(this.slot===2&&L>=this.SLOT2){if(this.d.gem===id)this.d.gem=-1;this.d.gem2=id}
@@ -149,12 +149,12 @@ const Prof={
       const s2=this.gemSel2(L),slot=this.slot===2&&L>=this.SLOT2?2:1;
       body=`<p class="hnote">Jurus dipilih <b>di sini sebelum perlawanan</b>, bukan semasa tikam. Yang dipakai sahaja muncul sebagai butang di gelanggang, dan dilepaskan bila meter Semangat penuh.</p>
       <div class="slots">
-        <button class="slt${slot===1?' sel':''}" data-slot="1"><small>Slot 1 · kekunci [6]</small><b>${sel?esc(sel.e+' '+sel.n):'— kosong —'}</b></button>
-        <button class="slt${slot===2?' sel':''}${L<this.SLOT2?' lock':''}" data-slot="2"${L<this.SLOT2?' disabled':''}><small>Slot 2 · kekunci [0]</small><b>${L<this.SLOT2?'🔒 Buka di level '+this.SLOT2:s2?esc(s2.e+' '+s2.n):'— kosong —'}</b></button>
+        <button class="slt${slot===1?' sel':''}" data-slot="1"><small>Slot 1 · kekunci [6]</small><b>${sel?IKON.svg(sel.e)+' '+esc(sel.n):'— kosong —'}</b></button>
+        <button class="slt${slot===2?' sel':''}${L<this.SLOT2?' lock':''}" data-slot="2"${L<this.SLOT2?' disabled':''}><small>Slot 2 · kekunci [0]</small><b>${L<this.SLOT2?'🔒 Buka di level '+this.SLOT2:s2?IKON.svg(s2.e)+' '+esc(s2.n):'— kosong —'}</b></button>
       </div>
       <p class="hnote">Tekan slot di atas, kemudian pilih jurus di bawah untuk slot itu.${L>=this.SLOT2?' Dua jurus dibawa sekali, dan anda pilih yang mana satu semasa bertarung.':''}</p>
       <div class="gems">${GEM.map(g=>{const un=g.lv<=L,a1=sel&&sel.id===g.id,a2=s2&&s2.id===g.id;
-        return`<button class="gem${un?'':' lock'}${a1||a2?' sel':''}" data-gem="${g.id}" ${un?'':'disabled'}><i>${un?g.e:'🔒'}</i><b>${esc(g.n)}</b><small>${un?esc(g.t):'Buka di level '+g.lv}</small>${a1?'<em>SLOT 1</em>':a2?'<em class="s2">SLOT 2</em>':''}</button>`}).join('')}</div>`;}
+        return`<button class="gem${un?'':' lock'}${a1||a2?' sel':''}" data-gem="${g.id}" ${un?'':'disabled'}><i>${IKON.svg(un?g.e:'🔒')}</i><b>${esc(g.n)}</b><small>${un?esc(g.t):'Buka di level '+g.lv}</small>${a1?'<em>SLOT 1</em>':a2?'<em class="s2">SLOT 2</em>':''}</button>`}).join('')}</div>`;}
     else if(T==='wpn')body=Senjata.html(L);
     else if(T==='bdg')body=Quest.bdgHtml();
     else body=`<div class="road tall">${rows.map(g=>`<div class="rw${g.L<=L?' got':''}${g.gem?' ms':''}"><b>Lv ${g.L}</b><div>${this.perkHtml(g)}</div></div>`).join('')}</div>`;

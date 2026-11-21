@@ -290,3 +290,11 @@ body.face #duel .grp.def::after{content:'↕ kawalan ini untuk pemain seberang';
 #duel .fx .acc.kpw{color:var(--pc);top:30%}
 @media(max-width:700px){#duel .mrow{margin-bottom:4px}#duel .mpw{min-width:44px;font-size:13px}}
 @media(prefers-reduced-motion:reduce){#duel .mpw.hit{animation:none}}
+/* ikon jurus SVG (ikon.js) */
+.ikn{display:inline-block;vertical-align:-.14em;flex:none}
+#duel .wb .ik{display:block;font-style:normal;font-size:24px;line-height:1;color:var(--c,#ffd45a);filter:drop-shadow(0 0 5px color-mix(in srgb,var(--c,#ffd45a) 70%,transparent))}
+#duel .wb.rdy .ik{color:#fff4c8}
+#duel .fm,#duel .frn,#duel .fcp,#duel .fsp,#duel .fpt,#duel .fnt,#duel .ffr,#duel .fbt,#duel .fst{color:var(--c,#ffd45a)}
+#duel .wtag .ikn{color:var(--wc,#ffd45a)}
+.gem i .ikn,.wpb i .ikn,.slt b .ikn,.wico .ikn,.rw .ikn{color:#a8741c}
+.gem.sel i .ikn{color:#c0392b}

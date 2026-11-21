@@ -51,6 +51,7 @@ Berat model tiada dalam repo: `git clone --filter=blob:none --sparse https://git
 | `harian.js` | `RNG` boleh benih + `Harian` — teka-teki harian |
 | `kisah.js` | `KISAH` 18 kad pahlawan (sejarah/lagenda/dipertikai) + `Kisah` |
 | `log.js` | `Log`/`VERSI` — skrin Changelog daripada `CHANGELOG` (disuntik oleh binaan) |
+| `ikon.js` | `IKON.svg(emoji)` — ikon SVG seragam bagi jurus, senjata dan zarah kesan jurus (ganti emoji; kunci = emoji asal dalam data) |
 | `senjata.js` | `SENJATA` 7 senjata pusaka (buka ikut level, kad sejarah bersumber) + `Senjata` |
 | `prof.js`→`prog.js` | `Prof` (XP, biji permata, nick), `Store` (keupayaan `db`) |
 | `quest.js` | `CAMP` 16 peringkat Kembara, misi harian, lencana |
@@ -78,7 +79,7 @@ kegunaan akademik: pembaca belajar membezakan catatan daripada cerita rakyat.
 
 **Jangan tambah atau ubah kisah tanpa sumber.** Jangan naikkan sesuatu daripada `lagenda`
 kepada `sejarah` tanpa rujukan. Kad ditunjukkan selepas menewaskan pahlawan dalam Kembara,
-dan boleh dilayari melalui jubin **Kisah** di menu.
+dan boleh dilayari melalui butang **Kad Kisah Pahlawan** di halaman Hikayat (jubin Kisah di menu hadapan sudah dibuang).
 
 ## Senjata Pusaka
 
@@ -99,6 +100,7 @@ Meter ketepatan: `pwr()` = 100·(1−jarak)^1.6, dipaparkan dalam `#mpw`. Bagi p
 = ×(0.45 + 1.2·kuasa/100) — angka yang dilihat ialah angka yang digunakan. AI kekal `AMUL[ac]`.
 Label TEPAT/TERSASAR dan `TEL` masih ikut tiga tahap `ACC`.
 Papan kekunci: anak panah (`AK`: ↑ Atas, →/← Tengah, ↓ Bawah) milik peranan manusia (`arR`); nombor 1/2/3 dan 7/8/9 kekal.
+`kd` didaftar pada **window, fasa tangkap** (dulu pada document) dan `<select>`/`<input>` yang difokus dilepaskan bila duel bermula.
 
 ## Hikayat Pahlawan (menu dalam permainan)
 
@@ -107,7 +109,8 @@ semua berskop `#hik`). Data dikongsi dari `src/hikayat/` dan dimuatkan melalui `
 `hk/watak`, `hk/tempat`, `hk/peta`): `HIKAYAT` 16 pahlawan × 4 perhentian (+ prolog todak Hang Nadim), `CERITA` babak `a[]` (≥3),
 penutup `b`, tempat `g`, watak `w`; `TEMPAT`/`DARAT` + `Peta` (kanvas 2D, laluan dilakar, potret belayar, ~30 fps);
 `WATAK` 54 watak sampingan, potret `AVATAR` daripada `src/assets/watak.json` (dijana `tools/watak_avatar.py` daripada roster
-pengguna `watak-roster.png` + `watak-rajaabdullah_j.png`), sandaran SVG `Avatar`.
+pengguna `watak-roster.png`, `watak-roster2.png` (28 watak, lebih tajam, menimpa roster pertama), `watak-rajaabdullah_j.png`,
+`watak-kumpulan2.webp` (Adi Putera)), sandaran SVG `Avatar`. Latar `#hik` = `ART2.bg` (`--hbg`).
 Label: `sejarah`/`lagenda`/`pertikai`/**`rekaan`**; **setiap rekaan wajib ada penyataan `r`**. Narasi menambah suasana,
 **bukan fakta**; tiada dialog tokoh sebenar; setiap adegan memaparkan nota `DRAMA`.
 

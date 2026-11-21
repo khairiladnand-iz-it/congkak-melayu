@@ -140,3 +140,11 @@
   #hik .vsl{grid-column:1/-1}
 }
 @media (prefers-reduced-motion:reduce){#hik *{transition:none!important;animation:none!important}}
+
+/* latar halaman Hikayat: poster pahlawan (ART2.bg) dimalapkan di belakang lajur bacaan */
+#hik{isolation:isolate}
+#hik::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(26,6,9,.55) 0%,rgba(26,6,9,.82) 45%,rgba(26,6,9,.95) 100%),var(--hbg,none) center top/cover no-repeat;
+  filter:saturate(.85)}
+#hik .hbox{background:linear-gradient(90deg,transparent,rgba(26,6,9,.55) 6%,rgba(26,6,9,.55) 94%,transparent);padding-left:12px;padding-right:12px}
+#kisah{z-index:70}

@@ -248,21 +248,22 @@ const WPN=[{e:'🗡️',n:'Keris',d:[5,9],k:'1'},{e:'⚔️',n:'Libas',d:[9,15],
 const mkFx=(L,cls,html,st,ms)=>{const e=document.createElement('span');e.className=cls;e.innerHTML=html||'';e.style.cssText=st||'';L.appendChild(e);setTimeout(()=>e.remove(),ms);return e};
 const shakeBody=()=>{document.body.classList.add('shake');setTimeout(()=>document.body.classList.remove('shake'),500)};
 const FXK={
-  multi(L,s){for(let i=0;i<6;i++)mkFx(L,'fm',s.e,`--d:${i*70}ms;--y:${22+i*9}%;--c:${s.c}`,1200);return 600},
+  /* ikon SVG (ikon.js) menggantikan emoji; teks cop kekal teks */
+  multi(L,s){for(let i=0;i<6;i++)mkFx(L,'fm',IKON.svg(s.e),`--d:${i*70}ms;--y:${22+i*9}%;--c:${s.c}`,1200);return 600},
   x(L,s){for(let i=0;i<4;i++)mkFx(L,'fxs','',`--d:${i*110}ms;--rt:${[-30,25,-62,62][i]}deg;--c:${s.c}`,1000);return 450},
-  rain(L,s){for(let i=0;i<16;i++)mkFx(L,'frn',s.e,`left:${52+Math.random()*40}%;--d:${Math.random()*500}ms;--c:${s.c}`,1300);return 700},
-  rings(L,s){for(let i=0;i<3;i++)mkFx(L,'frg','',`--d:${i*160}ms;--c:${s.c}`,1300);mkFx(L,'fcp',s.e,`--c:${s.c}`,1200);shakeBody();return 350},
-  stamp(L,s){mkFx(L,'fst',s.e,`--c:${s.c};font-size:${s.e.length>2?54:90}px`,1300);mkFx(L,'frg','',`--d:380ms;--c:${s.c}`,1300);return 420},
-  stomp(L,s){mkFx(L,'fsp',s.e,'',1300);mkFx(L,'fck','','--d:420ms',1300);mkFx(L,'frg','',`--d:420ms;--c:${s.c}`,1300);setTimeout(shakeBody,420);return 460},
-  petals(L,s){for(let i=0;i<26;i++)mkFx(L,'fpt',s.e,`--a:${i*(360/26)}deg;--r:${90+Math.random()*60}px;--d:${Math.random()*300}ms;--c:${s.c}`,1600);return 900},
-  ink(L,s){for(let i=0;i<9;i++)mkFx(L,'fik','',`left:${52+Math.random()*38}%;top:${15+Math.random()*60}%;--d:${i*80}ms;--c:${s.c};--s:${60+Math.random()*80}px`,1200);mkFx(L,'fcp',s.e,`--c:${s.c}`,1100);return 500},
-  aura(L,s,ct){ct.aura();for(let i=0;i<7;i++)mkFx(L,'fm fist',s.e,`--d:${200+i*90}ms;--y:${30+(i%3)*12}%;--c:${s.c}`,1200);return 800},
+  rain(L,s){for(let i=0;i<16;i++)mkFx(L,'frn',IKON.svg(s.e),`left:${52+Math.random()*40}%;--d:${Math.random()*500}ms;--c:${s.c}`,1300);return 700},
+  rings(L,s){for(let i=0;i<3;i++)mkFx(L,'frg','',`--d:${i*160}ms;--c:${s.c}`,1300);mkFx(L,'fcp',IKON.svg(s.e),`--c:${s.c}`,1200);shakeBody();return 350},
+  stamp(L,s){mkFx(L,'fst',/^[A-Z]{3,}$/.test(s.e)?s.e:IKON.svg(s.e),`--c:${s.c};font-size:${s.e.length>2?54:90}px`,1300);mkFx(L,'frg','',`--d:380ms;--c:${s.c}`,1300);return 420},
+  stomp(L,s){mkFx(L,'fsp',IKON.svg(s.e),`--c:${s.c}`,1300);mkFx(L,'fck','','--d:420ms',1300);mkFx(L,'frg','',`--d:420ms;--c:${s.c}`,1300);setTimeout(shakeBody,420);return 460},
+  petals(L,s){for(let i=0;i<26;i++)mkFx(L,'fpt',IKON.svg(s.e),`--a:${i*(360/26)}deg;--r:${90+Math.random()*60}px;--d:${Math.random()*300}ms;--c:${s.c}`,1600);return 900},
+  ink(L,s){for(let i=0;i<9;i++)mkFx(L,'fik','',`left:${52+Math.random()*38}%;top:${15+Math.random()*60}%;--d:${i*80}ms;--c:${s.c};--s:${60+Math.random()*80}px`,1200);mkFx(L,'fcp',IKON.svg(s.e),`--c:${s.c}`,1100);return 500},
+  aura(L,s,ct){ct.aura();for(let i=0;i<7;i++)mkFx(L,'fm fist',IKON.svg(s.e),`--d:${200+i*90}ms;--y:${30+(i%3)*12}%;--c:${s.c}`,1200);return 800},
   wave(L,s){mkFx(L,'fwv','',`--c:${s.c}`,1400);return 650},
-  notes(L,s){for(let i=0;i<10;i++)mkFx(L,'fnt',['🎶','🎵','🎼'][i%3],`--x:${12+i*7}%;--s:${28+(i%3)*10}px;--d:${i*90}ms;--dx:${(i%2?1:-1)*40}px;--c:${s.c}`,1700);return 750},
-  claw(L,s){for(let i=0;i<3;i++)mkFx(L,'fcl','',`--o:${i*34-34}px;--d:${i*90}ms;--c:${s.c}`,900);mkFx(L,'fcp',s.e,`--c:${s.c}`,1100);shakeBody();return 500},
+  notes(L,s){for(let i=0;i<10;i++)mkFx(L,'fnt',IKON.svg('🎶'),`--x:${12+i*7}%;--s:${28+(i%3)*10}px;--d:${i*90}ms;--dx:${(i%2?1:-1)*40}px;--c:${s.c}`,1700);return 750},
+  claw(L,s){for(let i=0;i<3;i++)mkFx(L,'fcl','',`--o:${i*34-34}px;--d:${i*90}ms;--c:${s.c}`,900);mkFx(L,'fcp',IKON.svg(s.e),`--c:${s.c}`,1100);shakeBody();return 500},
   moon(L,s){mkFx(L,'fmo','',`--c:${s.c}`,1300);mkFx(L,'frg','',`--d:300ms;--c:${s.c}`,1300);return 600},
-  fire(L,s){for(let i=0;i<14;i++)mkFx(L,'ffr','🔥',`left:${40+Math.random()*50}%;--d:${Math.random()*500}ms;--s:${30+Math.random()*40}px`,1400);mkFx(L,'fcp',s.e,`--c:${s.c}`,1300);shakeBody();return 650},
-  bolt(L,s){for(let i=0;i<4;i++)mkFx(L,'fbt','⚡',`left:${46+i*10}%;--d:${i*120}ms;--c:${s.c}`,900);setTimeout(shakeBody,150);return 520},
+  fire(L,s){for(let i=0;i<14;i++)mkFx(L,'ffr',IKON.svg('🔥'),`left:${40+Math.random()*50}%;--d:${Math.random()*500}ms;--s:${30+Math.random()*40}px;--c:#ff7a3a`,1400);mkFx(L,'fcp',IKON.svg(s.e),`--c:${s.c}`,1300);shakeBody();return 650},
+  bolt(L,s){for(let i=0;i<4;i++)mkFx(L,'fbt',IKON.svg('⚡'),`left:${46+i*10}%;--d:${i*120}ms;--c:${s.c}`,900);setTimeout(shakeBody,150);return 520},
   beam(L,s){mkFx(L,'fbm','',`--c:${s.c}`,1300);mkFx(L,'frg','',`--d:400ms;--c:${s.c}`,1300);return 600}
 };
 /* zarah kanvas untuk gelanggang tikam */
@@ -325,9 +326,9 @@ const Duel={
     const PAR=360,GW=Math.round(gw*.8);              /* tetingkap tangkis sempurna / biasa */
     /* anak panah papan kekunci ikut ikon butang: ↑ Atas, → (dan ←) Tengah, ↓ Bawah. Ia milik peranan manusia:
    penyerang jika menyerang, penahan jika bertahan; dua pemain satu peranti = penyerang (penahan guna 7/8/9). */
-const arR=hAtk?'a':hDef?'d':'',AK={ArrowUp:0,ArrowRight:1,ArrowLeft:1,ArrowDown:2};
+const arR=hAtk?'a':hDef?'d':'',AK={ArrowUp:0,ArrowRight:1,ArrowLeft:1,ArrowDown:2,Up:0,Right:1,Left:1,Down:2};
 const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>${l.t} [${l.k}${arR==='a'?' · '+l.e:''}]</u></button>`).join('');
-    const jrb=JUR.map(w=>`<button class="wb${w.sp===3?' gem':w.sp===2?' ult':' sp'}" data-w="${w.k}"${hAtk?'':' disabled'} style="--c:${w.sk.c}">${w.sk.e}<span>${esc(w.sk.n)} [${w.k}]</span><em>⚡${w.cost}</em><u></u></button>`).join('');
+    const jrb=JUR.map(w=>`<button class="wb${w.sp===3?' gem':w.sp===2?' ult':' sp'}" data-w="${w.k}"${hAtk?'':' disabled'} style="--c:${w.sk.c}"><i class="ik">${IKON.svg(w.sk.e)}</i><span>${esc(w.sk.n)} [${w.k}]</span><em>⚡${w.cost}</em><u></u></button>`).join('');
     const gdb=LN.map(l=>`<button class="lb3 d" data-g="${l.k}"${hDef?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>[${l.g}${arR==='d'?' · '+l.e:''}]</u></button>`).join('');
     t.innerHTML=`<div class="rays"></div><div class="dvig"></div><canvas id="dcv"></canvas><div class="lb a"></div><div class="lb b"></div><div class="flash" id="fl"></div><div class="duel"><div class="hps"><div class="hp"><b>${esc(A.n)} ${elBadge(ia,1)}</b><small>${esc(A.t)}</small><div class="bar"><i id="ahp" style="width:100%"></i></div></div><div class="hp r"><b>${elBadge(iv,1)} ${esc(V.n)}</b><small>${esc(V.t)}</small><div class="bar"><i id="vhp" style="width:100%"></i></div></div></div><div class="arena" id="ar" style="--ea:${EA.c};--ev:${EV.c}"><div class="fgt el" id="fa" style="--c:${EA.c}"><img src="${IMGS[ia]}" alt=""></div><div class="fgt el r" id="fv" style="--c:${EV.c}"><img src="${IMGS[iv]}" alt=""></div><div class="vsb" id="vsb">VS</div><div id="fx"></div><div class="shield" id="shd"></div><div id="cmb"></div><div class="tel" id="tel"></div><div class="gln" id="gln"></div></div>
       <div class="sem"><div class="sa"><small>Semangat</small><div class="sbar"><i id="sea"></i></div></div><div class="sd"><small>Semangat</small><div class="sbar"><i id="sed"></i></div></div></div><h2 id="dt">BERSEDIA!</h2><p id="dq"><b>${esc(A.n)}</b>: “${esc(A.l)}”</p><div class="tbar"><i id="tb" style="width:100%"></i></div>${live?`<div class="ctl"><div class="grp atk"><small>${esc(A.n)} menyerang</small>
@@ -340,7 +341,7 @@ const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><
     const meI=post?Msg.me:on?Match.me:0,W=typeof Senjata!=='undefined'?Senjata.dipakai():null,myAtk=!!W&&p===meI;
     if(W){const we=q(p===meI?'fa':'fv');we.classList.add('wpn');we.style.setProperty('--wc',W.c);we.style.setProperty('--wc2',W.c2||W.c);
       const wr=document.createElement('i');wr.className='wring';we.appendChild(wr);
-      const tg=document.createElement('div');tg.className='wtag';tg.textContent=W.e+' '+W.n;we.appendChild(tg)}
+      const tg=document.createElement('div');tg.className='wtag';tg.innerHTML=IKON.svg(W.e)+' '+esc(W.n);we.appendChild(tg)}
     const wFx=(x,y)=>{const c=W.c,c2=W.c2||'#fff';
       switch(W.fx){
         case'luk':DFX.slash(x-14,y-10,c,-.9);DFX.slash(x+14,y+10,c,-.9);DFX.burst(x,y,c,16,460);break;
@@ -416,7 +417,7 @@ const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><
         else if(m.t==='dh')strike(m.j?((m.j==='6'||m.j==='0')&&m.g!==undefined?gmw(GEM[m.g],m.j):JUR.find(x=>x.k===m.j)):null,+m.L,m);
         else if(m.t==='dz')rz=m;else if(m.t==='de')done(!!m.ko,1,!!m.ka)};
       const kd=e=>{
-        const k=e.key;
+        const k=e.key;if(fin)return;
         if(k in AK&&arR){e.preventDefault();if(e.repeat)return;const L=AK[k];return arR==='a'?strike(null,L):guardPress(L)}
         if(hAtk){const l=LN.find(x=>x.k===k);if(l)return strike(null,LN.indexOf(l));
           const w=JUR.find(x=>x.k===k);if(w)return strike(w,1)}
@@ -424,7 +425,7 @@ const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><
       const done=async(ko,rem,ka)=>{
         if(fin)return;fin=true;
         if(on){Net.duelH=null;if(role==='a'&&!rem)Net.send({t:'de',ko:!!ko,ka:ka?1:0})}
-        tm.forEach(x=>{clearInterval(x);clearTimeout(x)});t.onpointerdown=null;document.removeEventListener('keydown',kd);
+        tm.forEach(x=>{clearInterval(x);clearTimeout(x)});t.onpointerdown=null;if(typeof removeEventListener==='function')removeEventListener('keydown',kd,true);
         if(ko)mA+=6;
         /* penyerang tumbang: tiada bonus serangan, pertahanan diberi ganjaran */
         if(ka){mA=0;mD+=6}
@@ -578,7 +579,8 @@ const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><
         const k=b.dataset.w;if(!k)return;
         const li=LN.findIndex(x=>x.k===k);if(li>=0)return strike(null,li);
         const w=JUR.find(x=>x.k===k);if(w)strike(w,1)};
-      document.addEventListener('keydown',kd);
+      /* fasa tangkap pada window: tiada pengendali lain (atau <select> yang difokus) boleh menelan anak panah */
+      addEventListener('keydown',kd,true);if(document.activeElement&&document.activeElement.blur&&/SELECT|INPUT/.test(document.activeElement.tagName))document.activeElement.blur();
       if(on){Net.duelH=rg;Net.drain()}
       setSem();loop();tm.push(setInterval(loop,16));
       q('dt').textContent='LAWAN!';q('tb').style.transition=`width ${DUR}ms linear`;

@@ -57,7 +57,7 @@ const Senjata={
   kad(i){
     const w=SENJATA[i];if(!w)return'';const J=JENIS[w.j]||JENIS.lagenda;
     return`<div class="panel kisah wkad" style="--wc:${w.c}"><h2>${esc(w.n)}</h2>
-      <div class="kimg wico"><span>${w.e}</span></div>
+      <div class="kimg wico"><span>${IKON.svg(w.e)}</span></div>
       <p class="ktag" style="--kc:${J.w}"><b>${J.l}</b> · ${esc(w.z)} · ${esc(w.p)}</p>
       <p class="kdef">${esc(J.d)}</p>
       <p class="kstory">${esc(w.k)}</p>
@@ -72,7 +72,7 @@ const Senjata={
     return`<p class="hnote">Pilih senjata utama anda. Pahlawan yang memakainya bercahaya mengikut warna senjata, dan setiap tikaman yang kena memberi kesan khas. <b>Kesan visual sahaja</b> — tidak mengubah kekuatan.</p>
       <div class="wpns">${SENJATA.map(w=>{const un=w.lv<=L,on=cur&&cur.id===w.id;
         return`<div class="wpn${un?'':' lock'}${on?' sel':''}" style="--wc:${w.c}">
-          <button class="wpb" data-wpn="${w.id}"${un?'':' disabled'}><i>${un?w.e:'🔒'}</i><b>${esc(w.n)}</b><small>${un?esc(w.kesan):'Buka di level '+w.lv}</small>${on?'<em>DIPAKAI</em>':''}</button>
+          <button class="wpb" data-wpn="${w.id}"${un?'':' disabled'}><i>${IKON.svg(un?w.e:'🔒')}</i><b>${esc(w.n)}</b><small>${un?esc(w.kesan):'Buka di level '+w.lv}</small>${on?'<em>DIPAKAI</em>':''}</button>
           <button class="wsj" data-wsj="${w.id}" title="Sejarah ${esc(w.n)}">📜 Sejarah</button></div>`}).join('')}</div>
       <p class="hnote">Disusun untuk kegunaan akademik: setiap kad sejarah menyatakan sama ada ia <b>sejarah</b>, <b>lagenda</b> atau <b>dipertikai</b>, beserta sumbernya.</p>`}
 };
