@@ -5,6 +5,9 @@ Repo ini ialah **sumber kebenaran tunggal**. Artifact Claude hanyalah keluaran b
 
 ## Peraturan penting
 
+0. **Jangan guna perkataan "sekolah"** (atau "kelas", "Apa Baharu") dalam teks pemain. Tujuan pendidikan
+   disebut sebagai **kegunaan akademik**. Skrin sejarah perubahan dinamakan **Changelog**.
+
 1. **Jangan sekali-kali edit `dist/index.html`.** Ia dijana. Edit fail dalam `src/`, kemudian bina semula.
 2. Setiap perubahan mesti lulus `bash tools/test.sh` sebelum disiarkan.
 3. Semua teks yang dilihat pemain dalam **Bahasa Melayu**. Komen kod juga Melayu.
@@ -15,7 +18,7 @@ Repo ini ialah **sumber kebenaran tunggal**. Artifact Claude hanyalah keluaran b
 ## Sejarah perubahan (WAJIB pada setiap siaran)
 
 `src/changelog.json` ialah **satu-satunya sumber**: binaan menyuntiknya sebagai `CHANGELOG`
-(skrin **Apa Baharu**, lencana versi di menu) dan menjana `CHANGELOG.md`. Jangan edit `CHANGELOG.md`.
+(skrin **Changelog**, lencana versi di menu) dan menjana `CHANGELOG.md`. Jangan edit `CHANGELOG.md`.
 Peraturan (skill build-game-changelog): **satu versi = satu penyiaran GitHub Pages yang berjaya dan
 mengubah apa yang pemain terima** (ujian/CI sahaja tidak dikira; penyiaran gagal tidak dikira).
 Patch naik satu setiap siaran (0.9.x). Tambah tepat satu entri baharu di atas dengan `"sha":"pending"`,
@@ -42,7 +45,7 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 | `new_a.js` | `DEF` tetapan lalai, `fixCfg()`, `SITE` |
 | `harian.js` | `RNG` boleh benih + `Harian` — teka-teki harian |
 | `kisah.js` | `KISAH` 18 kad pahlawan (sejarah/lagenda/dipertikai) + `Kisah` |
-| `log.js` | `Log`/`VERSI` — skrin Apa Baharu daripada `CHANGELOG` (disuntik oleh binaan) |
+| `log.js` | `Log`/`VERSI` — skrin Changelog daripada `CHANGELOG` (disuntik oleh binaan) |
 | `senjata.js` | `SENJATA` 7 senjata pusaka (buka ikut level, kad sejarah bersumber) + `Senjata` |
 | `prof.js`→`prog.js` | `Prof` (XP, biji permata, nick), `Store` (keupayaan `db`) |
 | `quest.js` | `CAMP` 16 peringkat Kembara, misi harian, lencana |
@@ -61,12 +64,12 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 `/* ===== BUNYI ===== */`, `/* ===== BIJI ===== */`,
 `/* ===== PERTARUNGAN TIKAM ===== */`, `/* ===== PERSIAPAN ===== */`.
 
-## Kisah Pahlawan (bahan sekolah)
+## Kisah Pahlawan (kegunaan akademik)
 
 `kisah.js` ada satu kad untuk setiap pahlawan, selari dengan indeks `HEROES`.
 Setiap kad **mesti** menyatakan `j` (sejarah / lagenda / pertikai), zaman, tempat, kisah,
-satu fakta "Tahukah anda", dan **sumber cerita**. Inilah yang menjadikannya berguna di
-sekolah: pelajar belajar membezakan catatan daripada cerita rakyat.
+satu fakta "Tahukah anda", dan **sumber cerita**. Inilah yang menjadikannya sesuai untuk
+kegunaan akademik: pembaca belajar membezakan catatan daripada cerita rakyat.
 
 **Jangan tambah atau ubah kisah tanpa sumber.** Jangan naikkan sesuatu daripada `lagenda`
 kepada `sejarah` tanpa rujukan. Kad ditunjukkan selepas menewaskan pahlawan dalam Kembara,

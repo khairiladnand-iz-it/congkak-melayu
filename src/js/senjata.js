@@ -27,7 +27,7 @@ const SENJATA=[
  {id:3,lv:12,n:'Rencong',e:'⚜️',c:'#ff5a4a',fx:'kilau',kesan:'Kilauan merah menyala',
   j:'sejarah',z:'Dipercayai sejak Kesultanan Aceh (abad ke-16)',p:'Aceh, Sumatera',
   k:'Belati Aceh dengan bilah sedikit melengkung dan hulu yang tersendiri. Ia dibawa sebagai perhiasan harian, bukan untuk bertempur sahaja. Rencong menjadi terkenal semasa Perang Aceh (1873–1904), apabila pejuang Aceh membawanya menentang Belanda. Rencong berhias emas atau gading dikaitkan dengan golongan bangsawan; yang daripada besi atau kayu dengan rakyat biasa.',
-  t:'Bentuk rencong dikatakan menyerupai tulisan Arab “Bismillah”. Sumber kami menyebutnya sebagai dakwaan tanpa bukti — soalan yang baik untuk dibincangkan di kelas: bagaimana kita boleh menyemaknya?',
+  t:'Bentuk rencong dikatakan menyerupai tulisan Arab “Bismillah”. Sumber kami menyebutnya sebagai dakwaan tanpa bukti — persoalan yang baik untuk kajian akademik: bagaimana dakwaan seperti ini boleh disemak?',
   s:'Indonesia Travel (Kementerian Pelancongan Indonesia) — “Rencong, the Traditional Weapon of Aceh Province”'},
  {id:4,lv:18,n:'Lembing Istiadat',e:'🔱',c:'#cfd8e6',fx:'tujah',kesan:'Tujahan perak, gelanggang bergegar',
   j:'sejarah',z:'Dahulu senjata; kini alat kebesaran',p:'Kesultanan Johor',
@@ -53,7 +53,7 @@ const Senjata={
     return a.find(w=>w.id===Prof.d.wpn)||a[0]},
   buka(L){return SENJATA.filter(w=>w.lv===L)},
   pilih(id){const w=SENJATA[id];if(!w||w.lv>Prof.lvl())return false;Prof.d.wpn=id;Prof.save();return true},
-  /* kad sejarah: sama bentuk dengan kad Kisah, supaya guru dan pelajar biasa dengan susunannya */
+  /* kad sejarah: sama bentuk dengan kad Kisah, supaya pembaca dan pelajar biasa dengan susunannya */
   kad(i){
     const w=SENJATA[i];if(!w)return'';const J=JENIS[w.j]||JENIS.lagenda;
     return`<div class="panel kisah wkad" style="--wc:${w.c}"><h2>${esc(w.n)}</h2>
@@ -74,5 +74,5 @@ const Senjata={
         return`<div class="wpn${un?'':' lock'}${on?' sel':''}" style="--wc:${w.c}">
           <button class="wpb" data-wpn="${w.id}"${un?'':' disabled'}><i>${un?w.e:'🔒'}</i><b>${esc(w.n)}</b><small>${un?esc(w.kesan):'Buka di level '+w.lv}</small>${on?'<em>DIPAKAI</em>':''}</button>
           <button class="wsj" data-wsj="${w.id}" title="Sejarah ${esc(w.n)}">📜 Sejarah</button></div>`}).join('')}</div>
-      <p class="hnote">Setiap kad sejarah menyatakan sama ada ia <b>sejarah</b>, <b>lagenda</b> atau <b>dipertikai</b>, beserta sumbernya.</p>`}
+      <p class="hnote">Disusun untuk kegunaan akademik: setiap kad sejarah menyatakan sama ada ia <b>sejarah</b>, <b>lagenda</b> atau <b>dipertikai</b>, beserta sumbernya.</p>`}
 };

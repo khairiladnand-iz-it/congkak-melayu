@@ -1,4 +1,4 @@
-"""Penguji pelayar Apa Baharu: buka/tutup melalui lencana, X, Kembali, latar dan Escape;
+"""Penguji pelayar skrin Changelog: buka/tutup melalui lencana, X, Kembali, latar dan Escape;
 aria-expanded; fokus; senarai ditatal sendiri; menu telefon masih muat.
 THREE_LOCAL=/laluan/three.min.js (r128) jika tiada rangkaian. Jalankan selepas binaan."""
 import asyncio, os, sys
@@ -38,5 +38,5 @@ async def main():
             if nm=='telefon': await pg.keyboard.press('Escape'); await pg.click('#ver'); await pg.screenshot(path='/tmp/log_telefon.png')
             ok(not errs,f'{nm}: tiada ralat {errs[:2]}')
             await c.close()
-        print('APA BAHARU: '+('SEMUA LULUS' if not GAGAL else f'{len(GAGAL)} GAGAL')); await b.close(); sys.exit(1 if GAGAL else 0)
+        print('CHANGELOG: '+('SEMUA LULUS' if not GAGAL else f'{len(GAGAL)} GAGAL')); await b.close(); sys.exit(1 if GAGAL else 0)
 asyncio.run(main())

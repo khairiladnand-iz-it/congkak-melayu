@@ -241,7 +241,7 @@ body[data-screen=menu] #shade{background:linear-gradient(90deg,rgba(14,3,6,.9),r
   background:#2a0a10;color:#f3d58a;border:1px solid rgba(217,178,74,.8);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
 #menu .ver:hover,#menu .ver:focus-visible{background:rgba(217,178,74,.2);outline:2px solid #f3d58a;outline-offset:2px}
 @media(max-width:700px){#menu .ver{top:-11px;right:10px;font-size:10px;padding:4px 8px}}
-/* Apa Baharu: tajuk dan butang tutup kekal kelihatan, senarai ditatal sendiri */
+/* Changelog: tajuk dan butang tutup kekal kelihatan, senarai ditatal sendiri */
 #log .logp{display:flex;flex-direction:column;max-height:min(88vh,900px);width:min(640px,94vw);padding-top:14px}
 #log .logh{display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid #e2cc96}
 #log .logh h2{margin:0;flex:1;text-align:left}

@@ -274,7 +274,7 @@ const Net={
       if(this.open||this.stage==='lobby'||this.stage==='menu'||this.stage==='gone'){this.unwatch();this.ui();return}
       if(Date.now()-this.t0>45000){
         this.unwatch();this.close(true);this.stage='menu';
-        this.err='Tidak dapat menyambung selepas 45 saat. Pastikan kedua-dua peranti berada pada WiFi yang SAMA (bukan data mudah alih), matikan VPN, dan cuba cipta bilik baharu. WiFi awam, hotel dan sekolah selalunya menyekat peranti daripada bercakap sesama sendiri — guna hotspot telefon sebagai ganti.';
+        this.err='Tidak dapat menyambung selepas 45 saat. Pastikan kedua-dua peranti berada pada WiFi yang SAMA (bukan data mudah alih), matikan VPN, dan cuba cipta bilik baharu. WiFi awam, hotel dan kampus selalunya menyekat peranti daripada bercakap sesama sendiri — guna hotspot telefon sebagai ganti.';
         this.ui();return}
       this.ui();
     },1000);

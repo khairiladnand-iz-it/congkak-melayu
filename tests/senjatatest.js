@@ -1,4 +1,4 @@
-/* Senjata pusaka: integriti data (bahan sekolah) dan logik buka/pilih. */
+/* Senjata pusaka: integriti data (bahan akademik) dan logik buka/pilih. */
 let ok=true;const chk=(c,m)=>{if(!c){ok=false;console.log('FAIL',m)}};
 chk(Array.isArray(SENJATA)&&SENJATA.length>=6,'senarai senjata wujud');
 const lv=new Set();

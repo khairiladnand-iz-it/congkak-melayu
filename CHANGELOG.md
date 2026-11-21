@@ -5,13 +5,22 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.14 — Changelog & Kegunaan Akademik
+
+_2026-11-21_
+
+- Skrin sejarah perubahan kini dinamakan Changelog.
+- Kad Kisah Pahlawan dan kad sejarah senjata kini dinyatakan untuk kegunaan akademik.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.13 — Sejarah Perubahan
 
 _2026-11-21_
 
-- Skrin baharu “Apa Baharu”: tekan lencana versi di penjuru menu untuk melihat semua perubahan permainan, terbaru di atas.
+- Sejarah perubahan boleh dilihat dalam permainan: tekan lencana versi di penjuru menu, terbaru di atas.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `5dbfa15` · penyiaran [44878071003](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44878071003)</sub>
 
 ## 0.9.12 — Muka Hadapan 3D, Senjata Pusaka & Muzik Asli
 
@@ -43,7 +52,7 @@ _2026-11-21_
 
 _2026-11-21_
 
-- Lapan belas kad kisah pahlawan untuk kegunaan sekolah, setiap satu berlabel sejarah, lagenda atau dipertikai, beserta sumbernya.
+- Lapan belas kad kisah pahlawan untuk kegunaan akademik, setiap satu berlabel sejarah, lagenda atau dipertikai, beserta sumbernya.
 - Jubin baharu Kisah di menu untuk melayari semua kad.
 
 <sub>sumber `64d2a6b` · penyiaran [44832753688](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44832753688)</sub>

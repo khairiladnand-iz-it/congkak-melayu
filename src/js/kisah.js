@@ -3,8 +3,8 @@
 
    Setiap kad menyatakan dengan jelas sama ada kisahnya SEJARAH (ada catatan),
    LAGENDA (cerita turun-temurun), atau DIPERTIKAI (sumber tidak sepakat), dan
-   dari mana cerita itu datang. Itulah yang menjadikan bahan ini berguna di
-   sekolah: bukan sekadar cerita, tetapi latihan menilai dari mana kita tahu
+   dari mana cerita itu datang. Itulah yang menjadikan bahan ini sesuai untuk
+   kegunaan akademik: bukan sekadar cerita, tetapi latihan menilai dari mana kita tahu
    sesuatu. Jangan tambah kisah tanpa menyatakan sumbernya. */
 const JENIS = {
   sejarah:   { l: 'Sejarah',    w: '#8fd44f', d: 'Ada catatan bertulis daripada zamannya atau berhampiran zamannya.' },
@@ -52,7 +52,7 @@ const KISAH = [
 /* 6  Puteri Hang Li Po */ {
   j:'pertikai', z:'Abad ke-15', p:'Melaka / China',
   k:'Sejarah Melayu mencatatkan seorang puteri Maharaja China dikahwinkan dengan Sultan Mansur Syah, datang bersama lima ratus pengiring yang menetap di Bukit China. Namun rekod rasmi Dinasti Ming tidak pernah mencatatkan sebarang puteri dihantar ke Melaka.',
-  t:'Perigi Hang Li Po di Melaka masih ada sampai hari ini. Satu kisah boleh meninggalkan kesan sebenar di atas tanah walaupun butirannya dipertikai — soalan yang baik untuk kelas sejarah.',
+  t:'Perigi Hang Li Po di Melaka masih ada sampai hari ini. Satu kisah boleh meninggalkan kesan sebenar di atas tanah walaupun butirannya dipertikai — persoalan yang baik untuk kajian sejarah.',
   s:'Sulalatus Salatin · Ming Shilu'
 },
 /* 7  Sultan Abu Syahid */ {
@@ -149,7 +149,7 @@ const Kisah = {
         <span><b>${this.esc(h.n)}</b><small style="--kc:${j.w}">${j.l} · ${this.esc(k.z)}</small></span></button>`;
     }).join('');
     return `<div class="panel kisah"><h2>Kisah Pahlawan</h2>
-      <p class="hnote">Lapan belas tokoh Nusantara. Setiap kad menyatakan sama ada kisahnya
+      <p class="hnote">Lapan belas tokoh Nusantara, disusun untuk kegunaan akademik. Setiap kad menyatakan sama ada kisahnya
         <b>sejarah</b>, <b>lagenda</b>, atau <b>dipertikai</b>, dan dari mana cerita itu datang.</p>
       <div class="kgal">${baris}</div>
       <div class="center"><button class="btn" data-k="tutup">Tutup</button></div></div>`;
