@@ -330,16 +330,10 @@ const World={
   /* kamera wira: orbit cetek yang dipacu tetikus (redaman bebas kadar skrin),
      ayunan perlahan, dan offset pandangan supaya papan duduk dalam heroR */
   heroFrame(dt){
-    const R=this.heroR,p=this.ptr,still=this.heroStill;
-    const a=1-Math.pow(1-.055,Math.min(dt,1/30)*60);p.x+=(p.tx-p.x)*a;p.y+=(p.ty-p.y)*a;
-    if(!still)this.mt+=dt;
-    const az=still?.32:Math.sin(this.mt*.21)*.42+p.x*.22,pol=still?.8:.8-p.y*.07;
-    const f=(this.h/2)/Math.tan(18*Math.PI/180),L=this.Lx+.9;
-    const d=Math.max(L*f/(R.wd/2),1.5*f/(R.ht/2))*1.02;
-    const sp=Math.sin(pol),ty=.55;
-    this.cam.position.set(d*sp*Math.sin(az),ty+d*Math.cos(pol),d*sp*Math.cos(az));this.cam.lookAt(0,ty,0);
-    this.cam.setViewOffset(this.w,this.h,this.w/2-R.cx,this.h/2-(R.cy-this.heroSc),this.w,this.h);
-    this.R.render(this.scene,this.cam);this._heroDirty=false;
+    /* muka hadapan: poster pahlawan 3D; papan congkak tidak dilukis di menu */
+    const p=this.ptr,a=1-Math.pow(1-.055,Math.min(dt,1/30)*60);p.x+=(p.tx-p.x)*a;p.y+=(p.ty-p.y)*a;
+    if(typeof Latar==='undefined'||!Latar.init())return;
+    Latar.frame(Math.min(dt,1/30),this.w,this.h,this.heroStill,p,this.heroR.ht-this.heroSc);this._heroDirty=!!Latar.dirty;
   },
   frame(){
     const now=Date.now(),dt=Math.min(.05,(now-this.last)/1000);this.last=now;

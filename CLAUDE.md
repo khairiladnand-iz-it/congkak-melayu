@@ -39,6 +39,7 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 | `lobi.js` | `Tapis` (tapisan bahasa), `FRASA`, `Lobi` (lobi awam) |
 | `msg.js` | `Msg` — main melalui kod mesej, tanpa sambungan |
 | `istana.js` | Pemapar mini-3D Istana Melaka (kanvas 2D, tiada three.js) |
+| `latar.js` | `Latar` — poster pahlawan three.js di muka hadapan (berkongsi pemapar World) |
 | `world.js` | Papan three.js, tekstur lantai, `EASE` (lengkung pelonggaran), `World.rate`/`slomo()` |
 | `new_b.js` | `Screen`, `Match` — gelung permainan |
 | `new_c.js` | `Setup`, `wire()`, urutan permulaan |
@@ -83,19 +84,20 @@ Tween tetap dikemas kini setiap bingkai supaya tiada gerakan tergantung.
 
 **Jangan naikkan `World.fps`** tanpa sebab kukuh — ini permainan bergilir.
 
-## Papan Wira (muka hadapan 3D)
+## Latar 3D (muka hadapan)
 
-Papan 3D sebenar (`World`) ialah wira muka hadapan. `MenuFx.heroFit()` mengukur `.mwrap` dan
-memberi `World.hero({cx,cy,wd,ht})`: ruang kanan panel pada skrin lebar (≥901px, ruang ≥340px),
-atau jalur di atas panel pada telefon menegak (`.mwrap` ditolak 150px). Tiada ruang = `hero(null)`.
-`World.heroFrame()` mengira jarak kamera daripada segi empat itu dan memakai `cam.setViewOffset`;
-`setMode()` membersihkannya untuk mod lain. Di menu pelantar disorok dan diganti bayang
-(`menuM`: `ShadowMaterial` + kolam sentuhan); `dressMode()` menukarnya.
+Poster pahlawan (`ART2.bg`/`bg2`) dilukis oleh three.js dalam `latar.js`, bukan CSS: satah
+melengkung, kamera beralih ikut tetikus (bertentangan arah, seperti skill orbit), dolly perlahan,
+kilauan foil, sinar cahaya, kelopak `InstancedMesh` dan debu 3D. Ia berkongsi pemapar `World`
+(`World.heroFrame` → `Latar.frame`); papan congkak **tidak** dilukis di menu.
+`MenuFx.heroFit()` memberi `World.hero({..., ht})`: `ht` ialah ketinggian poster yang kelihatan
+(jalur atas pada telefon menegak, `.mwrap` ditolak 110px; 1e6 pada desktop). Telefon memuatkan
+poster pada jalur itu (`Latar.fitBand`). Tanpa three.js, `heroOff()` dan poster CSS asal kekal.
 
 Sebelum ini papan dilukis di menu pada resolusi penuh **walaupun kanvasnya `display:none`**.
-Kini di menu ia dilukis hanya bila `heroR` wujud, belum ditatal keluar (`heroSc`), dan tiada lapisan
-menutupnya. Mod kurang gerakan melukis sekali (`_heroDirty`). Diuji oleh `tests/hero.py`
-(perlu binaan; `THREE_LOCAL=` jika tiada rangkaian).
+Kini lukisan menu berhenti bila jalur ditatal keluar (`heroSc`) atau lapisan menutupnya;
+mod kurang gerakan melukis sekali (`_heroDirty`). Kelopak kanvas 2D (`MenuFx`) tidak dilukis
+bila `body.m3d`. Diuji oleh `tests/hero.py` (perlu binaan; `THREE_LOCAL=` jika tiada rangkaian).
 
 ## Animasi
 
@@ -130,7 +132,7 @@ belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
 `NO3D=1` mematikan stub three.js. Set ujian: `t` (enjin, 300 perlawanan), `t2` (sejarah/jam),
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
 `p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa).
-`tests/hero.py` menguji Papan Wira (11 semakan).
+`tests/hero.py` menguji Latar 3D (12 semakan).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
 
 `tests/online.py` ialah **penguji dalam talian**: dua pemain sebenar dalam dua tab, melalui

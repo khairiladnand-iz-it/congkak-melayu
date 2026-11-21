@@ -13,7 +13,7 @@ rd   = lambda *p: open(os.path.join(SRC, *p), encoding='utf-8').read()
 
 # ---------- susunan fail ----------
 JS_ORDER  = ['heroes2', 'new_a', 'prog', 'quest', 'harian', 'kisah', '@snd', 'music', 'hist', 'p2p', 'net',
-             'lobi', 'msg', 'menufx', 'mobile', 'istana', 'world', 'new_b', '@duel', 'new_c']
+             'lobi', 'msg', 'menufx', 'mobile', 'istana', 'world', 'latar', 'new_b', '@duel', 'new_c']
 CSS_ORDER = ['extra', 'menu', 'duel', 'lobi']
 
 # ---------- seni: tukar data URI kepada WebP ----------

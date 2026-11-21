@@ -1,5 +1,5 @@
-"""Penguji Papan Wira (muka hadapan 3D).
-Menyemak: papan dilukis di menu; berhenti dilukis bila ditatal keluar atau ditutup lapisan;
+"""Penguji Latar 3D (poster pahlawan three.js di muka hadapan).
+Menyemak: latar dilukis di menu dan papan congkak tidak; berhenti dilukis bila ditatal keluar atau ditutup lapisan;
 offset kamera menu tidak bocor ke perlawanan; papan wira pulih selepas perlawanan;
 tetikus mengalihkan kamera; mod kurang gerakan melukis sekali sahaja.
 three.js dimuat dari CDN; tetapkan THREE_LOCAL=/laluan/three.min.js (r128) jika tiada rangkaian.
@@ -24,7 +24,9 @@ async def telefon(p):
         await prep(pg)
         errs=[]; pg.on('pageerror',lambda e: errs.append(str(e)[:150]))
         await pg.goto(URL,wait_until='domcontentloaded'); await pg.wait_for_timeout(3000)
-        n=await pg.evaluate(CNT); ok(n>0,f'menu atas: papan wira dilukis ({n} bingkai/1.5s)')
+        n=await pg.evaluate(CNT); ok(n>0,f'menu atas: latar 3D dilukis ({n} bingkai/1.5s)')
+        st=await pg.evaluate("()=>({latar:typeof Latar!=='undefined'&&Latar.ok,css:getComputedStyle(document.querySelector('#mbg .par')).visibility})")
+        ok(st['latar'] and st['css']=='hidden',f'latar three.js aktif, poster CSS disorok {st}')
         await pg.evaluate("()=>{const m=document.getElementById('menu');window.scrollTo(0,600);m.scrollTop=600;document.dispatchEvent(new Event('scroll'));}")
         await pg.wait_for_timeout(300)
         sc=await pg.evaluate("()=>[World.heroSc,World.heroR.ht]"); n=await pg.evaluate(CNT); ok(n==0,f'menu ditatal keluar (sc={sc}): tiada lukisan ({n})')
@@ -39,7 +41,7 @@ async def telefon(p):
         n=await pg.evaluate(CNT); ok(n>0,f'perlawanan: papan dilukis ({n})')
         await pg.evaluate("()=>Screen.go('menu')"); await pg.wait_for_timeout(1500)
         st=await pg.evaluate("()=>({mode:World.mode,hero:!!World.heroR,m3d:document.body.classList.contains('m3d'),dais:World.daisM.some(m=>m.visible)})")
-        ok(st['hero'] and st['m3d'] and not st['dais'],f'kembali ke menu: papan wira pulih {st}')
+        ok(st['hero'] and st['m3d'] and not st['dais'],f'kembali ke menu: latar 3D pulih {st}')
         ok(not errs,f'tiada ralat halaman {errs[:2]}')
         await b.close()
 
@@ -52,14 +54,14 @@ async def desktop(p,rm):
         await pg.set_viewport_size({'width':1300,'height':720}); await pg.wait_for_timeout(600)
         st=await pg.evaluate("()=>World._heroDirty"); ok(st is False,'kurang gerakan: saiz berubah -> dilukis semula sekali')
     else:
-        a0=await pg.evaluate("()=>World.cam.position.toArray().map(v=>+v.toFixed(2))")
+        a0=await pg.evaluate("()=>Latar.cam.position.toArray().map(v=>+v.toFixed(2))")
         await pg.mouse.move(1270,100); await pg.wait_for_timeout(1500)
-        a1=await pg.evaluate("()=>[World.ptr.x.toFixed(2),World.ptr.tx.toFixed(2),World.cam.position.toArray().map(v=>+v.toFixed(2))]")
-        ok(float(a1[0])>0.15 and a1[2][0]>a0[0],f'tetikus kanan: kamera beralih {a0} -> {a1}')
+        a1=await pg.evaluate("()=>[World.ptr.x.toFixed(2),World.ptr.tx.toFixed(2),Latar.cam.position.toArray().map(v=>+v.toFixed(2))]")
+        ok(float(a1[0])>0.15 and abs(a1[2][0]-a0[0])>0.15,f'tetikus kanan: kamera beralih {a0} -> {a1}')
     await b.close()
 
 async def main():
     async with async_playwright() as p:
         await telefon(p); await desktop(p,'no-preference'); await desktop(p,'reduce')
-    print('PAPAN WIRA: '+('SEMUA LULUS' if not GAGAL else f'{len(GAGAL)} GAGAL')); sys.exit(1 if GAGAL else 0)
+    print('LATAR 3D: '+('SEMUA LULUS' if not GAGAL else f'{len(GAGAL)} GAGAL')); sys.exit(1 if GAGAL else 0)
 asyncio.run(main())

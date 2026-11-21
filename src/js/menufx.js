@@ -33,24 +33,21 @@ const MenuFx={
     if(m)m.classList.toggle('live',v&&!this.still);
     if(v){this.heroFit();setTimeout(()=>{if(this.on)this.heroFit()},700)}else this.heroOff();
   },
-  /* ===== Papan Wira =====
-     Papan 3D sebenar dipaparkan di muka hadapan: di ruang kanan panel pada skrin lebar,
-     atau dalam jalur di atas panel pada telefon menegak. Tiada ruang = tiada papan. */
+  /* ===== Latar 3D =====
+     Poster pahlawan dilukis oleh three.js (lihat latar.js). R.ht ialah ketinggian yang
+     benar-benar menampakkan poster: seluruh skrin pada desktop, jalur atas pada telefon menegak. */
   heroFit(){
-    if(typeof World==='undefined'||!World.ok||!World.H.length)return this.heroOff();
+    if(typeof World==='undefined'||!World.ok||!window.THREE)return this.heroOff();
     const mw=document.querySelector('#menu .mwrap');if(!mw)return this.heroOff();
-    const W=innerWidth,H=innerHeight,B=document.body;B.classList.add('m3d');
-    const r=mw.getBoundingClientRect(),sc=World.heroSc||0;let R=null;
-    if(W>=901&&W-r.right>=340&&H>=480)R={cx:(r.right+W)/2,cy:H*.44,wd:(W-r.right)*.9,ht:H*.6};
-    else if(W<=700&&H>W){const top=r.top+sc;R={cx:W/2,cy:top/2+6,wd:W*1.04,ht:top-6}}
-    if(!R||R.ht<120||R.wd<260)return this.heroOff();
-    World.heroStill=this.still;World.hero(R);
+    const W=innerWidth,H=innerHeight;document.body.classList.add('m3d');
+    const port=W<=700&&H>W,top=mw.getBoundingClientRect().top+(World.heroSc||0);
+    World.heroStill=this.still;World.hero({cx:W/2,cy:H/2,wd:W,ht:port?Math.max(top,30):1e6});
   },
   heroOff(){document.body.classList.remove('m3d');if(typeof World!=='undefined'&&World.hero)World.hero(null)},
   /* kelopak menu juga dihadkan 30 fps, dan berhenti bila lapisan menutupnya */
   fps:30,_next:0,
   run(){if(this.raf||this.still||!this.g)return;this.last=(window.performance||Date).now();
-    const f=t=>{this.raf=requestAnimationFrame(f);
+    const f=t=>{this.raf=requestAnimationFrame(f);if(document.body.classList.contains('m3d'))return;/* kelopak kini 3D */
       if(t<this._next)return;
       this._next=t+1000/this.fps;
       try{if(World.covered&&World.covered())return}catch(e){}
