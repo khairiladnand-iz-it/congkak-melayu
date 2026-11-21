@@ -120,6 +120,7 @@ function wire(){
 }
 function init(){
   try{MenuFx.init()}catch(e){console.error(e)}
+  try{Log.init()}catch(e){console.error(e)}
   try{Istana.init()}catch(e){console.error(e)}
   try{Scr.init()}catch(e){console.error(e)}
   Av.init();Prof.load();loadCfg();Prof.mini();Quest.roll();Prof.autoSync();Lobi.auto();

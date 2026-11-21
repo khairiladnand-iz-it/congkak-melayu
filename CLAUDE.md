@@ -12,6 +12,17 @@ Repo ini ialah **sumber kebenaran tunggal**. Artifact Claude hanyalah keluaran b
    Satu pengecualian: `p2p.js` memuatkan Trystero melalui `import()` **hanya apabila pemain membuka
    mod dalam talian**. Permainan mesti tetap berfungsi penuh tanpanya (tanpa internet, atau dalam artifact).
 
+## Sejarah perubahan (WAJIB pada setiap siaran)
+
+`src/changelog.json` ialah **satu-satunya sumber**: binaan menyuntiknya sebagai `CHANGELOG`
+(skrin **Apa Baharu**, lencana versi di menu) dan menjana `CHANGELOG.md`. Jangan edit `CHANGELOG.md`.
+Peraturan (skill build-game-changelog): **satu versi = satu penyiaran GitHub Pages yang berjaya dan
+mengubah apa yang pemain terima** (ujian/CI sahaja tidak dikira; penyiaran gagal tidak dikira).
+Patch naik satu setiap siaran (0.9.x). Tambah tepat satu entri baharu di atas dengan `"sha":"pending"`,
+`"run":null`; pada siaran berikutnya isi sha/run entri itu daripada `gh run list`. Binaan gagal jika
+versi tidak berturutan, tarikh mundur, ID berulang, atau lebih satu `pending`. Nota untuk pemain:
+hasil yang mereka rasa, bukan mesej commit. Diuji oleh `tests/changelogtest.js` dan `tests/changelog.py`.
+
 ## Binaan
 
 ```bash
@@ -31,6 +42,7 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 | `new_a.js` | `DEF` tetapan lalai, `fixCfg()`, `SITE` |
 | `harian.js` | `RNG` boleh benih + `Harian` — teka-teki harian |
 | `kisah.js` | `KISAH` 18 kad pahlawan (sejarah/lagenda/dipertikai) + `Kisah` |
+| `log.js` | `Log`/`VERSI` — skrin Apa Baharu daripada `CHANGELOG` (disuntik oleh binaan) |
 | `senjata.js` | `SENJATA` 7 senjata pusaka (buka ikut level, kad sejarah bersumber) + `Senjata` |
 | `prof.js`→`prog.js` | `Prof` (XP, biji permata, nick), `Store` (keupayaan `db`) |
 | `quest.js` | `CAMP` 16 peringkat Kembara, misi harian, lencana |
@@ -171,7 +183,7 @@ belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
 `NO3D=1` mematikan stub three.js. Set ujian: `t` (enjin, 300 perlawanan), `t2` (sejarah/jam),
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
 `p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa),
-`perftest`, `hariantest`, `senjatatest` (integriti kad sejarah senjata, buka/pilih), `audiotest`.
+`perftest`, `hariantest`, `senjatatest` (integriti kad sejarah senjata, buka/pilih), `audiotest`, `changelogtest`.
 `tests/hero.py` menguji Latar 3D (12 semakan); `tests/senjata_kembara.py` menguji Kembara dan Senjata dalam pelayar (10 semakan).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
 **Selepas push, semak `gh run list`** — ujian tempatan tanpa three.js tidak menguji susun atur 3D.

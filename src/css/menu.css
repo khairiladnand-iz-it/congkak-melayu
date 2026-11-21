@@ -235,3 +235,22 @@ body[data-screen=menu] #shade{background:linear-gradient(90deg,rgba(14,3,6,.9),r
  .mwrap{order:1}
  .strip{order:9;margin:10px -8px 0}
 }
+
+/* lencana versi: di penjuru panel, tidak menolak susun atur (menu telefon mesti muat tanpa tatal) */
+#menu .ver{position:absolute;top:-12px;right:14px;z-index:3;font:600 11px/1 inherit;letter-spacing:.04em;padding:5px 9px;border-radius:999px;
+  background:#2a0a10;color:#f3d58a;border:1px solid rgba(217,178,74,.8);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+#menu .ver:hover,#menu .ver:focus-visible{background:rgba(217,178,74,.2);outline:2px solid #f3d58a;outline-offset:2px}
+@media(max-width:700px){#menu .ver{top:-11px;right:10px;font-size:10px;padding:4px 8px}}
+/* Apa Baharu: tajuk dan butang tutup kekal kelihatan, senarai ditatal sendiri */
+#log .logp{display:flex;flex-direction:column;max-height:min(88vh,900px);width:min(640px,94vw);padding-top:14px}
+#log .logh{display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid #e2cc96}
+#log .logh h2{margin:0;flex:1;text-align:left}
+#log .logv{font-size:12px;font-weight:700;color:#1e6b52;background:#e3f3ea;border-radius:999px;padding:4px 10px}
+#log .logx{width:40px;height:40px;border-radius:50%;border:1px solid #d9bf85;background:#fffaf0;color:#3a1a0a;font-size:18px;cursor:pointer}
+#log .logx:focus-visible{outline:3px solid #c9982f;outline-offset:2px}
+#log .logl{overflow:auto;flex:1;padding:4px 4px 8px;margin:8px 0;text-align:left;overscroll-behavior:contain}
+#log .loge{padding:10px 12px;border-left:3px solid #e2cc96;margin:0 0 10px}
+#log .loge.now{border-left-color:#1e6b52;background:rgba(30,107,82,.06);border-radius:0 10px 10px 0}
+#log .loge h3{margin:0;font-size:16px;color:#3a1a0a}#log .loge h3 em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.06em;color:#fff;background:#1e6b52;border-radius:6px;padding:2px 6px;vertical-align:middle}
+#log .loge time{display:block;font-size:12px;color:#8a6a3a;margin:2px 0 4px}
+#log .loge ul{margin:4px 0 0;padding-left:18px}#log .loge li{margin:3px 0;line-height:1.45;color:#3a2410}

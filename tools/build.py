@@ -5,16 +5,47 @@
   python3 tools/build.py --no-webp       -> kekalkan JPEG asal
   python3 tools/build.py --out fail.html -> tentukan destinasi sendiri
 """
-import json, os, sys, io, base64, hashlib, argparse
+import json, os, re, sys, io, base64, hashlib, argparse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC  = os.path.join(ROOT, 'src')
 rd   = lambda *p: open(os.path.join(SRC, *p), encoding='utf-8').read()
 
 # ---------- susunan fail ----------
-JS_ORDER  = ['heroes2', 'new_a', 'prog', 'quest', 'harian', 'kisah', 'senjata', '@snd', 'music', 'hist', 'p2p', 'net',
+JS_ORDER  = ['heroes2', 'new_a', 'prog', 'quest', 'harian', 'kisah', 'senjata', 'log', '@snd', 'music', 'hist', 'p2p', 'net',
              'lobi', 'msg', 'menufx', 'mobile', 'istana', 'world', 'latar', 'new_b', '@duel', 'new_c']
 CSS_ORDER = ['extra', 'menu', 'duel', 'lobi']
+
+# ---------- sejarah perubahan: satu sumber (src/changelog.json) -> permainan + CHANGELOG.md ----------
+def changelog():
+    """Baca lejar, sahkan kontraknya, dan tulis CHANGELOG.md. Satu versi = satu penyiaran
+    yang sampai kepada pemain (lihat skill build-game-changelog)."""
+    log = json.load(open(os.path.join(SRC, 'changelog.json'), encoding='utf-8'))
+    assert log and log[-1]['v'] == '0.9.0', 'entri tertua mesti asas 0.9.0'
+    for i, e in enumerate(log):
+        assert e['t'] and e['n'] and all(x.strip() for x in e['n']), 'entri %s kosong' % e['v']
+        assert re.match(r'^\d{4}-\d{2}-\d{2}$', e['d']), 'tarikh %s' % e['v']
+        assert e['sha'] == 'pending' or re.match(r'^[0-9a-f]{7,40}$', e['sha']), 'sha %s' % e['v']
+        if i + 1 < len(log):
+            a, b = [list(map(int, x['v'].split('.'))) for x in (e, log[i + 1])]
+            assert a[:2] == b[:2] and a[2] == b[2] + 1, 'versi tidak berturutan: %s selepas %s' % (e['v'], log[i + 1]['v'])
+            assert e['d'] >= log[i + 1]['d'], 'tarikh mundur di %s' % e['v']
+    assert all(e['sha'] != 'pending' for e in log[1:]), 'hanya entri terbaru boleh pending'
+    runs = [e['run'] for e in log if e['run']]
+    assert len(runs) == len(set(runs)), 'ID penyiaran berulang'
+    md = ['# Sejarah Perubahan — Congkak Melayu', '',
+          'Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail ini terus.**', '',
+          'Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.',
+          'Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.', '']
+    for e in log:
+        md += ['## %s — %s' % (e['v'], e['t']), '', '_%s_' % e['d'], '']
+        md += ['- ' + x for x in e['n']]
+        prov = 'belum disiarkan (sumber akan diisi pada siaran berikutnya)' if e['sha'] == 'pending' else \
+               'sumber `%s` · penyiaran [%s](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/%s)' % (e['sha'], e['run'], e['run'])
+        md += ['', '<sub>%s</sub>' % prov, '']
+    open(os.path.join(ROOT, 'CHANGELOG.md'), 'w', encoding='utf-8').write('\n'.join(md))
+    return [{k: e[k] for k in ('v', 'd', 't', 'n')} for e in log]   # pemain tidak perlu hash/ID
+
 
 # ---------- seni: tukar data URI kepada WebP ----------
 def to_webp(obj, cache, stats):
@@ -81,7 +112,9 @@ def build(out, webp=True, write_chk=False, pwa=True):
     css += ''.join(rd('css', n + '.css') for n in CSS_ORDER)
 
     box, crops = load_art(webp)
+    log = changelog()
     js = ("'use strict';\nconst ASSET=" + json.dumps({'box': box}) + ';\n'
+          + 'const CHANGELOG=' + json.dumps(log, ensure_ascii=False) + ';\n'
           + rd('js', 'engine.js') + '\n' + head
           + 'const ART2_JSON=' + json.dumps(json.dumps(crops)) + ';\n'
           + ''.join(part[n] if n.startswith('@') else rd('js', n + '.js') for n in JS_ORDER))
