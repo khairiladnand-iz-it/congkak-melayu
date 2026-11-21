@@ -93,6 +93,7 @@ dalam talian (dikira daripada `blk`/`bl` dalam mesej `dh`). `hpA<=0` → `done(f
 Meter ketepatan: `pwr()` = 100·(1−jarak)^1.6, dipaparkan dalam `#mpw`. Bagi pemain, kerosakan
 = ×(0.45 + 1.2·kuasa/100) — angka yang dilihat ialah angka yang digunakan. AI kekal `AMUL[ac]`.
 Label TEPAT/TERSASAR dan `TEL` masih ikut tiga tahap `ACC`.
+Papan kekunci: anak panah (`AK`: ↑ Atas, →/← Tengah, ↓ Bawah) milik peranan manusia (`arR`); nombor 1/2/3 dan 7/8/9 kekal.
 
 ## Kembara: peringkat seterusnya
 

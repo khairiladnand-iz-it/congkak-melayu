@@ -1,5 +1,16 @@
 [
  {
+  "v": "0.9.16",
+  "d": "2026-11-21",
+  "t": "Kawalan Papan Kekunci di Ruang Tikam",
+  "n": [
+   "Di komputer, anak panah ↑ → ↓ memilih garis Atas, Tengah dan Bawah dalam pertarungan tikam, sama ada menyerang atau bertahan. Kekunci nombor lama masih berfungsi.",
+   "Butang menunjukkan anak panahnya, dan halaman tidak lagi tertatal bila anak panah ditekan."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.15",
   "d": "2026-11-21",
   "t": "Serangan Balas Mencederakan & Angka Kuasa",
@@ -9,8 +20,8 @@
    "Jika HP penyerang habis, pertarungan tamat dengan “Penyerang Tumbang”: penyerang tiada bonus serangan, dan anda diberi ganjaran kerana bertahan.",
    "Meter tikam kini menunjukkan angka kuasa: 100% tepat di tengah, makin jauh makin rendah. Kerosakan tikaman anda mengikut angka itu."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "613f0b3",
+  "run": 44887580795
  },
  {
   "v": "0.9.14",

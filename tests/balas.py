@@ -1,5 +1,5 @@
-"""Penguji pelayar: serangan balas mengurangkan HP penyerang.
-Pertarungan langsung, AI menyerang, pemain bertahan. Skrip menekan tangkis pada lorong yang
+"""Penguji pelayar: serangan balas mengurangkan HP penyerang; anak panah papan kekunci.
+Pertarungan langsung, AI menyerang, pemain bertahan. Skrip menekan anak panah lorong yang
 betul 560 ms selepas telegraf (tetingkap tangkis sempurna = 360 ms sebelum hentaman).
 THREE_LOCAL=/laluan/three.min.js (r128) jika tiada rangkaian. Jalankan selepas binaan."""
 import asyncio, os, sys
@@ -20,7 +20,7 @@ async def main():
         await pg.evaluate("""()=>{window.__w=[];window.__shot=0;const te=()=>document.getElementById('tel');
           window.__mo=new MutationObserver(()=>{const t=te();if(!t||!t.classList.contains('go')||t.__seen===t.innerHTML+t.dataset.l)return;
             t.__seen=t.innerHTML+t.dataset.l;const L=+t.dataset.l;
-            setTimeout(()=>document.dispatchEvent(new KeyboardEvent('keydown',{key:['7','8','9'][L],bubbles:true})),560)});
+            setTimeout(()=>document.dispatchEvent(new KeyboardEvent('keydown',{key:['ArrowUp','ArrowRight','ArrowDown'][L],bubbles:true,cancelable:true})),560)});
           const iv=setInterval(()=>{const t=te();if(t){window.__mo.observe(t,{attributes:true,attributeFilter:['class']});clearInterval(iv)}},20);
           const ah=()=>document.getElementById('ahp');
           const iv2=setInterval(()=>{const a=ah();if(a){new MutationObserver(()=>window.__w.push(a.style.width)).observe(a,{attributes:true,attributeFilter:['style']});clearInterval(iv2)}},20);
@@ -47,8 +47,15 @@ async def main():
         bad=[(x,v) for x,v in smp if abs(v-round(100*max(0,1-abs(x-.5)*2)**1.6))>4]
         ok(len(bad)<=3,f'angka kuasa ikut kedudukan penunjuk ({len(smp)} sampel, {len(bad)} luar toleransi: {bad[:3]})')
         ok(max(v for _,v in smp)>=90 and min(v for _,v in smp)<=15,f'julat kuasa 0..100 dicapai (min {min(v for _,v in smp)}, maks {max(v for _,v in smp)})')
-        await pg.wait_for_function("()=>parseInt(document.getElementById('mpw').textContent)>=95",timeout=5000,polling=5)
-        await pg.evaluate("()=>document.dispatchEvent(new KeyboardEvent('keydown',{key:'2',bubbles:true}))")
+        sy0=await pg.evaluate("()=>scrollY")
+        await pg.keyboard.press('ArrowDown')
+        await pg.wait_for_timeout(120)
+        tl=await pg.evaluate("()=>document.getElementById('tel').dataset.l")
+        ok(tl=='2' and await pg.evaluate("()=>scrollY")==sy0,f'anak panah ↓ menikam garis Bawah tanpa menatal halaman (garis {tl})')
+        # kuasa: tekan dalam halaman pada saat angka >= 95 (Playwright terlalu lambat untuk penunjuk yang bergerak)
+        await pg.wait_for_timeout(800)
+        await pg.evaluate("""()=>new Promise(r=>{const iv=setInterval(()=>{if(parseInt(document.getElementById('mpw').textContent)>=95){clearInterval(iv);
+          document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true,cancelable:true}));r()}},2)})""")
         await pg.wait_for_timeout(120)
         kp=await pg.evaluate("()=>[...document.querySelectorAll('#duel .kpw')].map(e=>e.textContent)")
         ok(kp and int(kp[-1].split()[-1].rstrip('%'))>=88,f'tikaman di tengah memaparkan kuasa tinggi {kp}')

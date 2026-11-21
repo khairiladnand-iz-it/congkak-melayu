@@ -5,6 +5,15 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.16 — Kawalan Papan Kekunci di Ruang Tikam
+
+_2026-11-21_
+
+- Di komputer, anak panah ↑ → ↓ memilih garis Atas, Tengah dan Bawah dalam pertarungan tikam, sama ada menyerang atau bertahan. Kekunci nombor lama masih berfungsi.
+- Butang menunjukkan anak panahnya, dan halaman tidak lagi tertatal bila anak panah ditekan.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.15 — Serangan Balas Mencederakan & Angka Kuasa
 
 _2026-11-21_
@@ -14,7 +23,7 @@ _2026-11-21_
 - Jika HP penyerang habis, pertarungan tamat dengan “Penyerang Tumbang”: penyerang tiada bonus serangan, dan anda diberi ganjaran kerana bertahan.
 - Meter tikam kini menunjukkan angka kuasa: 100% tepat di tengah, makin jauh makin rendah. Kerosakan tikaman anda mengikut angka itu.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `613f0b3` · penyiaran [44887580795](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44887580795)</sub>
 
 ## 0.9.14 — Changelog & Kegunaan Akademik
 

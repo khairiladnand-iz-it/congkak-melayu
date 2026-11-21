@@ -323,9 +323,12 @@ const Duel={
     const AMUL=[.45,1,1.65],ANM=['TERSASAR','','TEPAT!'];
     const TEL=[980,820,660];                          /* makin tepat, makin laju tiba */
     const PAR=360,GW=Math.round(gw*.8);              /* tetingkap tangkis sempurna / biasa */
-    const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>${l.t} [${l.k}]</u></button>`).join('');
+    /* anak panah papan kekunci ikut ikon butang: ↑ Atas, → (dan ←) Tengah, ↓ Bawah. Ia milik peranan manusia:
+   penyerang jika menyerang, penahan jika bertahan; dua pemain satu peranti = penyerang (penahan guna 7/8/9). */
+const arR=hAtk?'a':hDef?'d':'',AK={ArrowUp:0,ArrowRight:1,ArrowLeft:1,ArrowDown:2};
+const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>${l.t} [${l.k}${arR==='a'?' · '+l.e:''}]</u></button>`).join('');
     const jrb=JUR.map(w=>`<button class="wb${w.sp===3?' gem':w.sp===2?' ult':' sp'}" data-w="${w.k}"${hAtk?'':' disabled'} style="--c:${w.sk.c}">${w.sk.e}<span>${esc(w.sk.n)} [${w.k}]</span><em>⚡${w.cost}</em><u></u></button>`).join('');
-    const gdb=LN.map(l=>`<button class="lb3 d" data-g="${l.k}"${hDef?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>[${l.g}]</u></button>`).join('');
+    const gdb=LN.map(l=>`<button class="lb3 d" data-g="${l.k}"${hDef?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>[${l.g}${arR==='d'?' · '+l.e:''}]</u></button>`).join('');
     t.innerHTML=`<div class="rays"></div><div class="dvig"></div><canvas id="dcv"></canvas><div class="lb a"></div><div class="lb b"></div><div class="flash" id="fl"></div><div class="duel"><div class="hps"><div class="hp"><b>${esc(A.n)} ${elBadge(ia,1)}</b><small>${esc(A.t)}</small><div class="bar"><i id="ahp" style="width:100%"></i></div></div><div class="hp r"><b>${elBadge(iv,1)} ${esc(V.n)}</b><small>${esc(V.t)}</small><div class="bar"><i id="vhp" style="width:100%"></i></div></div></div><div class="arena" id="ar" style="--ea:${EA.c};--ev:${EV.c}"><div class="fgt el" id="fa" style="--c:${EA.c}"><img src="${IMGS[ia]}" alt=""></div><div class="fgt el r" id="fv" style="--c:${EV.c}"><img src="${IMGS[iv]}" alt=""></div><div class="vsb" id="vsb">VS</div><div id="fx"></div><div class="shield" id="shd"></div><div id="cmb"></div><div class="tel" id="tel"></div><div class="gln" id="gln"></div></div>
       <div class="sem"><div class="sa"><small>Semangat</small><div class="sbar"><i id="sea"></i></div></div><div class="sd"><small>Semangat</small><div class="sbar"><i id="sed"></i></div></div></div><h2 id="dt">BERSEDIA!</h2><p id="dq"><b>${esc(A.n)}</b>: “${esc(A.l)}”</p><div class="tbar"><i id="tb" style="width:100%"></i></div>${live?`<div class="ctl"><div class="grp atk"><small>${esc(A.n)} menyerang</small>
       <div class="mrow"><div class="meter" id="mtr"><span class="zb"></span><span class="zg"></span><i id="mpin"></i></div><b class="mpw" id="mpw" aria-live="off">0%</b></div>
@@ -372,6 +375,7 @@ const Duel={
             <div><b>⚔️ Menyerang</b>
               <p>Pilih <b>garis</b>: ↑ Atas · → Tengah · ↓ Bawah.</p>
               <p>Tekan ketika penunjuk meter berada di <b>zon putih di tengah</b> — tikaman <b>TEPAT</b>, lebih kuat dan lebih laju. Angka <b>kuasa</b> di sisi meter: 100% tepat di tengah, makin jauh makin lemah.</p>
+              <p>Di komputer: anak panah <b>↑ → ↓</b> memilih garis Atas, Tengah dan Bawah, sama ada menyerang atau bertahan.</p>
               <p>Setiap tikaman mengisi <b>⚡ Semangat</b>. Cukup semangat, barulah jurus boleh dilepaskan.</p><p><b>Jurus Gemilang</b> dipilih dalam skrin Pangkat sebelum perlawanan, dan muncul sebagai butang tambahan di sini. Level 25 membuka slot kedua.</p></div>
             <div><b>🛡️ Bertahan</b>
               <p>Bulatan merah muncul pada garis yang akan datang — itu amaran.</p>
@@ -413,6 +417,7 @@ const Duel={
         else if(m.t==='dz')rz=m;else if(m.t==='de')done(!!m.ko,1,!!m.ka)};
       const kd=e=>{
         const k=e.key;
+        if(k in AK&&arR){e.preventDefault();if(e.repeat)return;const L=AK[k];return arR==='a'?strike(null,L):guardPress(L)}
         if(hAtk){const l=LN.find(x=>x.k===k);if(l)return strike(null,LN.indexOf(l));
           const w=JUR.find(x=>x.k===k);if(w)return strike(w,1)}
         if(hDef){const g=LN.findIndex(x=>x.g===k||x.k===k);if(g>=0&&LN[g].g===k){e.preventDefault();guardPress(g)}}};
