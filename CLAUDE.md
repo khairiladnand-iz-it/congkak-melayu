@@ -83,6 +83,20 @@ Tween tetap dikemas kini setiap bingkai supaya tiada gerakan tergantung.
 
 **Jangan naikkan `World.fps`** tanpa sebab kukuh — ini permainan bergilir.
 
+## Papan Wira (muka hadapan 3D)
+
+Papan 3D sebenar (`World`) ialah wira muka hadapan. `MenuFx.heroFit()` mengukur `.mwrap` dan
+memberi `World.hero({cx,cy,wd,ht})`: ruang kanan panel pada skrin lebar (≥901px, ruang ≥340px),
+atau jalur di atas panel pada telefon menegak (`.mwrap` ditolak 150px). Tiada ruang = `hero(null)`.
+`World.heroFrame()` mengira jarak kamera daripada segi empat itu dan memakai `cam.setViewOffset`;
+`setMode()` membersihkannya untuk mod lain. Di menu pelantar disorok dan diganti bayang
+(`menuM`: `ShadowMaterial` + kolam sentuhan); `dressMode()` menukarnya.
+
+Sebelum ini papan dilukis di menu pada resolusi penuh **walaupun kanvasnya `display:none`**.
+Kini di menu ia dilukis hanya bila `heroR` wujud, belum ditatal keluar (`heroSc`), dan tiada lapisan
+menutupnya. Mod kurang gerakan melukis sekali (`_heroDirty`). Diuji oleh `tests/hero.py`
+(perlu binaan; `THREE_LOCAL=` jika tiada rangkaian).
+
 ## Animasi
 
 Sistem tween sendiri dalam `world.js` sudah memadai — **jangan tambah GSAP atau pustaka animasi lain**.
@@ -116,6 +130,7 @@ belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
 `NO3D=1` mematikan stub three.js. Set ujian: `t` (enjin, 300 perlawanan), `t2` (sejarah/jam),
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
 `p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa).
+`tests/hero.py` menguji Papan Wira (11 semakan).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
 
 `tests/online.py` ialah **penguji dalam talian**: dua pemain sebenar dalam dua tab, melalui

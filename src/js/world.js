@@ -18,6 +18,9 @@ const WOODX={giok:{roughness:.2,clearcoat:1,clearcoatRoughness:.06},nilam:{rough
 const FLOORS={songket:{tile:3.6,mat:{roughness:.6}},jubin:{tile:2.6,mat:{roughness:.25,metalness:.05}},tikar:{tile:3.2,mat:{roughness:.95}},rebung:{tile:3.2,mat:{roughness:.6}},kawung:{tile:3.2,mat:{roughness:.55}},marmar:{tile:4,mat:{roughness:.12,metalness:.05}},langit:{tile:3.2,mat:{roughness:.2,metalness:.55,emissive:0x2a3aa0,emissiveIntensity:.5}}};
 const World={
   ok:false,TOP:.6,SR:.13,SP:1.2,H:[],hold:[],hand:[],handAt:-1,seeds:[],tw:[],lab:[],rings:[],picks:[],disp:[],
+  /* Papan Wira: papan sebenar menjadi wira muka hadapan. heroR ialah segi empat skrin
+     (cx,cy,wd,ht) yang disediakan oleh MenuFx; null = papan tidak kelihatan di menu. */
+  heroR:null,heroSc:0,heroStill:false,_heroDirty:true,mt:0,ptr:{tx:0,ty:0,x:0,y:0},
   mode:'menu',az:0,pol:.72,dist:14,base:14,Lx:7,key:'',seedType:'saga',onTap:null,onHover:null,
   init(){
     if(!window.THREE)throw new Error('Pustaka 3D gagal dimuatkan (perlu sambungan internet)');
@@ -124,9 +127,20 @@ const World={
     const base=this.ftex[id]||(this.ftex[id]=this.floorTex(id)),t=base.clone();t.needsUpdate=true;t.repeat.set(2*rx/F.tile,2*rz/F.tile);
     const mo=Object.assign({map:t,roughness:.7,metalness:0},F.mat||{});if(mo.emissive!==undefined)mo.emissiveMap=t;
     const m=new T.MeshStandardMaterial(mo);this.fMat=m;this.fId=id;
-    const pg=new T.PlaneGeometry(2*rx,2*rz),pl=new T.Mesh(pg,m);pl.rotation.x=-Math.PI/2;pl.position.y=.004;pl.receiveShadow=true;G.add(pl);
-    const bg=new T.BoxGeometry(2*rx+.7,.22,2*rz+.7),bm=new T.MeshStandardMaterial({color:0x2a1408,roughness:.55}),b=new T.Mesh(bg,bm);b.position.y=-.11;b.receiveShadow=true;G.add(b);
-    const gg=new T.BoxGeometry(2*rx+.2,.08,2*rz+.2),gm=new T.MeshStandardMaterial({color:0xd9b24a,roughness:.35,metalness:.8}),gb=new T.Mesh(gg,gm);gb.position.y=-.04;G.add(gb);
+    const pg=new T.PlaneGeometry(2*rx,2*rz),pl=new T.Mesh(pg,m);pl.rotation.x=-Math.PI/2;pl.position.y=.004;pl.receiveShadow=true;G.add(pl);this.daisM=[pl];
+    const bg=new T.BoxGeometry(2*rx+.7,.22,2*rz+.7),bm=new T.MeshStandardMaterial({color:0x2a1408,roughness:.55}),b=new T.Mesh(bg,bm);b.position.y=-.11;b.receiveShadow=true;G.add(b);this.daisM.push(b);
+    const gg=new T.BoxGeometry(2*rx+.2,.08,2*rz+.2),gm=new T.MeshStandardMaterial({color:0xd9b24a,roughness:.35,metalness:.8}),gb=new T.Mesh(gg,gm);gb.position.y=-.04;G.add(gb);this.daisM.push(gb);
+    /* di menu papan terapung tanpa pelantar; hanya bayangnya jatuh pada lantai halimunan */
+    const cg=new T.PlaneGeometry(2*rx+4,2*rz+6),cm=new T.ShadowMaterial({opacity:.55}),ct=new T.Mesh(cg,cm);
+    ct.rotation.x=-Math.PI/2;ct.position.y=.003;ct.receiveShadow=true;G.add(ct);
+    /* kolam sentuhan: bayang lembut terbaked tepat di bawah badan, supaya papan duduk dan tidak ditampal */
+    const pc=document.createElement('canvas');pc.width=256;pc.height=64;const pq=pc.getContext('2d'),gr=pq.createRadialGradient(128,32,4,128,32,128);
+    gr.addColorStop(0,'rgba(0,0,0,.85)');gr.addColorStop(.45,'rgba(0,0,0,.5)');gr.addColorStop(1,'rgba(0,0,0,0)');
+    pq.setTransform(1,0,0,.25,0,24);pq.fillStyle=gr;pq.fillRect(0,-96,256,256);
+    const pt=new T.CanvasTexture(pc),pg2=new T.PlaneGeometry(2*Lx+1.4,4.2),pm2=new T.MeshBasicMaterial({map:pt,transparent:true,depthWrite:false,opacity:.75}),pool=new T.Mesh(pg2,pm2);
+    pool.rotation.x=-Math.PI/2;pool.position.y=.006;G.add(pool);
+    this.menuM=[ct,pool];this.disp.push(cg,cm,pt,pg2,pm2);
+    this.dressMode();
     this.disp.push(t,m,pg,bg,bm,gg,gm);
   },
   /* ---- bina papan ---- */
@@ -262,7 +276,9 @@ const World={
   screen(x,y,z){const v=this.v3.set(x,y,z).project(this.cam);return{x:(v.x*.5+.5)*this.w,y:(-v.y*.5+.5)*this.h}},
   holeScreen(i){const h=this.H[i];return h?this.screen(h.x,this.TOP+.3,h.z):{x:0,y:0}},
   /* ---- kamera & input ---- */
-  setMode(m){this.mode=m;this.fit()},
+  setMode(m){this.mode=m;if(m!=='menu'&&this.cam&&this.cam.view&&this.cam.view.enabled)this.cam.clearViewOffset();this.dressMode();this._heroDirty=true;this.fit()},
+  dressMode(){const mn=this.mode==='menu';if(this.daisM)for(const m of this.daisM)m.visible=!mn;if(this.menuM)for(const m of this.menuM)m.visible=mn},
+  hero(r){this.heroR=r;this._heroDirty=true;this._nextDraw=0;const c=document.getElementById('gl');if(c)c.classList.toggle('hero',!!r)},
   fit(){
     if(!this.ok)return;const a=this.w/this.h,vf=36*Math.PI/180,hf=2*Math.atan(Math.tan(vf/2)*a),L=this.Lx+.9;this.port=a<.85;
     if(this.port&&this.mode!=='setup'){this.az=Math.PI/2;this.pol=.6;this.base=Math.max(2.7/Math.tan(hf/2),L*.95/Math.tan(vf/2))}
@@ -270,7 +286,7 @@ const World={
     if(this.flip&&this.mode==='match')this.az+=Math.PI;
     this.dist=this.base*(this.mode==='menu'?1.12:this.mode==='setup'?1.25:1);
   },
-  resize(){if(!this.ok)return;this.w=window.innerWidth||800;this.h=window.innerHeight||600;this.R.setSize(this.w,this.h,false);this.cam.aspect=this.w/this.h;this.cam.updateProjectionMatrix();this.fit()},
+  resize(){if(!this.ok)return;this.w=window.innerWidth||800;this.h=window.innerHeight||600;this.R.setSize(this.w,this.h,false);this.cam.aspect=this.w/this.h;this.cam.updateProjectionMatrix();this._heroDirty=true;this.fit()},
   bind(cv){
     const P=new Map();let st=null,pin=0,d0=0;
     const cl=(v,a,b)=>Math.max(a,Math.min(b,v)),gap=()=>{const a=[...P.values()];return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)};
@@ -311,6 +327,20 @@ const World={
     }catch(e){}
     return false;
   },
+  /* kamera wira: orbit cetek yang dipacu tetikus (redaman bebas kadar skrin),
+     ayunan perlahan, dan offset pandangan supaya papan duduk dalam heroR */
+  heroFrame(dt){
+    const R=this.heroR,p=this.ptr,still=this.heroStill;
+    const a=1-Math.pow(1-.055,Math.min(dt,1/30)*60);p.x+=(p.tx-p.x)*a;p.y+=(p.ty-p.y)*a;
+    if(!still)this.mt+=dt;
+    const az=still?.32:Math.sin(this.mt*.21)*.42+p.x*.22,pol=still?.8:.8-p.y*.07;
+    const f=(this.h/2)/Math.tan(18*Math.PI/180),L=this.Lx+.9;
+    const d=Math.max(L*f/(R.wd/2),1.5*f/(R.ht/2))*1.02;
+    const sp=Math.sin(pol),ty=.55;
+    this.cam.position.set(d*sp*Math.sin(az),ty+d*Math.cos(pol),d*sp*Math.cos(az));this.cam.lookAt(0,ty,0);
+    this.cam.setViewOffset(this.w,this.h,this.w/2-R.cx,this.h/2-(R.cy-this.heroSc),this.w,this.h);
+    this.R.render(this.scene,this.cam);this._heroDirty=false;
+  },
   frame(){
     const now=Date.now(),dt=Math.min(.05,(now-this.last)/1000);this.last=now;
     for(let k=this.tw.length-1;k>=0;k--){const t=this.tw[k],u=Math.min(1,(now-t.t0)/t.dur),e=(EASE[t.ez]||EASE.inout)(u);
@@ -318,8 +348,15 @@ const World={
       if(u>=1){t.s.p=t.to;this.tw.splice(k,1);t.res()}}
     /* selepas ini semuanya melukis; langkau bila tidak kelihatan atau terlalu awal */
     let hid=false;try{hid=!!document.hidden}catch(e){}
+    if(this.mode==='menu'){
+      /* dulu papan dilukis di menu walaupun kanvasnya disorok: kerja GPU tanpa dilihat.
+         Kini hanya bila wira kelihatan dan tidak ditatal keluar. */
+      const R=this.heroR;if(!R||R.ht-this.heroSc<24)return;
+      if(this.heroStill&&!this._heroDirty)return;
+      if(!this.shouldDraw(now,hid,this.covered()))return;
+      return this.heroFrame(dt);
+    }
     if(!this.shouldDraw(now,hid,this.covered()))return;
-    if(this.mode==='menu')this.az+=dt*.12;
     let rr=0,cc=0;if(this.mode==='setup'){if(this.port)cc=this.dist*.3;else rr=this.dist*.16}else if(this.mode==='menu'&&!this.port)rr=-this.dist*.2;
     const tx=rr*Math.cos(this.az)+cc*Math.sin(this.az),tz=-rr*Math.sin(this.az)+cc*Math.cos(this.az);
     const sp=Math.sin(this.pol);this.cam.position.set(tx+this.dist*sp*Math.sin(this.az),.4+this.dist*Math.cos(this.pol),tz+this.dist*sp*Math.cos(this.az));this.cam.lookAt(tx,.4,tz);

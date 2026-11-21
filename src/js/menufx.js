@@ -9,8 +9,14 @@ const MenuFx={
     const s=document.getElementById('strip');
     if(s){const one=HEROES.slice(0,NBASE).map((a,j)=>`<button data-hs="${j}" title="${esc(a.t)}"><img src="${IMGS[j]}" alt="" loading="lazy"><b>${esc(a.n)}</b></button>`).join('');s.innerHTML=`<div class="trk">${one}${one}</div>`;
       s.addEventListener('click',e=>{const b=e.target.closest('[data-hs]');if(b){Snd.chime&&Snd.chime();Hist.open(+b.dataset.hs)}})}
-    window.addEventListener('pointermove',e=>{if(!this.on||e.pointerType==='touch')return;this.tx=(e.clientX/innerWidth-.5)*2;this.ty=(e.clientY/innerHeight-.5)*2},{passive:true});
-    window.addEventListener('resize',()=>this.size());
+    window.addEventListener('pointermove',e=>{if(!this.on||e.pointerType==='touch')return;this.tx=(e.clientX/innerWidth-.5)*2;this.ty=(e.clientY/innerHeight-.5)*2;
+      if(typeof World!=='undefined'){World.ptr.tx=this.tx;World.ptr.ty=this.ty}},{passive:true});
+    /* tetikus keluar tetingkap: papan kembali ke pose asal */
+    document.addEventListener('pointerleave',()=>{if(typeof World!=='undefined'){World.ptr.tx=0;World.ptr.ty=0}});
+    /* tatal: papan wira bergerak bersama halaman dan berhenti dilukis bila ditatal keluar */
+    document.addEventListener('scroll',e=>{if(!this.on||typeof World==='undefined')return;const t=e.target;
+      World.heroSc=(t&&t.scrollTop!=null&&t!==document)?t.scrollTop:(window.scrollY||0)},{capture:true,passive:true});
+    window.addEventListener('resize',()=>{this.size();if(this.on)this.heroFit()});
     document.addEventListener('visibilitychange',()=>{if(document.hidden)this.halt();else if(this.on)this.run()});
   },
   size(){if(!this.cv)return;const r=this.cv.getBoundingClientRect();this.dpr=Math.min(window.devicePixelRatio||1,1.5);this.w=r.width;this.h=r.height;this.cv.width=Math.max(1,Math.round(r.width*this.dpr));this.cv.height=Math.max(1,Math.round(r.height*this.dpr))},
@@ -25,7 +31,22 @@ const MenuFx={
     if(v){this.size();if(!this.P.length)this.seed();clearInterval(this.sw);if(!this.still)this.sw=setInterval(()=>{if(this.L&&this.L.length>1){this.L[0].classList.toggle('show');this.L[1].classList.toggle('show')}},9500);this.run()}
     else{clearInterval(this.sw);this.halt();document.body.style.setProperty('--px',0);document.body.style.setProperty('--py',0)}
     if(m)m.classList.toggle('live',v&&!this.still);
+    if(v){this.heroFit();setTimeout(()=>{if(this.on)this.heroFit()},700)}else this.heroOff();
   },
+  /* ===== Papan Wira =====
+     Papan 3D sebenar dipaparkan di muka hadapan: di ruang kanan panel pada skrin lebar,
+     atau dalam jalur di atas panel pada telefon menegak. Tiada ruang = tiada papan. */
+  heroFit(){
+    if(typeof World==='undefined'||!World.ok||!World.H.length)return this.heroOff();
+    const mw=document.querySelector('#menu .mwrap');if(!mw)return this.heroOff();
+    const W=innerWidth,H=innerHeight,B=document.body;B.classList.add('m3d');
+    const r=mw.getBoundingClientRect(),sc=World.heroSc||0;let R=null;
+    if(W>=901&&W-r.right>=340&&H>=480)R={cx:(r.right+W)/2,cy:H*.44,wd:(W-r.right)*.9,ht:H*.6};
+    else if(W<=700&&H>W){const top=r.top+sc;R={cx:W/2,cy:top/2+6,wd:W*1.04,ht:top-6}}
+    if(!R||R.ht<120||R.wd<260)return this.heroOff();
+    World.heroStill=this.still;World.hero(R);
+  },
+  heroOff(){document.body.classList.remove('m3d');if(typeof World!=='undefined'&&World.hero)World.hero(null)},
   /* kelopak menu juga dihadkan 30 fps, dan berhenti bila lapisan menutupnya */
   fps:30,_next:0,
   run(){if(this.raf||this.still||!this.g)return;this.last=(window.performance||Date).now();

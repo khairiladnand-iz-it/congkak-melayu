@@ -83,6 +83,14 @@ body{--px:0;--py:0}
 #mbg{display:none;position:fixed;inset:0;z-index:0;background:#14090c;overflow:hidden}
 body[data-screen=menu] #mbg{display:block}
 body[data-screen=menu] #gl,body[data-screen=menu] #labels{display:none}
+/* Papan Wira: kanvas 3D di atas poster, di bawah panel; poster dimalapkan supaya papan menonjol */
+body[data-screen=menu] #gl.hero{display:block;z-index:1;pointer-events:none}
+body.m3d[data-screen=menu] #mbg .par{filter:brightness(.42) saturate(.85)}
+body.m3d[data-screen=menu] #mbg::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 55% at 72% 46%,rgba(255,190,110,.10),transparent 70%)}
+@media(max-width:700px) and (orientation:portrait){
+  body.m3d #menu .mwrap{margin-top:150px}
+  body.m3d[data-screen=menu] #mbg::after{background:radial-gradient(ellipse 80% 22% at 50% 14%,rgba(255,190,110,.14),transparent 70%)}}
 #mbg .par{position:absolute;inset:-4%;transform:translate3d(calc(var(--px)*-16px),calc(var(--py)*-10px),0)}
 #mbg .l{position:absolute;inset:0;background:center/cover no-repeat;opacity:0;transition:opacity 2.4s ease;will-change:transform,opacity}
 #mbg .l.show{opacity:1}
