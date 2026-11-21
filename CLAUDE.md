@@ -34,7 +34,7 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 | `senjata.js` | `SENJATA` 7 senjata pusaka (buka ikut level, kad sejarah bersumber) + `Senjata` |
 | `prof.js`→`prog.js` | `Prof` (XP, biji permata, nick), `Store` (keupayaan `db`) |
 | `quest.js` | `CAMP` 16 peringkat Kembara, misi harian, lencana |
-| `music.js` | `Mus` gamelan prosedural (5 mood) + `Snd` kesan bunyi |
+| `music.js` | `Mus` muzik prosedural (asli, gamelan Kelantan, sape, rapa'i, suling) + `Snd` kesan bunyi |
 | `p2p.js` | `P2P` — PeerJS (MIT) dibungkus menjadi ruang nama gaya bilik Claude; topologi bintang |
 | `net.js` | `Rm` (pilih P2P dahulu, jatuh balik ke keupayaan `room`), `Net`, kodek SDP |
 | `lobi.js` | `Tapis` (tapisan bahasa), `FRASA`, `Lobi` (lobi awam) |
@@ -108,6 +108,20 @@ pelorek atau memberi amaran: `World.look()` memilih ikut `THREE.REVISION`. Dulu 
 `World.frame` kini menangkap ralat lukisan supaya label tetap dikemas kini.
 `tests/biji.py` melukis setiap biji dan setiap peringkat Kembara (46 semakan).
 
+## Audio
+
+Muzik disintesis (WebAudio, tiada fail). Menu ialah **Melayu Asli** (biola bercengkok, akordion,
+rebana; minor harmonik pada D; i–iv–V–i; 66 bpm). Perlawanan ikut **gaya pahlawan** (`HG`, selari
+dengan HEROES): `asli` (inang/joget), `kelantan` (gamelan pelog asal + rebab), `borneo` (sape),
+`aceh` (rapa'i + serunai), `pantai` (suling + gambus). Dalam Kembara gaya ialah lawan; selainnya
+pahlawan pemain (`Screen.go`). Duel kekal muzik silat. `Mus.motif(i)` memainkan leitmotif pahlawan
+(skrin VS, kad Kisah). `Snd.senjata(fx)` sepadan dengan `wFx`.
+
+Campuran (skill build-game-audio-feedback): `Mus.duck()` menunduk muzik pada hentaman;
+`Snd._ok(kr)` mengehad 12 suara/100 ms untuk isyarat biasa, isyarat penting (`kr=true`) sentiasa lalu.
+Paras gaya ditala oleh `GV` (diukur dengan ebur128): semua gaya perlawanan −24.2 hingga −25.4 LUFS.
+**Ukur semula jika menambah gaya** — jangan teka paras. Diuji oleh `tests/audiotest.js`.
+
 ## Latar 3D (muka hadapan)
 
 Poster pahlawan (`ART2.bg`/`bg2`) dilukis oleh three.js dalam `latar.js`, bukan CSS: satah
@@ -156,7 +170,7 @@ belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
 `NO3D=1` mematikan stub three.js. Set ujian: `t` (enjin, 300 perlawanan), `t2` (sejarah/jam),
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
 `p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa),
-`perftest`, `hariantest`, `senjatatest` (integriti kad sejarah senjata, buka/pilih).
+`perftest`, `hariantest`, `senjatatest` (integriti kad sejarah senjata, buka/pilih), `audiotest`.
 `tests/hero.py` menguji Latar 3D (12 semakan); `tests/senjata_kembara.py` menguji Kembara dan Senjata dalam pelayar (10 semakan).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
 

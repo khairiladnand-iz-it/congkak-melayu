@@ -7,7 +7,7 @@ python3 tools/build.py --chk >/dev/null
 echo "== sintaks =="
 node --check tests/chk.js && echo "  OK"
 fail=0
-for t in t t2 t3 lobitest p2ptest animtest perftest hariantest senjatatest; do
+for t in t t2 t3 lobitest p2ptest animtest perftest hariantest senjatatest audiotest; do
   echo "== $t =="
   out=$(NO3D=1 node tests/h.js "tests/$t.js" 2>&1 || true)
   echo "$out" | grep -vE "^    at |^Error: Pustaka" | tail -4

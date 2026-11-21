@@ -159,8 +159,9 @@ const Kisah = {
     const o = document.getElementById('kisah'); if (!o) return;
     o.innerHTML = html; o.hidden = false; o.scrollTop = 0;
   },
-  open(i) { this.show(Number.isInteger(i) ? this.kad(i, false) : this.galeri()) },
-  menang(i) { if (this.ada(i)) this.show(this.kad(i, true)) },
+  /* kad pahlawan memainkan leitmotifnya */
+  open(i) { this.show(Number.isInteger(i) ? this.kad(i, false) : this.galeri()); if (Number.isInteger(i) && typeof Mus !== 'undefined' && Mus.motif) Mus.motif(i) },
+  menang(i) { if (this.ada(i)) { this.show(this.kad(i, true)); if (typeof Mus !== 'undefined' && Mus.motif) Mus.motif(i) } },
   tutup() { const o = document.getElementById('kisah'); if (o) o.hidden = true },
   click(e) {
     const g = e.target.closest('[data-k]');

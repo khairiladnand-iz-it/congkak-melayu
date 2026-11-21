@@ -2,6 +2,8 @@
 const Fx={pop(i,txt){const q=World.holeScreen(i),d=document.createElement('span');d.className='popup';d.textContent=txt;d.style.left=q.x+'px';d.style.top=q.y+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1000)}};
 const Screen={cur:'menu',
   go(n){for(const x of['menu','setup','match'])document.getElementById(x).hidden=x!==n;document.body.dataset.screen=n;this.cur=n;World.setMode(n);
+    /* muzik perlawanan ikut asal pahlawan: lawan dalam Kembara, pahlawan pemain selainnya */
+    if(n==='match'&&Mus.gaya)Mus.gaya((typeof Quest!=='undefined'&&Quest.bak!=null)?cfg.p[1]:cfg.p[0]);
     Mus.set(n==='match'?((typeof Quest!=='undefined'&&Quest.bak!=null)?'kembara':'game'):'menu');MenuFx.set(n==='menu');
     if(typeof Lobi!=='undefined'&&Lobi.ready)Lobi.status(n==='match'?'main':'idle');
     if(n==='menu')document.getElementById('cont').hidden=!(Match.s&&!Match.s.over)}

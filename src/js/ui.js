@@ -347,8 +347,9 @@ const Duel={
         case'tujah':DFX.lines(c);DFX.ring(x,y,c,150);fl(q('ar'),'hs');break;
         case'libas':DFX.slash(x,y,c,-.3);DFX.burst(x,y,'#a8f080',30,700);DFX.burst(x,y,c,14,420);break;
         case'taming':DFX.ring(x,y,c,240);DFX.ring(x,y,c2,160);DFX.burst(x,y,c,30,640);DFX.burst(x,y,c2,20,520);fl(q('fl'),'fz');fl(q('ar'),'quake');break}
+      if(Snd.senjata)Snd.senjata(W.fx);
       mkFx(q('fx'),'elp wfx',W.e,`--c:${c};--y:${22+Math.random()*30}%;--x:${-14+Math.random()*28}px`,800)};
-    t.hidden=false;t.classList.remove('fin','kofin','tlow','hplow');DFX.start(q('dcv'));Snd.gong(98,.34);Snd.drum('dung',.4);Mus.set('duel');Mus.hot(.4);
+    t.hidden=false;t.classList.remove('fin','kofin','tlow','hplow');DFX.start(q('dcv'));Snd.gong(98,.34);setTimeout(()=>{if(!t.hidden&&Mus.motif)Mus.motif(ia)},620);Snd.drum('dung',.4);Mus.set('duel');Mus.hot(.4);
     setTimeout(()=>{if(t.hidden)return;const[x,y]=DFX.at(q('vsb'));DFX.ring(x,y,'#ffd45a',220);DFX.burst(x,y,'#ffe9a0',26,520);fl(q('fl'),'fz');Snd.drum('tak',.3)},430);
     setTimeout(()=>{
       if(t.hidden)return;
