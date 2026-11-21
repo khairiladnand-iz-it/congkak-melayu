@@ -129,7 +129,8 @@ melengkung, kamera beralih ikut tetikus (bertentangan arah, seperti skill orbit)
 kilauan foil, sinar cahaya, kelopak `InstancedMesh` dan debu 3D. Ia berkongsi pemapar `World`
 (`World.heroFrame` → `Latar.frame`); papan congkak **tidak** dilukis di menu.
 `MenuFx.heroFit()` memberi `World.hero({..., ht})`: `ht` ialah ketinggian poster yang kelihatan
-(jalur atas pada telefon menegak, `.mwrap` ditolak 110px; 1e6 pada desktop). Telefon memuatkan
+(ruang di atas `.mwrap` pada telefon menegak; 1e6 pada desktop). **Jangan tolak panel ke bawah**:
+`smoke.py` mensyaratkan seluruh menu telefon muat tanpa tatal (tolakan 110px memecahkan CI). Telefon memuatkan
 poster pada jalur itu (`Latar.fitBand`). Tanpa three.js, `heroOff()` dan poster CSS asal kekal.
 
 Sebelum ini papan dilukis di menu pada resolusi penuh **walaupun kanvasnya `display:none`**.
@@ -173,6 +174,8 @@ belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
 `perftest`, `hariantest`, `senjatatest` (integriti kad sejarah senjata, buka/pilih), `audiotest`.
 `tests/hero.py` menguji Latar 3D (12 semakan); `tests/senjata_kembara.py` menguji Kembara dan Senjata dalam pelayar (10 semakan).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
+**Selepas push, semak `gh run list`** — ujian tempatan tanpa three.js tidak menguji susun atur 3D.
+Jalankan ujian pelayar dengan `THREE_LOCAL=/laluan/three.min.js` (r128) supaya sama dengan CI.
 
 `tests/online.py` ialah **penguji dalam talian**: dua pemain sebenar dalam dua tab, melalui
 kod keluaran sebenar (P2P -> Rm -> Net -> Lobi -> Match). Empat senario — tanpa ID log masuk,

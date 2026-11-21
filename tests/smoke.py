@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """Ujian asap: muat keluaran sebenar dalam pelayar, pastikan tiada ralat dan boleh main."""
 import asyncio, sys, os, http.server, socketserver, threading, functools
@@ -25,6 +26,10 @@ async def main():
                          ('desktop', {'width': 1280, 'height': 860})):
             c  = await b.new_context(viewport=vp)
             pg = await c.new_page()
+            # sama seperti CI: Latar 3D hanya aktif bila three.js dimuat. Tanpa rangkaian, beri fail tempatan
+            # (dulu ujian lulus di sini tetapi gagal di CI kerana susun atur 3D tidak pernah diuji)
+            if os.environ.get('THREE_LOCAL'):
+                await pg.route('**/three.min.js', lambda r: r.fulfill(path=os.environ['THREE_LOCAL'], content_type='application/javascript'))
             errs = []
             pg.on('pageerror', lambda e: errs.append(str(e)))
             await pg.goto(f'http://127.0.0.1:{PORT}/', wait_until='domcontentloaded', timeout=60000)

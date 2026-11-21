@@ -86,7 +86,6 @@ body[data-screen=menu] #gl,body[data-screen=menu] #labels{display:none}
 /* Latar 3D: kanvas three.js menggantikan poster CSS dan kelopak 2D */
 body[data-screen=menu] #gl.hero{display:block;z-index:1;pointer-events:none}
 body.m3d[data-screen=menu] #mbg .par,body.m3d[data-screen=menu] #mbg .rays,body.m3d[data-screen=menu] #mfx{visibility:hidden}
-@media(max-width:700px) and (orientation:portrait){body.m3d #menu .mwrap{margin-top:110px}}
 #mbg .par{position:absolute;inset:-4%;transform:translate3d(calc(var(--px)*-16px),calc(var(--py)*-10px),0)}
 #mbg .l{position:absolute;inset:0;background:center/cover no-repeat;opacity:0;transition:opacity 2.4s ease;will-change:transform,opacity}
 #mbg .l.show{opacity:1}
