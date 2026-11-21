@@ -3,11 +3,11 @@
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const R = p => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
 const hr = R('src/js/harian.js');
-const src = R('src/js/engine.js') + '\n' + hr.slice(hr.indexOf('const RNG'), hr.indexOf('const Harian'))
-  + R('src/hikayat/data.js') + R('src/hikayat/laga.js')
-  + '\n;({Rules,AI,RNG,LABEL,JLAWAN,TAHAP,PROLOG,HIKAYAT,Laga})';
+const src = 'const AVATAR=' + R('src/assets/watak.json') + ';\n' + R('src/js/engine.js') + '\n' + hr.slice(hr.indexOf('const RNG'), hr.indexOf('const Harian'))
+  + ['data', 'cerita', 'avatar', 'watak', 'tempat', 'laga'].map(n => R('src/hikayat/' + n + '.js')).join('\n')
+  + '\n;({Rules,AI,RNG,LABEL,JLAWAN,TAHAP,PROLOG,HIKAYAT,Laga,CERITA,WATAK,TEMPAT,DARAT,Avatar,avatarWatak})';
 const X = vm.runInNewContext(src, { console, Math });
-const { Rules, RNG, LABEL, JLAWAN, TAHAP, HIKAYAT, Laga } = X;
+const { Rules, RNG, LABEL, JLAWAN, TAHAP, HIKAYAT, Laga, CERITA, WATAK, TEMPAT, DARAT } = X;
 
 let ok = true, n = 0;
 const chk = (c, m) => { n++; if (!c) { ok = false; console.log('FAIL', m) } };
@@ -29,7 +29,8 @@ for (const H of HIKAYAT) {
   const sem = (H.pr ? [H.pr] : []).concat(H.st);
   for (const [i, S] of sem.entries()) {
     const w = `${H.id}#${i}`;
-    for (const k of ['t', 'a', 'l', 'o', 'j', 'k', 's']) chk(typeof S[k] === 'string' && S[k].trim().length > 0, `${w}: medan ${k}`);
+    for (const k of ['t', 'l', 'o', 'j', 'k', 's']) chk(typeof S[k] === 'string' && S[k].trim().length > 0, `${w}: medan ${k}`);
+    chk(typeof S.ringkas === 'string' && S.ringkas.length > 0 || H.pr === S, `${w}: ringkasan asal kekal`);
     chk(LABEL[S.j], `${w}: label sah (${S.j})`);
     chk(JLAWAN[S.o], `${w}: jenis lawan sah (${S.o})`);
     chk(S.s.length >= 8, `${w}: sumber dinyatakan`);
@@ -37,9 +38,36 @@ for (const H of HIKAYAT) {
     else chk(!S.r, `${w}: penyataan rekaan hanya pada adegan/lawan rekaan`);
     if (S.j === 'rekaan') chk(/rekaan/i.test(S.r), `${w}: penyataan menyebut perkataan "rekaan"`);
     if (S.h != null) chk(S.h >= 0 && S.h < 18, `${w}: potret lawan wujud`);
-    chk(!/["“][^"”]{3,}["”]\s*(kata|titah|ujar)/i.test(S.a), `${w}: tiada dialog rekaan di mulut tokoh`);
+    chk(!/["“][^"”]{3,}["”]\s*(kata|titah|ujar)/i.test([].concat(S.a).join(' ')), `${w}: tiada dialog rekaan di mulut tokoh`);
   }
 }
+/* ---- cerita, peta, avatar ---- */
+const dipakai = new Set();
+for (const H of HIKAYAT) {
+  chk(CERITA[H.id] && CERITA[H.id].st.length === H.st.length, `${H.id}: cerita untuk setiap perhentian`);
+  chk(typeof H.i2 === 'string' && H.i2.length > 40, `${H.id}: pembukaan tambahan`);
+  for (const [i, S] of (H.pr ? [H.pr] : []).concat(H.st).entries()) {
+    const w = `${H.id}#${i}`;
+    chk(Array.isArray(S.a) && S.a.length >= 3 && S.a.every(p => p.length > 20), `${w}: sekurang-kurangnya 3 babak cerita`);
+    chk(typeof S.b === 'string' && S.b.length > 15, `${w}: penutup selepas menang`);
+    chk(TEMPAT[S.g], `${w}: tempat peta wujud (${S.g})`);
+    chk(S.h != null || (S.w && WATAK[S.w]), `${w}: lawan ada potret atau avatar`);
+    if (S.w) { dipakai.add(S.w); chk(WATAK[S.w].o === S.o, `${w}: jenis watak ${S.w} sepadan dengan perhentian`) }
+    chk(!S.a.some(p => /[“"][^”"]{4,}[”"]/.test(p) && !/ghaib/.test(p)), `${w}: tiada dialog dalam narasi`);
+    if (S.o === 'rekaan') chk(S.a.join(' ').match(/rekaan|ditambah|dicipta|tidak wujud/i), `${w}: narasi menyatakan lawan rekaan`);
+  }
+}
+for (const id in WATAK) {
+  chk(dipakai.has(id), `watak ${id} digunakan dalam sekurang-kurangnya satu perhentian`);
+  const v = X.avatarWatak(id); chk((/^<svg[\s\S]*<\/svg>$/.test(v) || /^<img src="data:image\/webp/.test(v)) && !(/^<svg/.test(v) && /undefined|NaN/.test(v)), `avatar ${id} sah`);
+  chk(JLAWAN[WATAK[id].o] && WATAK[id].d.length > 8, `watak ${id}: jenis dan keterangan`);
+}
+const AV = JSON.parse(R('src/assets/watak.json'));
+for (const id in AV) chk(WATAK[id], `potret roster ${id} sepadan dengan watak`);
+chk(Object.keys(AV).length >= 50, 'potret chibi roster untuk hampir semua watak (' + Object.keys(AV).length + ')');
+chk(Object.keys(WATAK).length >= 50, 'avatar untuk semua watak sampingan (' + Object.keys(WATAK).length + ')');
+for (const k in TEMPAT) { const c = TEMPAT[k].c; chk(c[0] > 60 && c[0] < 125 && c[1] > -10 && c[1] < 40, `tempat ${k} dalam rantau peta`) }
+chk(DARAT.every(p => p.length >= 4), 'poligon darat sah');
 chk(rekaan >= 7, 'jurang sumber diisi rekaan yang dinyatakan (' + rekaan + ')');
 /* label tidak dinaikkan: tokoh yang dipertikai kekal dipertikai */
 const by = id => HIKAYAT.find(H => H.id === id);

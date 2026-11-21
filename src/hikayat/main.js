@@ -25,13 +25,15 @@ function cip(j, kecil) {
   const L = LABEL[j] || LABEL.lagenda;
   return `<b class="cip${kecil ? ' sm' : ''}" style="--lc:${L.c}">${L.l}</b>`;
 }
-function potret(h, nama, o, besar) {
+function potret(h, nama, o, besar, w) {
   if (h != null && PORTRET[h]) return `<span class="med${besar ? ' lg' : ''}"><img src="${PORTRET[h]}" alt=""></span>`;
+  if (w && WATAK[w]) return `<span class="med av${o === 'rekaan' ? ' rek' : ''}${besar ? ' lg' : ''}">${avatarWatak(w)}</span>`;
   const ini = nama.replace(/\(.*?\)/g, '').split(/[\s,]+/).filter(w => /^[A-ZÀ-Ý]/.test(w)).slice(0, 2).map(w => w[0]).join('') || nama[0];
   return `<span class="med sil${o === 'rekaan' ? ' rek' : ''}${besar ? ' lg' : ''}" aria-hidden="true"><i>${esc(ini)}</i></span>`;
 }
 
 /* ---------- skrin ---------- */
+const lawanP = (S, besar) => potret(S.h, S.l, S.o, besar, S.w);
 const Skrin = {
   ke(id) {
     for (const s of document.querySelectorAll('.skrin')) s.hidden = s.id !== id;
@@ -50,6 +52,7 @@ const Rumah = {
         <span class="hm">${cip(H.j, 1)}<span class="pip" aria-label="${m} daripada ${u.length} perhentian">${u.map((_, i) => `<i class="${i < m ? 'on' : ''}"></i>`).join('')}</span></span>
         ${done ? '<em class="lencana" title="Penghafal Hikayat">Penghafal Hikayat</em>' : ''}</button>`;
     }).join('');
+    $('#bwatak').textContent = `Galeri Watak Sampingan (${Object.keys(WATAK).length})`;
     const t = HIKAYAT.filter(tamatOf).length;
     $('#kira').textContent = t ? `${t} daripada ${HIKAYAT.length} hikayat tamat` : `${HIKAYAT.length} hikayat, ${HIKAYAT.reduce((a, H) => a + urutan(H).length, 0)} perhentian`;
   }
@@ -57,20 +60,21 @@ const Rumah = {
 
 const Jalan = {
   H: null,
-  buka(k) { this.H = HIKAYAT[k]; this.lukis(); Skrin.ke('jalan') },
-  lukis() {
+  buka(k) { this.H = HIKAYAT[k]; Skrin.ke('jalan'); this.lukis() },
+  lukis(opt) {
     const H = this.H, u = urutan(H), m = Simpan.maju(H.id);
     $('#jkepala').innerHTML = `${potret(H.h, H.n, 'tokoh', 1)}
       <div><p class="eyebrow">Hikayat</p><h2>${esc(H.n)}</h2>
       <p class="meta">${cip(H.j)} <span>${esc(H.z)}</span> · <span>${esc(H.p)}</span></p></div>`;
-    $('#jintro').textContent = H.i;
+    $('#jintro').innerHTML = `<p>${esc(H.i)}</p>${H.i2 ? `<p>${esc(H.i2)}</p>` : ''}`;
+    Peta.tunjuk(H, u, m, opt || {});
     $('#perhentian').innerHTML = u.map((S, i) => {
       const st = i < m ? 'selesai' : i === m ? 'kini' : 'kunci', T = tahapOf(H, i);
       const no = S.prolog ? 'P' : (H.pr ? i : i + 1);
       return `<li class="ph ${st}"><span class="nod">${no}</span>
         <button class="phb" data-i="${i}"${st === 'kunci' ? ' disabled' : ''}>
           <span class="pt"><b>${esc(S.t)}</b>${cip(S.j, 1)}</span>
-          <span class="pl">${st === 'kunci' ? 'Menang perhentian sebelumnya untuk membuka' : 'Lawan: ' + esc(S.l) + (S.o === 'rekaan' ? ' <i class="rk">rekaan</i>' : '')}</span>
+          <span class="pl">${st === 'kunci' ? 'Menang perhentian sebelumnya untuk membuka' : `${lawanP(S)}<span>Lawan: ${esc(S.l)}${S.o === 'rekaan' ? ' <i class="rk">rekaan</i>' : ''}</span>`}</span>
           <span class="ps">${st === 'selesai' ? 'Selesai · baca kad' : st === 'kini' ? 'Main · ' + T.n : T.n}</span>
         </button></li>`;
     }).join('');
@@ -89,33 +93,49 @@ const Lapis = {
 function kadRekaan(S) {
   return S.r ? `<div class="rekaan"><b>Penyataan rekaan</b><p>${esc(S.r)}</p></div>` : '';
 }
+/* adegan berbabak: perenggan dibuka satu demi satu, kemudian lawan dan butang Mula */
+const DRAMA = 'Narasi didramatisasi untuk permainan; fakta dan sumbernya dalam kad selepas menang. Perlawanan congkak ialah cara permainan ini menceritakan setiap pertemuan, bukan peristiwa sejarah.';
 const Adegan = {
+  i: 0, babak: 0,
   buka(i) {
-    const H = Jalan.H, S = urutan(H)[i], T = tahapOf(H, i), m = Simpan.maju(H.id);
+    const H = Jalan.H, m = Simpan.maju(H.id);
     if (i < m) return Kad.fakta(i, false);
-    Lapis.buka(`<p class="eyebrow">${S.prolog ? 'Prolog' : 'Perhentian ' + (H.pr ? i : i + 1)} · ${esc(H.n)}</p>
+    this.i = i; this.babak = 0; this.lukis(true);
+  },
+  lukis(baru) {
+    const H = Jalan.H, i = this.i, S = urutan(H)[i], T = tahapOf(H, i);
+    const A = Array.isArray(S.a) ? S.a : [S.a], n = this.babak, akhir = n >= A.length - 1;
+    const html = `<p class="eyebrow">${S.prolog ? 'Prolog' : 'Perhentian ' + (H.pr ? i : i + 1)} · ${esc(H.n)}</p>
       <h3>${esc(S.t)}</h3>
-      <p class="narasi">${esc(S.a)}</p>
-      <div class="vs">${potret(H.h, H.n, 'tokoh')}<span class="vsx">lawan</span>${potret(S.h, S.l, S.o)}
+      <div class="babak">${A.slice(0, n + 1).map((p, k) => `<p class="narasi${k === n && !baru ? ' masuk' : ''}">${esc(p)}</p>`).join('')}</div>
+      <p class="langkah" aria-hidden="true">${A.map((_, k) => `<i class="${k <= n ? 'on' : ''}"></i>`).join('')}</p>
+      ${akhir ? `<div class="vs">${potret(H.h, H.n, 'tokoh')}<span class="vsx">lawan</span>${lawanP(S)}
         <div class="vsl"><b>${esc(S.l)}</b><small>${JLAWAN[S.o]}</small></div></div>
       ${kadRekaan(S)}
       <p class="tahap">${esc(T.n)} · ${T.biji} biji setiap lubang</p>
       <div class="btns"><button class="btn utama" data-k="mula" data-i="${i}">Mula Perlawanan</button>
-      <button class="btn" data-k="tutup">Kembali</button></div>`);
-  }
+      <button class="btn" data-k="tutup">Kembali</button></div>`
+      : `<div class="btns"><button class="btn utama" data-k="babak">Seterusnya ›</button>
+      <button class="btn" data-k="langkau">Baca semua</button></div>`}
+      <p class="drama">${DRAMA}</p>`;
+    if (baru) Lapis.buka(html);
+    else { $('#lapis .kertas').innerHTML = html; $('#lapis .kertas [data-k]')?.focus() }
+  },
+  maju(semua) { const A = urutan(Jalan.H)[this.i].a; this.babak = semua ? A.length - 1 : Math.min(this.babak + 1, A.length - 1); this.lukis(false) }
 };
 const Kad = {
   fakta(i, baru) {
     const H = Jalan.H, S = urutan(H)[i], L = LABEL[S.j], u = urutan(H), akhir = i + 1 >= u.length;
     Lapis.buka(`<p class="eyebrow">${baru ? 'Menang · kad dibuka' : 'Kad perhentian'}</p>
       <h3>${esc(S.t)}</h3>
+      ${S.b ? `<p class="narasi penutup">${esc(S.b)}</p>` : ''}
       <p class="label">${cip(S.j)} <span>${esc(L.d)}</span></p>
       ${S.jn ? `<p class="jn">${esc(S.jn)}</p>` : ''}
       <div class="tahu"><b>Apa yang diketahui</b><p>${esc(S.k)}</p></div>
       ${kadRekaan(S)}
       <p class="src">Sumber: ${esc(S.s)}</p>
-      <p class="lw">Lawan: ${esc(S.l)} · ${JLAWAN[S.o]}</p>
-      <div class="btns">${baru && !akhir ? `<button class="btn utama" data-k="seterus" data-i="${i + 1}">Perhentian Seterusnya</button>` : ''}
+      <p class="lw">${lawanP(S)}<span>Lawan: ${esc(S.l)} · ${JLAWAN[S.o]}</span></p>
+      <div class="btns">${baru && !akhir ? `<button class="btn utama" data-k="seterus" data-i="${i + 1}">Teruskan Perjalanan</button>` : ''}
       ${baru && akhir ? '<button class="btn utama" data-k="peta">Baca Epilog</button>' : ''}
       <button class="btn" data-k="peta">Peta Perjalanan</button></div>`);
   },
@@ -135,7 +155,7 @@ const Gel = {
     this.i = i; this.s = Laga.baru(7, T.biji, T.lvl); this.lihat = this.s.b.slice(); this.sibuk = false; this.tangan = 0; this.aktif = -1;
     $('#lkepala').innerHTML = `<div class="pihak p1">${potret(H.h, H.n, 'tokoh')}<span><b>${esc(H.n)}</b><small>Anda</small></span></div>
       <div class="ltengah"><b>${esc(S.t)}</b><small>${esc(T.n)}</small></div>
-      <div class="pihak p2"><span><b>${esc(S.l)}</b><small>${JLAWAN[S.o]}</small></span>${potret(S.h, S.l, S.o)}</div>`;
+      <div class="pihak p2"><span><b>${esc(S.l)}</b><small>${JLAWAN[S.o]}</small></span>${lawanP(S)}</div>`;
     Lapis.tutup(); Skrin.ke('laga'); this.lukis(); this.giliran();
   },
   /* susun atur: ibu pemain di KIRI (dicapai selepas lubang n-1), ibu lawan di KANAN */
@@ -222,15 +242,21 @@ function wire() {
   document.addEventListener('click', e => {
     const t = e.target.closest('button'); if (!t) return;
     if (t.dataset.h != null) return Jalan.buka(+t.dataset.h);
-    if (t.classList.contains('phb')) return Adegan.buka(+t.dataset.i);
+    if (t.classList.contains('phb') || t.classList.contains('pn')) return Adegan.buka(+t.dataset.i);
     if (t.dataset.l != null) return Gel.main(+t.dataset.l);
     const k = t.dataset.k;
     if (k === 'tutup') Lapis.tutup();
     else if (k === 'mula') Gel.mula(+t.dataset.i);
-    else if (k === 'seterus') { Jalan.lukis(); Adegan.buka(+t.dataset.i) }
-    else if (k === 'peta') { Lapis.tutup(); Jalan.lukis(); Skrin.ke('jalan') }
+    else if (k === 'babak') Adegan.maju(false);
+    else if (k === 'langkau') Adegan.maju(true);
+    else if (k === 'seterus') {        /* kembali ke peta: potret belayar ke perhentian seterusnya, kemudian adegan dibuka */
+      const ni = +t.dataset.i; Lapis.tutup(); Skrin.ke('jalan');
+      Jalan.lukis({ belayar: true, selesai: () => { if (document.body.dataset.skrin === 'jalan' && $('#lapis').hidden) Adegan.buka(ni) } });
+    }
+    else if (k === 'peta') { Lapis.tutup(); Skrin.ke('jalan'); Jalan.lukis() }
     else if (k === 'rumah') { Lapis.tutup(); Rumah.lukis(); Skrin.ke('rumah') }
-    else if (k === 'keluar') { Jalan.lukis(); Skrin.ke('jalan') }
+    else if (k === 'keluar') { Skrin.ke('jalan'); Jalan.lukis() }
+    else if (k === 'watak') { Galeri.lukis(); Skrin.ke('galeri') }
     else if (k === 'laju') { Simpan.d.laju = !Simpan.d.laju; Simpan.simpan(); lajuLabel() }
     else if (k === 'bunyi') { Simpan.d.senyap = !Simpan.d.senyap; Simpan.simpan(); lajuLabel() }
   });
@@ -245,6 +271,19 @@ function lajuLabel() {
   $('#bbunyi').textContent = Simpan.d.senyap ? 'Bunyi: tutup' : 'Bunyi: buka';
 }
 
-Simpan.muat(); wire(); lajuLabel(); Rumah.lukis(); Skrin.ke('rumah');
+/* ---------- galeri watak sampingan ---------- */
+const Galeri = {
+  lukis() {
+    const muncul = {};
+    for (const H of HIKAYAT) for (const S of urutan(H)) if (S.w) (muncul[S.w] = muncul[S.w] || new Set()).add(H.n);
+    const ikut = { tokoh: [], watak: [], rekaan: [] };
+    for (const [id, W] of Object.entries(WATAK)) ikut[W.o].push([id, W]);
+    $('#gsenarai').innerHTML = Object.keys(ikut).map(o => `<section class="gk"><h3>${JLAWAN[o]} <small>${ikut[o].length}</small></h3>
+      <div class="gg">${ikut[o].map(([id, W]) => `<figure class="gw" id="w-${id}">${potret(null, W.n, W.o, 1, id)}
+        <figcaption><b>${esc(W.n)}</b><small>${esc(W.d)}</small><em>${[...(muncul[id] || [])].map(esc).join(' · ')}</em></figcaption></figure>`).join('')}</div></section>`).join('');
+  }
+};
+
+Simpan.muat(); wire(); Peta.pasang($('#pcv'), $('#plap')); lajuLabel(); Rumah.lukis(); Skrin.ke('rumah');
 /* pemegang untuk ujian pelayar (tests/hikayat.py) */
-window.Hikayat = { Simpan, Jalan, Gel, Laga, HIKAYAT };
+window.Hikayat = { Simpan, Jalan, Gel, Laga, HIKAYAT, Peta, WATAK, Adegan };

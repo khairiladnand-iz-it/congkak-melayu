@@ -142,7 +142,7 @@ def build(out, webp=True, write_chk=False, pwa=True):
     return html
 
 # ---------- Hikayat Pahlawan: halaman berdiri sendiri ----------
-HIK_ORDER = ['data', 'laga', 'main']
+HIK_ORDER = ['data', 'cerita', 'avatar', 'watak', 'tempat', 'peta', 'laga', 'main']
 HIK_POTRET = ['saadong', 'fatimah', 'siti', 'ledang', 'santubong', 'malahayati', 'mahsuri', 'teja']   # susunan HER2 dalam heroes2.js
 
 def build_hikayat(out, webp=True, art=None, write_chk=False):
@@ -153,7 +153,8 @@ def build_hikayat(out, webp=True, art=None, write_chk=False):
     assert len(potret) == 18, 'potret pahlawan mesti 18'
     hr = rd('js', 'harian.js')
     rng = hr[hr.index('const RNG'):hr.index('const Harian')]
-    js = ("'use strict';\nconst PORTRET=" + json.dumps(potret) + ';\n'
+    av = json.load(open(os.path.join(SRC, 'assets', 'watak.json'), encoding='utf-8'))
+    js = ("'use strict';\nconst PORTRET=" + json.dumps(potret) + ';\nconst AVATAR=' + json.dumps(av) + ';\n'
           + rd('js', 'engine.js') + '\n' + rng
           + ''.join(rd('hikayat', n + '.js') + '\n' for n in HIK_ORDER))
     html = rd('hikayat', 'tpl.html').replace('/*CSS*/', rd('hikayat', 'hikayat.css')).replace('/*JS*/', js)

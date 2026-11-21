@@ -104,7 +104,14 @@ Guna semula `engine.js`, `RNG` daripada `harian.js` dan 18 potret; **tiada** thr
 Label perhentian: `sejarah` / `lagenda` / `pertikai` / **`rekaan`**. Jurang sumber (dulu "perlu semakan") diisi adegan
 atau lawan rekaan, dan **setiap rekaan wajib ada penyataan `r`** yang dipaparkan kepada pemain. Jenis lawan `o`:
 `tokoh` / `watak` / `rekaan`. Kemajuan dalam localStorage `hikayat-pahlawan.v1`. Belum dipaut dari menu utama.
-Diuji oleh `tests/hikayattest.js` (data + perlawanan) dan `tests/hikayat.py` (pelayar, telefon & desktop; CI).
+`cerita.js` (`CERITA`, digabung ke HIKAYAT): babak `a[]` (≥3), penutup `b`, tempat `g`, watak `w`, pembukaan `i2`.
+**Narasi boleh menambah suasana, bukan fakta**; tiada dialog tokoh sebenar; setiap adegan memaparkan nota `DRAMA`.
+`tempat.js` (`TEMPAT` koordinat, `ag:1` = anggaran ditanda *, `DARAT` garis pantai dipermudah) → `peta.js` (`Peta`,
+kanvas 2D: lakar laluan, potret belayar `tunjuk(...,{belayar})`, gugus perhentian berdekatan, ~30 fps, berhenti bila tersembunyi).
+`watak.js` (`WATAK` 54 watak sampingan) + `avatar.js` (SVG chibi sandaran). Potret sebenar: roster pengguna
+`src/assets/watak-roster.png` → `tools/watak_avatar.py` → `src/assets/watak.json` (disuntik sebagai `AVATAR`). Raja Abdullah
+(Johor) tiada dalam roster, jadi memakai SVG; pendua "Bendahara Tun Ali" dalam roster tidak digunakan.
+Diuji oleh `tests/hikayattest.js` (data, cerita, peta, avatar, perlawanan) dan `tests/hikayat.py` (pelayar; CI).
 Draf penuh: Claude Doc "Draf Mod Hikayat Pahlawan".
 
 ## Kembara: peringkat seterusnya

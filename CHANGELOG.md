@@ -5,6 +5,17 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.18 — Hikayat Pahlawan: Peta, Cerita & Potret Watak
+
+_2026-11-21_
+
+- Peta perjalanan beranimasi: laluan pahlawan dilakar di atas peta Nusantara, dan potretnya belayar ke perhentian seterusnya selepas setiap kemenangan.
+- Cerita lebih panjang: setiap adegan kini tiga babak yang dibaca satu demi satu, dan setiap kemenangan ditutup dengan sambungan kisah.
+- 53 watak sampingan kini ada potret chibi, dan Galeri Watak Sampingan menyenaraikan semuanya mengikut jenis.
+- Setiap adegan menyatakan bahawa narasinya didramatisasi; fakta dan sumber kekal dalam kad selepas menang.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.17 — Hikayat Pahlawan (Prototaip)
 
 _2026-11-21_
@@ -13,7 +24,7 @@ _2026-11-21_
 - Setiap kad berlabel sejarah, lagenda, dipertikai atau rekaan, beserta sumbernya. Bila sumber tidak mencatat sesuatu, adegan itu direka dan dinyatakan rekaan dengan jelas.
 - Kalah tidak menamatkan perjalanan: cuba semula perhentian yang sama. Kemajuan disimpan dalam pelayar anda.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `6f08cb4` · penyiaran [44896771067](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44896771067)</sub>
 
 ## 0.9.16 — Kawalan Papan Kekunci di Ruang Tikam
 
