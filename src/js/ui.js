@@ -332,6 +332,22 @@ const Duel={
       <div class="lns">${lnb}</div><div class="jrs">${jrb}</div></div>
       <div class="grp def"><small>${esc(V.n)} bertahan — padankan garis</small><div class="lns">${gdb}</div></div></div>`:''}<button class="skip" id="skp">Langkau ⏩</button></div>`;
     const q=id=>t.querySelector('#'+id),fl=(e,c)=>{e.classList.remove(c);void e.offsetWidth;e.classList.add(c)};
+    /* senjata pusaka pemain: cahaya dan tag pada kad pahlawan pemain, kesan khas bila tikaman kena.
+       Kosmetik sahaja — kerosakan tidak berubah. */
+    const meI=post?Msg.me:on?Match.me:0,W=typeof Senjata!=='undefined'?Senjata.dipakai():null,myAtk=!!W&&p===meI;
+    if(W){const we=q(p===meI?'fa':'fv');we.classList.add('wpn');we.style.setProperty('--wc',W.c);we.style.setProperty('--wc2',W.c2||W.c);
+      const wr=document.createElement('i');wr.className='wring';we.appendChild(wr);
+      const tg=document.createElement('div');tg.className='wtag';tg.textContent=W.e+' '+W.n;we.appendChild(tg)}
+    const wFx=(x,y)=>{const c=W.c,c2=W.c2||'#fff';
+      switch(W.fx){
+        case'luk':DFX.slash(x-14,y-10,c,-.9);DFX.slash(x+14,y+10,c,-.9);DFX.burst(x,y,c,16,460);break;
+        case'cakar':for(const o of[-24,0,24])DFX.slash(x+o*.4,y+o,c,-.5);DFX.burst(x,y,c,12,380);break;
+        case'tusuk':DFX.burst(x-10,y,c,14,320);setTimeout(()=>{DFX.burst(x+12,y-6,c,14,320);DFX.ring(x,y,c,90)},110);break;
+        case'kilau':DFX.ring(x,y,c,190);DFX.burst(x,y,c,26,560);break;
+        case'tujah':DFX.lines(c);DFX.ring(x,y,c,150);fl(q('ar'),'hs');break;
+        case'libas':DFX.slash(x,y,c,-.3);DFX.burst(x,y,'#a8f080',30,700);DFX.burst(x,y,c,14,420);break;
+        case'taming':DFX.ring(x,y,c,240);DFX.ring(x,y,c2,160);DFX.burst(x,y,c,30,640);DFX.burst(x,y,c2,20,520);fl(q('fl'),'fz');fl(q('ar'),'quake');break}
+      mkFx(q('fx'),'elp wfx',W.e,`--c:${c};--y:${22+Math.random()*30}%;--x:${-14+Math.random()*28}px`,800)};
     t.hidden=false;t.classList.remove('fin','kofin','tlow','hplow');DFX.start(q('dcv'));Snd.gong(98,.34);Snd.drum('dung',.4);Mus.set('duel');Mus.hot(.4);
     setTimeout(()=>{if(t.hidden)return;const[x,y]=DFX.at(q('vsb'));DFX.ring(x,y,'#ffd45a',220);DFX.burst(x,y,'#ffe9a0',26,520);fl(q('fl'),'fz');Snd.drum('tak',.3)},430);
     setTimeout(()=>{
@@ -503,6 +519,7 @@ const Duel={
           else{DFX.slash(x+ox*.4,y+oy*.4,w?w.sk.c:ac===2?'#fff0a0':'#ffeaa0');
             DFX.burst(x+ox,y+oy,w?w.sk.c:'#ffd070',d>=24?40:16,d>=24?620:400);
             if(d>=24){DFX.ring(x,y,w?w.sk.c:'#fff',200);fl(q('ar'),'quake');fl(q('fl'),'fz')}else fl(q('ar'),'hs');Snd.hit();Haptic.hit()}
+          if(myAtk&&!blk)wFx(x,y);
           /* unsur penyerang kelihatan pada setiap hentaman; lebih besar bila ia mengatasi lawan.
              Bila unsur lawan lebih kuat dan ia menahan, unsur lawan pula yang menyala. */
           if(!blk){const up=adv>0;DFX.burst(x+ox*.5,y+oy*.5,EA.c,up?30:20,up?600:480);DFX.ring(x,y,EA.c,up?170:110);

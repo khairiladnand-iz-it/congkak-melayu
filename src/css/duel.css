@@ -252,3 +252,18 @@ body.face #duel .grp.def::after{content:'↕ kawalan ini untuk pemain seberang';
   body.face #duel .skip{left:auto;right:8px;transform:none;top:auto;bottom:calc(50% - 14px);font-size:11px;padding:3px 10px}
   body.face #duel .grp.def{padding-top:2px}
 }
+
+/* kad .fgt memotong limpahan; kad bersenjata perlu cahaya dan tag di luar sempadannya */
+#duel .fgt.wpn{overflow:visible}
+/* senjata pusaka: cahaya berdenyut mengikut warna senjata, dan tag nama di bawah kad */
+#duel .fgt.wpn img{box-shadow:0 0 0 2px #2a0a08,0 0 0 4px var(--wc),0 14px 40px rgba(0,0,0,.8),0 0 30px var(--wc),0 0 70px color-mix(in srgb,var(--wc2) 55%,transparent);animation:wglow 1.6s ease-in-out infinite alternate}
+@keyframes wglow{from{filter:brightness(1)}to{filter:brightness(1.12) drop-shadow(0 0 14px var(--wc))}}
+#duel .fgt.wpn .wring{position:absolute;inset:-14%;border-radius:28px;pointer-events:none;z-index:-1;
+  background:conic-gradient(from 0deg,transparent,color-mix(in srgb,var(--wc) 55%,transparent),transparent 30%,color-mix(in srgb,var(--wc2) 45%,transparent),transparent 65%);
+  -webkit-mask:radial-gradient(closest-side,transparent 70%,#000 72%,#000 98%,transparent);mask:radial-gradient(closest-side,transparent 70%,#000 72%,#000 98%,transparent);
+  animation:wspin 4s linear infinite;opacity:.85}
+@keyframes wspin{to{transform:rotate(360deg)}}
+#duel .wtag{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);white-space:nowrap;font-size:11.5px;font-weight:700;letter-spacing:.03em;
+  padding:3px 9px;border-radius:999px;background:rgba(20,6,8,.82);color:var(--wc);border:1px solid var(--wc);box-shadow:0 0 12px color-mix(in srgb,var(--wc) 50%,transparent);pointer-events:none}
+#duel .fx .elp.wfx{font-size:clamp(30px,6.5vw,54px)}
+@media(prefers-reduced-motion:reduce){#duel .fgt.wpn img,#duel .fgt.wpn .wring{animation:none}}

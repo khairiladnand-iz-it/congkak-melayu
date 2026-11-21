@@ -142,13 +142,21 @@ const Match={
     if(res==='win'){Quest.bump('win',1,'add');if(cfg.vs==='ai'&&cfg.lvl===3&&!this.online)Quest.bump('ai3',1,'add');
       Prof.d.cur=(Prof.d.cur|0)+1;if(Prof.d.cur>(Prof.d.str|0))Prof.d.str=Prof.d.cur}
     else if(res==='lose')Prof.d.cur=0;
+    /* simpan indeks peringkat SEBELUM Quest.done mengosongkannya (dulu kad Kisah tidak pernah muncul) */
+    const campI=this.camp;
     const campHtml=Quest.done(res);
+    /* Kembara: terus ke peringkat seterusnya tanpa kembali ke menu */
+    const nx=campI!=null&&res==='win'&&campI+1<CAMP.length&&campI+1<=(Prof.d.camp|0)?campI+1:null;this._campNx=nx;this._campI=campI;
+    const btns=campI!=null
+      ?(nx!=null?`<div class="center"><button class="btn big" data-r="next">▶ Peringkat ${nx+1}: ${esc(CAMP[nx].t)}</button></div>`:'')
+       +`<div class="center"><button class="btn${nx!=null?' sm':''}" data-r="again">${res==='win'?'↻ Ulang Peringkat':'↻ Cuba Lagi'}</button></div><button class="btn sm" data-r="camp">⚑ Peta Kembara</button> `
+      :`<div class="center"><button class="btn" data-r="again">Main Semula</button></div>${this.online?'':'<button class="btn sm" data-r="set">Tukar Tetapan</button> '}`;
     const aw=Prof.award({res,caps:s.caps[ow],mult:this.online?1.3:cfg.vs==='ai'?[0,.6,1,1.6][cfg.lvl]:.5});
     const r=document.getElementById('result');
-    r.innerHTML=`<div class="panel">${body}${campHtml}<div class="xpbox"><small>${res==='win'?'Anda menang!':res==='draw'?'Seri':'Anda tewas'}</small>${Prof.resultHtml(aw)}</div><div class="center"><button class="btn" data-r="again">Main Semula</button></div>${this.online?'':'<button class="btn sm" data-r="set">Tukar Tetapan</button> '}<button class="btn sm" data-r="menu">Menu Utama</button></div>`;
+    r.innerHTML=`<div class="panel">${body}${campHtml}<div class="xpbox"><small>${res==='win'?'Anda menang!':res==='draw'?'Seri':'Anda tewas'}</small>${Prof.resultHtml(aw)}</div>${btns}<button class="btn sm" data-r="menu">Menu Utama</button></div>`;
     if(aw.up.some(g=>g.gem))setTimeout(()=>Snd.fanfare(),900);
     /* Kembara: selepas menewaskan pahlawan, tunjuk kisahnya */
-    if(res==='win'&&this.camp!=null&&typeof Kisah!=='undefined'){
+    if(res==='win'&&campI!=null&&typeof Kisah!=='undefined'){
       const lawan=cfg.p[1];
       if(Kisah.ada(lawan))setTimeout(()=>Kisah.menang(lawan),1400);
     }

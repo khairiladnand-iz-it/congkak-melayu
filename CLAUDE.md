@@ -31,6 +31,7 @@ Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkau
 | `new_a.js` | `DEF` tetapan lalai, `fixCfg()`, `SITE` |
 | `harian.js` | `RNG` boleh benih + `Harian` — teka-teki harian |
 | `kisah.js` | `KISAH` 18 kad pahlawan (sejarah/lagenda/dipertikai) + `Kisah` |
+| `senjata.js` | `SENJATA` 7 senjata pusaka (buka ikut level, kad sejarah bersumber) + `Senjata` |
 | `prof.js`→`prog.js` | `Prof` (XP, biji permata, nick), `Store` (keupayaan `db`) |
 | `quest.js` | `CAMP` 16 peringkat Kembara, misi harian, lencana |
 | `music.js` | `Mus` gamelan prosedural (5 mood) + `Snd` kesan bunyi |
@@ -58,6 +59,23 @@ sekolah: pelajar belajar membezakan catatan daripada cerita rakyat.
 **Jangan tambah atau ubah kisah tanpa sumber.** Jangan naikkan sesuatu daripada `lagenda`
 kepada `sejarah` tanpa rujukan. Kad ditunjukkan selepas menewaskan pahlawan dalam Kembara,
 dan boleh dilayari melalui jubin **Kisah** di menu.
+
+## Senjata Pusaka
+
+`senjata.js`: tujuh senjata (Keris Lv1, Kerambit 3, Badik 7, Rencong 12, Lembing Istiadat 18,
+Mandau 24, Keris Taming Sari 30), dipilih dalam tab **Senjata** di skrin Pangkat (`Prof.d.wpn`).
+**Kosmetik sahaja**: dalam Duel, kad pahlawan pemain mendapat `.wpn` (cahaya `--wc`, `.wring`,
+`.wtag`) dan `wFx()` memberi kesan khas bila tikaman pemain kena. Kerosakan tidak berubah.
+Setiap senjata ada kad sejarah dengan peraturan yang **sama seperti Kisah**: `j`, zaman, tempat,
+kisah, "Tahukah anda", dan **sumber**. Taming Sari kekal `pertikai`. Diuji oleh `tests/senjatatest.js`.
+
+## Kembara: peringkat seterusnya
+
+Panel keputusan Kembara memberi `▶ Peringkat N` (selepas menang), `↻ Cuba Lagi`/`Ulang`, dan
+`⚑ Peta Kembara` — tanpa kembali ke menu. `Match.finish` menyimpan `campI` **sebelum**
+`Quest.done()` mengosongkan `Match.camp` (dulu kad Kisah tidak pernah muncul kerana ini).
+`Quest.restore()` dipanggil bila pemain memulakan permainan bukan-Kembara dari menu
+(dulu tidak pernah dipanggil, jadi tetapan peringkat kekal selepas Kembara).
 
 ## Congkak Harian
 
@@ -131,8 +149,9 @@ belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
 `tests/h.js` ialah harness `vm` yang memuatkan `tests/chk.js` (dijana) dengan DOM tiruan.
 `NO3D=1` mematikan stub three.js. Set ujian: `t` (enjin, 300 perlawanan), `t2` (sejarah/jam),
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
-`p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa).
-`tests/hero.py` menguji Latar 3D (12 semakan).
+`p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa),
+`perftest`, `hariantest`, `senjatatest` (integriti kad sejarah senjata, buka/pilih).
+`tests/hero.py` menguji Latar 3D (12 semakan); `tests/senjata_kembara.py` menguji Kembara dan Senjata dalam pelayar (10 semakan).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
 
 `tests/online.py` ialah **penguji dalam talian**: dua pemain sebenar dalam dua tab, melalui

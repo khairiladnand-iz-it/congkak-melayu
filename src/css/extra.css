@@ -241,3 +241,18 @@ body.imm .hud{transform:scale(.94);transform-origin:top center}
 .slt.lock{opacity:.55;cursor:not-allowed}
 .gems .gem.sel{border-color:#c8231f;background:linear-gradient(160deg,rgba(255,236,190,.95),rgba(255,250,235,.9))}
 .gems .gem em.s2{background:#1f5c3c}
+
+/* tab Senjata di skrin Pangkat (panel krim: teks gelap, warna senjata pada ikon dan jalur tepi) */
+.wpns{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:10px 0}
+.wpn{position:relative;display:flex;flex-direction:column;border-radius:12px;border:1px solid #e2cc96;border-left:5px solid var(--wc);background:#fffaf0;overflow:hidden;box-shadow:0 2px 6px rgba(80,40,10,.08)}
+.wpn.sel{border-color:#c9982f;border-left-color:var(--wc);box-shadow:0 0 0 2px #c9982f,0 6px 16px rgba(120,70,10,.18)}
+.wpn .wpb{display:grid;grid-template-columns:46px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;text-align:left;padding:10px 12px;background:none;border:0;color:#3a1a0a;cursor:pointer;font:inherit}
+.wpn .wpb i{grid-row:span 2;font-style:normal;font-size:28px;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--wc) 55%,#fff) 0%,color-mix(in srgb,var(--wc) 25%,#fff) 60%,transparent 72%)}
+.wpn .wpb b{font-size:15px;color:#3a1a0a}.wpn .wpb small{color:#6b4a2a;font-size:12px}
+.wpn .wpb em{position:absolute;top:8px;right:8px;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:6px;background:#1e6b52;color:#fff}
+.wpn.lock{opacity:.62;background:#f4ecdc}.wpn.lock .wpb{cursor:not-allowed}
+.wpn .wsj{border:0;border-top:1px solid #ecdcb4;background:#f7ecd4;color:#5a3410;padding:7px;font:inherit;font-size:12.5px;cursor:pointer}
+.wpn .wsj:hover{background:#f0e0bc}
+.wkad .wico{display:grid;place-items:center;font-size:72px;height:120px;background:radial-gradient(circle,color-mix(in srgb,var(--wc) 30%,transparent),transparent 65%)}
+.wkad .wico span{filter:drop-shadow(0 0 16px var(--wc))}

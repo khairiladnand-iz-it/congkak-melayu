@@ -41,7 +41,8 @@ function wire(){
   const dock=()=>{const L=Prof.lvl();opt('dWood',WOODN.filter(w=>Prof.okWood(w[0],L)||w[0]===cfg.wood),cfg.wood);opt('dSeed',SEEDS.filter(w=>Prof.okSeed(w[0],L)||w[0]===cfg.seed),cfg.seed)};
   document.getElementById('menu').addEventListener('click',e=>{
     const b=e.target.closest('[data-go]');if(!b)return;Snd.tone(500);const g=b.dataset.go;
-    if(g!=='camp')Match._campNext=null;
+    /* keluar dari Kembara: pulihkan tetapan pemain yang ditimpa oleh peringkat (dulu tidak pernah dipulihkan) */
+    if(g!=='camp'){Match._campNext=null;if(g!=='cont')Quest.restore()}
     if(g==='cont'){dock();Match.resume()}
     else if(g==='play'){cfg.vs='ai';dock();Match.start()}
     else if(g==='ai'){cfg.vs='ai';Setup.render('mod')}
@@ -71,7 +72,9 @@ function wire(){
   document.getElementById('prof').addEventListener('click',e=>{const t=e.target;if(t.dataset&&t.dataset.h==='closeprof'||t.id==='prof')return Prof.close();const pb=t.closest&&t.closest('[data-ptab]');if(pb){Prof.tab=pb.dataset.ptab;Prof.open();return}
     if(t.dataset&&t.dataset.h==='cloudon')return void Prof.cloudOn();
     if(t.dataset&&t.dataset.h==='cloudoff')return Prof.cloudOff();const sb=t.closest&&t.closest('[data-slot]');if(sb&&!sb.disabled){Prof.slot=+sb.dataset.slot;Snd.tone(520);Prof.open();return}
-    const gb=t.closest&&t.closest('[data-gem]');if(gb&&!gb.disabled){Prof.pickGem(+gb.dataset.gem);Snd.chime()}});
+    const gb=t.closest&&t.closest('[data-gem]');if(gb&&!gb.disabled){Prof.pickGem(+gb.dataset.gem);Snd.chime()}
+    const ws=t.closest&&t.closest('[data-wsj]');if(ws){Senjata.open(+ws.dataset.wsj);return}
+    const wb=t.closest&&t.closest('[data-wpn]');if(wb&&!wb.disabled&&Senjata.pilih(+wb.dataset.wpn)){Snd.chime();Prof.open()}});
   document.getElementById('pm').onclick=()=>Prof.open();
   document.getElementById('post').addEventListener('click',e=>Msg.click(e));
   document.getElementById('net').addEventListener('input',e=>{
@@ -98,7 +101,10 @@ function wire(){
     const r=e.target.dataset&&e.target.dataset.r;if(!r)return;document.getElementById('result').hidden=true;
     if(Msg.on){if(r==='again'){Net.restore();Msg.end();Net.tx='';Net.open=false;Screen.go('menu');Net.show()}else{Net.restore();Msg.end();Net.tx='';Net.open=false;Screen.go('menu')}return}
     if(Match.online){if(r==='again')Net.again();else{Net.leave()}return}
-    if(r==='again')Match.start();else if(r==='set')Setup.render('mod');else Screen.go('menu');
+    if(r==='next'&&Match._campNx!=null)Quest.play(Match._campNx);
+    else if(r==='again'){if(Match._campI!=null)Quest.play(Match._campI);else Match.start()}
+    else if(r==='camp'){Screen.go('menu');Quest.openCamp()}
+    else if(r==='set')Setup.render('mod');else Screen.go('menu');
   });
   document.addEventListener('keydown',e=>{
     if(Screen.cur!=='match'||!Match.s)return;

@@ -37,7 +37,7 @@ const Store={
   async put(o){if(!this.on)return false;try{await this.ref().set(o);return true}catch(e){return false}}
 };
 const Prof={
-  d:{xp:0,w:0,g:0,gem:-1,gem2:-1,camp:0,cap:0,ko:0,chain:0,best:0,str:0,cur:0,seen:0,hariN:0,hariS:0,hariB:0},
+  d:{xp:0,w:0,g:0,gem:-1,gem2:-1,camp:0,cap:0,ko:0,chain:0,best:0,str:0,cur:0,seen:0,hariN:0,hariS:0,hariB:0,wpn:0},
   day:{d:'',p:[0,0,0],done:[0,0,0]},
   loaded:false,nk:'',
   key:'cm15p',
@@ -118,17 +118,17 @@ const Prof={
     const s1=this.gemSel(L),p=a.find(g=>g.id===this.d.gem2&&(!s1||g.id!==s1.id));
     return p||a.filter(g=>!s1||g.id!==s1.id).pop()||null},
   gemSlots(L=this.lvl()){const o=[];const a=this.gemSel(L);if(a)o.push(a);const b=this.gemSel2(L);if(b)o.push(b);return o},
-  fix(){if(this.d.gem>=0&&!GEM[this.d.gem])this.d.gem=-1;if(this.d.gem2>=0&&!GEM[this.d.gem2])this.d.gem2=-1;if(this.d.gem2===this.d.gem)this.d.gem2=-1;for(const k in this.d)if(!Number.isFinite(this.d[k]))this.d[k]=0},
+  fix(){if(typeof SENJATA!=='undefined'&&!SENJATA[this.d.wpn])this.d.wpn=0;if(this.d.gem>=0&&!GEM[this.d.gem])this.d.gem=-1;if(this.d.gem2>=0&&!GEM[this.d.gem2])this.d.gem2=-1;if(this.d.gem2===this.d.gem)this.d.gem2=-1;for(const k in this.d)if(!Number.isFinite(this.d[k]))this.d[k]=0},
   okWood:(id,L)=>(WU[id]||1)<=L,okSeed:(id,L)=>(SU[id]||1)<=L,okFloor:(id,L)=>(FU[id]||1)<=L,
   lvOf(k,id){return(k==='wood'?WU:k==='floor'?FU:SU)[id]||1},
-  gains(l0,l1){const out=[];for(let L=l0+1;L<=l1;L++){const g=GEM.find(x=>x.lv===L);out.push({L,st:STN[(L-2)%3],gem:g||null,wood:WOODN.filter(w=>WU[w[0]]===L).map(w=>w[1]),seed:SEEDS.filter(s=>SU[s[0]]===L).map(s=>s[1]),floor:FLN.filter(f=>FU[f[0]]===L).map(f=>f[1])})}return out},
+  gains(l0,l1){const out=[];for(let L=l0+1;L<=l1;L++){const g=GEM.find(x=>x.lv===L);out.push({L,st:STN[(L-2)%3],gem:g||null,wood:WOODN.filter(w=>WU[w[0]]===L).map(w=>w[1]),seed:SEEDS.filter(s=>SU[s[0]]===L).map(s=>s[1]),floor:FLN.filter(f=>FU[f[0]]===L).map(f=>f[1]),wpn:typeof SENJATA!=='undefined'?SENJATA.filter(w=>w.lv===L):[]})}return out},
   award(o){
     const b={win:120,draw:70,lose:40}[o.res]||40,xp=Math.round((b+Math.min(o.caps||0,10)*8)*o.mult),l0=this.lvl();
     this.d.xp+=xp;this.d.g++;if(o.res==='win')this.d.w++;this.save();const l1=this.lvl();
     return{xp,l0,l1,up:this.gains(l0,l1)};
   },
   /* ---- skrin pangkat ---- */
-  perkHtml(g){const bits=[`+0.2 ${STL[g.st]}`];if(g.gem)bits.push(`${g.gem.e} ${esc(g.gem.n)}`);g.wood.forEach(w=>bits.push(`🪵 ${esc(w)}`));g.seed.forEach(s=>bits.push(`🔮 ${esc(s)}`));g.floor.forEach(f=>bits.push(`🧶 ${esc(f)}`));return bits.map(x=>`<span>${x}</span>`).join('')},
+  perkHtml(g){const bits=[`+0.2 ${STL[g.st]}`];if(g.gem)bits.push(`${g.gem.e} ${esc(g.gem.n)}`);g.wood.forEach(w=>bits.push(`🪵 ${esc(w)}`));g.seed.forEach(s=>bits.push(`🔮 ${esc(s)}`));g.floor.forEach(f=>bits.push(`🧶 ${esc(f)}`));(g.wpn||[]).forEach(w=>bits.push(`${w.e} Senjata: ${esc(w.n)}`));return bits.map(x=>`<span>${x}</span>`).join('')},
   tab:'sum',slot:1,
   pickGem(id){const L=this.lvl(),g=GEM[id];if(!g||g.lv>L)return;
     if(this.slot===2&&L>=this.SLOT2){if(this.d.gem===id)this.d.gem=-1;this.d.gem2=id}
@@ -138,7 +138,7 @@ const Prof={
     const p=this.prog(),L=p.L,b=this.bonus(L),sel=this.gemSel(),T=this.tab;
     const near=this.gains(Math.max(0,L-1),Math.min(LVMAX,L+4));
     const rows=T==='road'?this.gains(1,LVMAX):near;
-    const tabs=[['sum','Ringkasan'],['gem','Jurus'],['bdg','Lencana'],['road','Ganjaran']];
+    const tabs=[['sum','Ringkasan'],['gem','Jurus'],['wpn','Senjata'],['bdg','Lencana'],['road','Ganjaran']];
     let body='';
     if(T==='sum')body=`<div class="pf-st">${STN.map(k=>`<div><small>${STL[k]}</small><b>+${b[k].toFixed(1)}</b></div>`).join('')}</div>
       ${Quest.recHtml()}
@@ -154,6 +154,7 @@ const Prof={
       <p class="hnote">Tekan slot di atas, kemudian pilih jurus di bawah untuk slot itu.${L>=this.SLOT2?' Dua jurus dibawa sekali, dan anda pilih yang mana satu semasa bertarung.':''}</p>
       <div class="gems">${GEM.map(g=>{const un=g.lv<=L,a1=sel&&sel.id===g.id,a2=s2&&s2.id===g.id;
         return`<button class="gem${un?'':' lock'}${a1||a2?' sel':''}" data-gem="${g.id}" ${un?'':'disabled'}><i>${un?g.e:'🔒'}</i><b>${esc(g.n)}</b><small>${un?esc(g.t):'Buka di level '+g.lv}</small>${a1?'<em>SLOT 1</em>':a2?'<em class="s2">SLOT 2</em>':''}</button>`}).join('')}</div>`;}
+    else if(T==='wpn')body=Senjata.html(L);
     else if(T==='bdg')body=Quest.bdgHtml();
     else body=`<div class="road tall">${rows.map(g=>`<div class="rw${g.L<=L?' got':''}${g.gem?' ms':''}"><b>Lv ${g.L}</b><div>${this.perkHtml(g)}</div></div>`).join('')}</div>`;
     return`<div class="panel prof"><h2>Pangkat &amp; Ganjaran</h2>
