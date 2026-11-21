@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 echo "== bina =="
 python3 tools/build.py --chk >/dev/null
 echo "== sintaks =="
-node --check tests/chk.js && node --check tests/hik_chk.js && echo "  OK"
+node --check tests/chk.js && echo "  OK"
 fail=0
 for t in t t2 t3 lobitest p2ptest animtest perftest hariantest senjatatest audiotest changelogtest; do
   echo "== $t =="

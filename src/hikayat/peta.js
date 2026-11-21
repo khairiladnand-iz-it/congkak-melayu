@@ -5,11 +5,12 @@
    (boleh ditekan dan dibaca pembaca skrin). Laut beralun perlahan; dihadkan ~30 fps
    dan berhenti bila tiada apa bergerak, tab tersembunyi atau kurang gerakan. */
 const Peta = (() => {
+  const kini = () => typeof performance !== 'undefined' ? performance.now() : Date.now();
   let cv, ctx, lap, W = 0, H = 0, dpr = 1, H0 = null, pts = [], m = 0;
   let cam = { x: 103, y: 3, s: 40 }, camA = null, camB = null, camT = 1, camDur = 1;
-  let lakar = 1, lakarT0 = 0, kapal = null, raf = 0, last = 0, t0 = performance.now();
-  const img = new Image(); let imgOk = false; img.onload = () => { imgOk = true; minta() };
-  const KUR = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lakar = 1, lakarT0 = 0, kapal = null, raf = 0, last = 0, t0 = kini();
+  const img = typeof Image === 'function' ? new Image() : {}; let imgOk = false; img.onload = () => { imgOk = true; minta() };
+  const KUR = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
   const proj = (c, k = cam) => [(c[0] - k.x) * k.s + W / 2, -(c[1] - k.y) * k.s + H / 2];
@@ -196,11 +197,11 @@ const Peta = (() => {
         /* zum ke pasangan perhentian, kemudian belayar */
         cam = semua; camT = 1; lakar = 1;
         keKamera(muat([pts[maju - 1].c, pts[maju].c], 60, 3), 900);
-        kapal = { i: maju - 1, t: 0, mula: performance.now() + (KUR ? 0 : 700), dur: KUR ? 1 : 1600, cb: () => { keKamera(semua, 1100); opt.selesai && opt.selesai() } };
+        kapal = { i: maju - 1, t: 0, mula: kini() + (KUR ? 0 : 700), dur: KUR ? 1 : 1600, cb: () => { keKamera(semua, 1100); opt.selesai && opt.selesai() } };
         m = maju;
       } else {
         kapal = null; cam = semua; camT = 1;
-        if (baru && !KUR) { lakar = 0; lakarT0 = performance.now() } else lakar = 1;
+        if (baru && !KUR) { lakar = 0; lakarT0 = kini() } else lakar = 1;
       }
       minta();
     },

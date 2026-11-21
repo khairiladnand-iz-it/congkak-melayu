@@ -1,5 +1,20 @@
 [
  {
+  "v": "0.9.19",
+  "d": "2026-11-21",
+  "t": "Hikayat Pahlawan dalam Congkak Melayu",
+  "n": [
+   "Hikayat Pahlawan kini menu baharu dalam permainan: pilih seorang daripada 16 pahlawan dan ikuti jalan hidupnya di peta Nusantara.",
+   "Setiap perhentian dimainkan di gelanggang sebenar: papan 3D, animasi biji, pertarungan tikam dan muzik yang sama dengan perlawanan biasa.",
+   "Setiap perlawanan memberi XP dan menaikkan level. Kemenangan pertama di setiap perhentian memberi XP Hikayat tambahan, dan menamatkan sesuatu hikayat memberi lebih lagi.",
+   "Selepas menang, kad fakta dibuka dan pahlawan belayar ke perhentian seterusnya. Kalah? Cuba lagi terus dari panel keputusan.",
+   "Raja Abdullah (Johor) kini ada potret; semua 54 watak sampingan berpotret.",
+   "Alamat lama hikayat.html kini membuka menu Hikayat dalam permainan."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.18",
   "d": "2026-11-21",
   "t": "Hikayat Pahlawan: Peta, Cerita & Potret Watak",
@@ -9,8 +24,8 @@
    "53 watak sampingan kini ada potret chibi, dan Galeri Watak Sampingan menyenaraikan semuanya mengikut jenis.",
    "Setiap adegan menyatakan bahawa narasinya didramatisasi; fakta dan sumber kekal dalam kad selepas menang."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "0437efb",
+  "run": 44899685678
  },
  {
   "v": "0.9.17",

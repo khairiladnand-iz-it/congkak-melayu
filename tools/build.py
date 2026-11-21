@@ -12,9 +12,11 @@ SRC  = os.path.join(ROOT, 'src')
 rd   = lambda *p: open(os.path.join(SRC, *p), encoding='utf-8').read()
 
 # ---------- susunan fail ----------
-JS_ORDER  = ['heroes2', 'new_a', 'prog', 'quest', 'harian', 'kisah', 'senjata', 'log', '@snd', 'music', 'hist', 'p2p', 'net',
-             'lobi', 'msg', 'menufx', 'mobile', 'istana', 'world', 'latar', 'new_b', '@duel', 'new_c']
-CSS_ORDER = ['extra', 'menu', 'duel', 'lobi']
+JS_ORDER  = ['heroes2', 'new_a', 'prog', 'quest', 'harian', 'kisah', 'senjata', 'log',
+             'hk/data', 'hk/cerita', 'hk/avatar', 'hk/watak', 'hk/tempat', 'hk/peta',
+             '@snd', 'music', 'hist', 'p2p', 'net',
+             'lobi', 'msg', 'menufx', 'mobile', 'istana', 'world', 'latar', 'new_b', '@duel', 'hikayat', 'new_c']
+CSS_ORDER = ['extra', 'menu', 'duel', 'lobi', 'hikayat']
 
 # ---------- sejarah perubahan: satu sumber (src/changelog.json) -> permainan + CHANGELOG.md ----------
 def changelog():
@@ -115,9 +117,10 @@ def build(out, webp=True, write_chk=False, pwa=True):
     log = changelog()
     js = ("'use strict';\nconst ASSET=" + json.dumps({'box': box}) + ';\n'
           + 'const CHANGELOG=' + json.dumps(log, ensure_ascii=False) + ';\n'
+          + 'const AVATAR=' + json.dumps(json.load(open(os.path.join(SRC, 'assets', 'watak.json'), encoding='utf-8'))) + ';\n'
           + rd('js', 'engine.js') + '\n' + head
           + 'const ART2_JSON=' + json.dumps(json.dumps(crops)) + ';\n'
-          + ''.join(part[n] if n.startswith('@') else rd('js', n + '.js') for n in JS_ORDER))
+          + ''.join(part[n] if n.startswith('@') else rd('hikayat', n[3:] + '.js') + '\n' if n.startswith('hk/') else rd('js', n + '.js') for n in JS_ORDER))
 
     html = rd('tpl.html').replace('/*CSS*/', css).replace('/*JS*/', js)
     html = (html.replace('<!--PWA-->', rd('pwa', 'head.html') if pwa else '')
@@ -141,28 +144,12 @@ def build(out, webp=True, write_chk=False, pwa=True):
         open(os.path.join(ROOT, 'tests', 'chk.js'), 'w', encoding='utf-8').write(js)
     return html
 
-# ---------- Hikayat Pahlawan: halaman berdiri sendiri ----------
-HIK_ORDER = ['data', 'cerita', 'avatar', 'watak', 'tempat', 'peta', 'laga', 'main']
-HIK_POTRET = ['saadong', 'fatimah', 'siti', 'ledang', 'santubong', 'malahayati', 'mahsuri', 'teja']   # susunan HER2 dalam heroes2.js
-
-def build_hikayat(out, webp=True, art=None, write_chk=False):
-    """Hikayat Pahlawan sebagai satu fail. Guna semula engine.js (Rules, AI), RNG daripada
-    harian.js dan potret 18 pahlawan; tiada three.js, tiada kod permainan utama yang lain."""
-    box, crops = art or load_art(webp)
-    potret = box + [crops[k] for k in HIK_POTRET]
-    assert len(potret) == 18, 'potret pahlawan mesti 18'
-    hr = rd('js', 'harian.js')
-    rng = hr[hr.index('const RNG'):hr.index('const Harian')]
-    av = json.load(open(os.path.join(SRC, 'assets', 'watak.json'), encoding='utf-8'))
-    js = ("'use strict';\nconst PORTRET=" + json.dumps(potret) + ';\nconst AVATAR=' + json.dumps(av) + ';\n'
-          + rd('js', 'engine.js') + '\n' + rng
-          + ''.join(rd('hikayat', n + '.js') + '\n' for n in HIK_ORDER))
-    html = rd('hikayat', 'tpl.html').replace('/*CSS*/', rd('hikayat', 'hikayat.css')).replace('/*JS*/', js)
-    os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
-    open(out, 'w', encoding='utf-8').write(html)
-    if write_chk:
-        open(os.path.join(ROOT, 'tests', 'hik_chk.js'), 'w', encoding='utf-8').write(js)
-    return html
+# ---------- hikayat.html: alamat lama prototaip -> menu Hikayat dalam permainan ----------
+def hikayat_redirect(outdir):
+    open(os.path.join(outdir, 'hikayat.html'), 'w', encoding='utf-8').write(
+        '<!DOCTYPE html><html lang="ms"><head><meta charset="utf-8"><title>Hikayat Pahlawan</title>'
+        '<meta http-equiv="refresh" content="0;url=./#hikayat"></head>'
+        '<body><p>Hikayat Pahlawan kini dalam <a href="./#hikayat">Congkak Melayu</a>.</p></body></html>')
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
@@ -171,15 +158,8 @@ if __name__ == '__main__':
     ap.add_argument('--chk', action='store_true', help='tulis tests/chk.js untuk node --check')
     ap.add_argument('--single', action='store_true',
                     help='satu fail sahaja tanpa PWA (untuk artifact Claude)')
-    ap.add_argument('--hikayat', action='store_true',
-                    help='bina Hikayat Pahlawan sahaja ke --out (untuk artifact Claude)')
     a = ap.parse_args()
-    if a.hikayat:
-        h = build_hikayat(a.out, webp=not a.no_webp, write_chk=a.chk)
-        print('%s  %d KB' % (a.out, len(h.encode()) // 1024)); sys.exit(0)
     h = build(a.out, webp=not a.no_webp, write_chk=a.chk, pwa=not a.single)
     print('%s  %d KB' % (a.out, len(h.encode()) // 1024))
-    if not a.single:                         # laman web: Hikayat di sebelah permainan utama
-        ho = os.path.join(os.path.dirname(a.out) or '.', 'hikayat.html')
-        hh = build_hikayat(ho, webp=not a.no_webp, write_chk=a.chk)
-        print('%s  %d KB' % (ho, len(hh.encode()) // 1024))
+    if not a.single:                         # alamat lama prototaip Hikayat
+        hikayat_redirect(os.path.dirname(a.out) or '.')

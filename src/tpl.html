@@ -36,7 +36,8 @@
   <nav class="mnu">
    <button class="mb pri wide" id="cont" data-go="cont" hidden><b>Sambung Permainan</b><small>Kembali ke gelanggang</small></button>
    <button class="mb pri wide" data-go="play"><b>Main Sekarang</b><small>Lawan komputer · terus ke gelanggang</small></button>
-   <button class="mb camp wide" data-go="camp"><b>⚑ Kembara Nusantara</b><small>16 peringkat merentas Nusantara</small></button>
+   <button class="mb camp" data-go="camp"><b>⚑ Kembara</b><small>16 peringkat Nusantara</small></button>
+   <button class="mb hik" data-go="hik"><b>📜 Hikayat</b><small>16 pahlawan · kisah &amp; peta</small></button>
    <button class="mb hari wide" data-go="hari"><b>🎋 Congkak Harian</b><small>Satu papan untuk semua · <i id="hrb">hari ini</i></small></button>
    <div class="msec">Pilih Lawan</div>
    <button class="mb" data-go="ai"><b>Lawan Komputer</b><small>3 tahap kesukaran</small></button>
@@ -84,6 +85,40 @@
 <div class="ov" id="log" hidden role="dialog" aria-modal="true" aria-labelledby="logh"></div>
 <div class="ov" id="post" hidden></div>
 <div class="ov" id="camp" hidden></div>
+<div class="ov" id="hik" hidden>
+ <div class="hbox">
+ <section id="hrumah" class="hsk">
+  <nav class="hatas"><button class="btn sm" data-hk="keluar">‹ Menu</button></nav>
+  <header class="htajuk">
+   <p class="hjawi" lang="ar" dir="rtl">حكايت ڤهلاون</p>
+   <h2>Hikayat Pahlawan</h2>
+   <p class="hsub">Ikuti jalan hidup seorang pahlawan. Setiap perhentian ialah perlawanan congkak di gelanggang sebenar; menang untuk membuka kad fakta dan mendapat XP.</p>
+   <p class="hkira" id="hkira"></p>
+  </header>
+  <section class="hkunci" aria-labelledby="hklh"><h3 id="hklh">Cara membaca kad</h3>
+   <p>Disusun untuk kegunaan akademik. Setiap perhentian membawa label dan sumbernya sendiri, kerana satu perjalanan boleh bercampur sejarah dengan cerita.</p>
+   <dl id="hlabel"></dl></section>
+  <div class="center"><button class="btn sm" data-hk="watak" id="hbwatak">Galeri Watak Sampingan</button></div>
+  <div class="hsenarai" id="hsenarai"></div>
+ </section>
+ <section id="hjalan" class="hsk" hidden>
+  <nav class="hatas"><button class="btn sm" data-hk="rumah">‹ Semua pahlawan</button> <button class="btn sm" data-hk="keluar">Menu</button></nav>
+  <header class="hjk" id="hjkepala"></header>
+  <div class="hpeta" role="group" aria-label="Peta perjalanan"><canvas id="hpcv" aria-hidden="true"></canvas><div class="hplap" id="hplap"></div>
+   <p class="pnota">Peta dipermudah. Tempat bertanda * ialah lokasi anggaran: sumber tidak menyatakannya dengan tepat.</p></div>
+  <div class="hjintro" id="hjintro"></div>
+  <ol class="hperhentian" id="hph"></ol>
+  <section class="hepilog" id="hepilog" hidden></section>
+ </section>
+ <section id="hgaleri" class="hsk" hidden>
+  <nav class="hatas"><button class="btn sm" data-hk="rumah">‹ Semua pahlawan</button></nav>
+  <p class="eyebrow">Galeri</p><h2>Watak Sampingan</h2>
+  <p class="gintro">Watak yang anda temui dalam Hikayat tetapi tiada potret pahlawan. Potret chibi ini tafsiran seni, bukan rupa sebenar: tiada potret sezaman bagi kebanyakan mereka. Watak rekaan bertanda bingkai putus-putus ungu.</p>
+  <div id="hgsenarai"></div>
+ </section>
+ </div>
+ <div class="hlapis" hidden><div class="hkertas" role="dialog" aria-modal="true" tabindex="-1"></div></div>
+</div>
 <div class="ov" id="help" hidden>
  <div class="panel"><h2>Cara Main</h2>
  <ul>

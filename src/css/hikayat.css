@@ -1,0 +1,142 @@
+/* ===== HIKAYAT PAHLAWAN =====
+   Naskhah hikayat di atas permainan: satu lajur bacaan, kad adegan berbingkai emas, peta kanvas.
+   Semua peraturan berskop #hik supaya tidak menyentuh menu atau gelanggang. */
+#hik{display:block;place-items:initial;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));
+  --emas:#e8c25a;--emas2:#a97c28;--marun:#3b0b12;--marun2:#56131c;--kertas:#f1e3c2;--kabur:#c8b28a;
+  --f-tajuk:'Cinzel',Georgia,serif;--f-teks:'Cormorant Garamond',Georgia,serif;--f-jawi:'Amiri','Traditional Arabic',serif;
+  background:radial-gradient(120% 60% at 50% -10%,#4a0c14 0%,transparent 60%),#1a0609;color:var(--kertas);font:500 1.08rem/1.5 var(--f-teks);text-align:left}
+#hik .hbox{max-width:760px;margin:0 auto;padding-bottom:28px}
+#hik h2,#hik h3{font-family:var(--f-tajuk);font-weight:700;text-wrap:balance;margin:0;letter-spacing:.02em;color:var(--kertas)}
+#hik .eyebrow{font:700 .7rem/1 var(--f-tajuk);letter-spacing:.16em;text-transform:uppercase;color:var(--emas);margin:0 0 .45rem}
+#hik .center{text-align:center;margin:.55rem 0}
+#hik .hatas{display:flex;gap:.5rem;margin:.2rem 0 .8rem}
+#hik .cip{display:inline-block;flex:none;font:700 .64rem/1 var(--f-tajuk);letter-spacing:.1em;text-transform:uppercase;color:var(--lc);
+  border:1px solid var(--lc);border-radius:3px;padding:.32rem .45rem .28rem;background:color-mix(in srgb,var(--lc) 12%,transparent)}
+#hik .cip.sm{font-size:.56rem;padding:.26rem .36rem .22rem}
+
+/* rumah */
+#hik .htajuk{text-align:center;padding:.4rem 0 1.1rem}
+#hik .hjawi{font:700 2rem/1.2 var(--f-jawi);color:var(--emas);margin:0}
+#hik .htajuk h2{font-size:clamp(1.8rem,6vw,2.6rem)}
+#hik .hsub{max-width:34rem;margin:.5rem auto 0;color:var(--kabur)}
+#hik .hkira{font:600 .78rem var(--f-tajuk);letter-spacing:.08em;color:var(--emas2);margin:.7rem 0 0}
+#hik .hkunci{border-top:1px solid var(--emas2);border-bottom:1px solid var(--emas2);padding:.9rem 0;margin-bottom:.8rem}
+#hik .hkunci h3{font-size:.9rem;color:var(--emas);letter-spacing:.1em;text-transform:uppercase}
+#hik .hkunci>p{margin:.4rem 0 .8rem;color:var(--kabur)}
+#hik .hkunci dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem 1.2rem;margin:0}
+#hik .hkunci dl div{display:flex;gap:.6rem;align-items:baseline}
+#hik .hkunci dd{margin:0;font-size:.96rem;min-width:0}
+#hik .hsenarai{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,21rem),1fr));gap:.6rem;margin-top:.8rem}
+#hik .hhero{position:relative;display:grid;grid-template-columns:auto 1fr;column-gap:.8rem;row-gap:.35rem;text-align:left;color:var(--kertas);
+  background:var(--marun);border:1px solid #5b1a22;border-radius:6px;padding:.6rem .7rem;cursor:pointer;font:inherit}
+#hik .hhero:hover{border-color:var(--emas2);background:var(--marun2)}
+#hik .hp{grid-row:1/3;width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid var(--emas2)}
+#hik .hp img{width:100%;height:100%;object-fit:cover;display:block}
+#hik .hn{min-width:0;display:flex;flex-direction:column}
+#hik .hn b{font:700 .98rem/1.2 var(--f-tajuk)}
+#hik .hn small{color:var(--kabur);font-size:.86rem;line-height:1.3}
+#hik .hm{display:flex;align-items:center;gap:.6rem}
+#hik .pip{display:flex;gap:4px}
+#hik .pip i{width:9px;height:9px;border-radius:50%;border:1px solid var(--emas2)}
+#hik .pip i.on{background:var(--emas);border-color:var(--emas)}
+#hik .lencana{position:absolute;top:.5rem;right:.6rem;font:700 .52rem var(--f-tajuk);letter-spacing:.1em;text-transform:uppercase;color:#1a0609;background:var(--emas);padding:.22rem .4rem;border-radius:2px;font-style:normal}
+
+/* jalan & peta */
+#hik .hjk{display:flex;gap:1rem;align-items:center}
+#hik .hjk h2{font-size:clamp(1.4rem,5vw,2rem)}
+#hik .meta{margin:.35rem 0 0;color:var(--kabur);font-size:.94rem;display:flex;flex-wrap:wrap;gap:.25rem .5rem;align-items:center}
+#hik .hpeta{position:relative;margin:1rem 0 0;border:1px solid var(--emas2);border-radius:6px;overflow:hidden;background:#0c141c}
+#hik .hpeta canvas{display:block;width:100%;height:clamp(300px,62vw,460px)}
+#hik .hplap{position:absolute;inset:0 0 auto 0;height:clamp(300px,62vw,460px);pointer-events:none}
+#hik .pn{position:absolute;left:0;top:0;pointer-events:auto;margin:-14px 0 0 -14px;width:28px;height:28px;border-radius:50%;padding:0;
+  border:2px solid var(--emas2);background:#14202a;color:var(--kabur);font:700 .72rem/1 var(--f-tajuk);cursor:pointer;transition:opacity .4s,box-shadow .2s;display:grid;place-items:center}
+#hik .pn.selesai{background:var(--emas);border-color:var(--emas);color:#2a0a0e}
+#hik .pn.kini{border-color:var(--emas);color:var(--emas);box-shadow:0 0 0 4px rgba(232,194,90,.25);animation:hkDenyut 1.8s ease-in-out infinite}
+#hik .pn:disabled{cursor:default}
+@keyframes hkDenyut{50%{box-shadow:0 0 0 9px rgba(232,194,90,.06)}}
+#hik .pnota{margin:0;padding:.45rem .7rem;font-size:.84rem;color:var(--kabur);border-top:1px solid #2a3a44;background:#0e171f}
+#hik .hjintro{margin:1rem 0 1rem;font-size:1.1rem}
+#hik .hjintro p{margin:0 0 .6rem}
+#hik .hperhentian{list-style:none;margin:0;padding:0;position:relative}
+#hik .hperhentian::before{content:"";position:absolute;left:17px;top:18px;bottom:18px;border-left:2px dotted var(--emas2)}
+#hik .ph{position:relative;display:flex;gap:.8rem;align-items:flex-start;margin-bottom:.7rem}
+#hik .nod{flex:none;position:relative;z-index:1;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:700 .9rem var(--f-tajuk);background:#1a0609;border:2px solid var(--emas2);color:var(--kabur)}
+#hik .ph.selesai .nod{background:var(--emas);border-color:var(--emas);color:#2a0a0e}
+#hik .ph.kini .nod{border-color:var(--emas);color:var(--emas)}
+#hik .phb{flex:1;min-width:0;text-align:left;color:var(--kertas);font:inherit;background:var(--marun);border:1px solid #5b1a22;border-radius:6px;padding:.6rem .8rem;cursor:pointer;display:flex;flex-direction:column;gap:.25rem}
+#hik .ph.kini .phb{border-color:var(--emas)}
+#hik .phb:disabled{cursor:default;opacity:.55}
+#hik .pt{display:flex;gap:.6rem;align-items:baseline;justify-content:space-between;flex-wrap:wrap}
+#hik .pt b{font:700 .95rem/1.3 var(--f-tajuk)}
+#hik .pl{color:var(--kabur);display:flex;align-items:center;gap:.55rem}
+#hik .pl .med{width:34px;height:34px;border-width:1.5px}
+#hik .rk{font:700 .56rem var(--f-tajuk);letter-spacing:.1em;text-transform:uppercase;color:#b9a3ff;font-style:normal}
+#hik .ps{font:700 .64rem var(--f-tajuk);letter-spacing:.12em;text-transform:uppercase;color:var(--emas)}
+#hik .ph.kunci .ps{color:var(--kabur)}
+#hik .hepilog{margin-top:1.2rem;border:1px solid var(--emas2);border-radius:6px;padding:1rem 1.1rem;background:var(--marun)}
+#hik .hepilog p{margin:.3rem 0}
+#hik .lencana-besar{color:var(--emas)}
+
+/* medalion */
+#hik .med{flex:none;width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid var(--emas2);display:grid;place-items:center;background:var(--marun2)}
+#hik .med.lg{width:84px;height:84px;border-color:var(--emas)}
+#hik .med img,#hik .med svg{width:100%;height:100%;object-fit:cover;display:block}
+#hik .med.rek{border-style:dashed;border-color:#b9a3ff}
+
+/* lapisan adegan / kad */
+#hik .hlapis{position:fixed;inset:0;z-index:60;background:rgba(10,2,4,.8);display:grid;place-items:center;overflow-y:auto;
+  padding:max(14px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) max(14px,env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px))}
+#hik .hkertas{position:relative;width:min(100%,32rem);background:linear-gradient(#3e0d14,#2c080d);border:1px solid var(--emas);border-radius:3px;
+  padding:1.5rem 1.3rem 1.2rem;box-shadow:0 18px 60px rgba(0,0,0,.6);outline:none;text-align:left}
+#hik .hkertas::before{content:"";position:absolute;inset:6px;border:1px solid color-mix(in srgb,var(--emas) 45%,transparent);pointer-events:none}
+#hik .hkertas h3{font-size:1.3rem;margin-bottom:.6rem}
+#hik .narasi{font-size:1.16rem;font-style:italic;margin:0 0 .8rem}
+#hik .narasi.masuk{animation:hkMasuk .5s ease-out both}
+@keyframes hkMasuk{from{opacity:0;transform:translateY(6px)}}
+#hik .narasi.penutup{font-size:1.05rem;border-left:2px solid var(--emas2);padding-left:.7rem}
+#hik .langkah{display:flex;gap:5px;justify-content:center;margin:.2rem 0 .4rem}
+#hik .langkah i{width:18px;height:3px;border-radius:2px;background:#6a2a2f}
+#hik .langkah i.on{background:var(--emas)}
+#hik .vs{display:grid;grid-template-columns:auto auto auto 1fr;gap:.6rem;align-items:center;padding:.7rem 0;border-top:1px solid #6a2a2f;border-bottom:1px solid #6a2a2f}
+#hik .vsx{font:700 .6rem var(--f-tajuk);letter-spacing:.14em;text-transform:uppercase;color:var(--kabur)}
+#hik .vsl{min-width:0;display:flex;flex-direction:column}
+#hik .vsl b{font:700 .92rem/1.25 var(--f-tajuk)}
+#hik .vsl small{color:var(--kabur)}
+#hik .tahap{margin:.8rem 0 .2rem;color:var(--kabur);font-size:.92rem;text-align:center}
+#hik .label{display:flex;gap:.6rem;align-items:baseline;margin:.2rem 0 .5rem;color:var(--kabur)}
+#hik .jn{margin:0 0 .6rem}
+#hik .tahu{border-left:2px solid var(--emas);padding:.2rem 0 .2rem .8rem;margin:.6rem 0}
+#hik .tahu b,#hik .rekaan b{font:700 .64rem var(--f-tajuk);letter-spacing:.12em;text-transform:uppercase;color:var(--emas)}
+#hik .tahu p,#hik .rekaan p{margin:.25rem 0 0}
+#hik .rekaan{border:1px dashed #b9a3ff;border-radius:4px;padding:.55rem .75rem;margin:.8rem 0;background:rgba(185,163,255,.07)}
+#hik .rekaan b{color:#b9a3ff}
+#hik .src{font-size:.94rem;color:var(--kabur);margin:.6rem 0 0}
+#hik .lw{font-size:.9rem;color:var(--kabur);margin:.3rem 0 .4rem;display:flex;align-items:center;gap:.55rem}
+#hik .lw .med{width:32px;height:32px;border-width:1.5px}
+#hik .drama{margin:1rem 0 0;padding-top:.7rem;border-top:1px solid #6a2a2f;font-size:.84rem;color:var(--kabur);line-height:1.4}
+
+/* galeri */
+#hik #hgaleri h2{font-size:clamp(1.5rem,5vw,2rem);margin-bottom:.5rem}
+#hik .gintro{color:var(--kabur);margin:0 0 1.2rem}
+#hik .gk{margin-bottom:1.5rem}
+#hik .gk h3{font-size:.86rem;letter-spacing:.12em;text-transform:uppercase;color:var(--emas);border-bottom:1px solid var(--emas2);padding-bottom:.4rem;margin-bottom:.8rem}
+#hik .gk h3 small{color:var(--kabur);margin-left:.3rem}
+#hik .gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr));gap:.7rem}
+#hik .gw{margin:0;display:flex;gap:.7rem;align-items:flex-start;min-width:0}
+#hik .gw figcaption{min-width:0;display:flex;flex-direction:column;gap:.15rem}
+#hik .gw b{font:700 .88rem/1.25 var(--f-tajuk)}
+#hik .gw small{font-size:.9rem;line-height:1.3}
+#hik .gw em{font-style:normal;color:var(--kabur);font-size:.8rem}
+
+/* butang menu */
+.mb.hik{background:linear-gradient(135deg,rgba(64,30,10,.92),rgba(30,12,6,.92));border-color:#c9962e}
+.mb.hik b{color:#ffd96a}
+
+@media (max-width:520px){
+  #hik .hp{width:52px;height:52px}
+  #hik .hkunci dl{grid-template-columns:1fr}
+  #hik .hkertas{padding:1.3rem 1rem 1rem}
+  #hik .vs{grid-template-columns:auto auto auto}
+  #hik .vsl{grid-column:1/-1}
+}
+@media (prefers-reduced-motion:reduce){#hik *{transition:none!important;animation:none!important}}

@@ -1,13 +1,13 @@
-/* Hikayat Pahlawan: integriti bahan akademik + perlawanan sampai tamat.
+/* Hikayat Pahlawan: integriti bahan akademik, cerita, peta dan avatar.
    node tests/hikayattest.js  (memuatkan sumber terus, tanpa DOM) */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const R = p => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
 const hr = R('src/js/harian.js');
 const src = 'const AVATAR=' + R('src/assets/watak.json') + ';\n' + R('src/js/engine.js') + '\n' + hr.slice(hr.indexOf('const RNG'), hr.indexOf('const Harian'))
-  + ['data', 'cerita', 'avatar', 'watak', 'tempat', 'laga'].map(n => R('src/hikayat/' + n + '.js')).join('\n')
-  + '\n;({Rules,AI,RNG,LABEL,JLAWAN,TAHAP,PROLOG,HIKAYAT,Laga,CERITA,WATAK,TEMPAT,DARAT,Avatar,avatarWatak})';
+  + ['data', 'cerita', 'avatar', 'watak', 'tempat'].map(n => R('src/hikayat/' + n + '.js')).join('\n')
+  + '\n;({Rules,AI,RNG,LABEL,JLAWAN,TAHAP,PROLOG,HIKAYAT,CERITA,WATAK,TEMPAT,DARAT,Avatar,avatarWatak})';
 const X = vm.runInNewContext(src, { console, Math });
-const { Rules, RNG, LABEL, JLAWAN, TAHAP, HIKAYAT, Laga, CERITA, WATAK, TEMPAT, DARAT } = X;
+const { Rules, RNG, LABEL, JLAWAN, TAHAP, HIKAYAT, CERITA, WATAK, TEMPAT, DARAT } = X;
 
 let ok = true, n = 0;
 const chk = (c, m) => { n++; if (!c) { ok = false; console.log('FAIL', m) } };
@@ -19,7 +19,7 @@ const hs = new Set(HIKAYAT.map(H => H.h)); chk(hs.size === 16, 'setiap pahlawan 
 chk(!hs.has(13) && !hs.has(14), 'Puteri Gunung Ledang dan Puteri Santubong dikecualikan (tiada sauh sejarah)');
 const TEKS = JSON.stringify(HIKAYAT);
 chk(!/perlu semakan/i.test(TEKS), 'tiada butiran "(perlu semakan)" yang dibina');
-chk(!/\bsekolah\b|\bkelas\b/i.test(TEKS + R('src/hikayat/tpl.html') + R('src/hikayat/main.js')), 'tiada perkataan sekolah/kelas');
+chk(!/\bsekolah\b|\bkelas\b/i.test(TEKS + R('src/tpl.html') + R('src/js/hikayat.js')), 'tiada perkataan sekolah/kelas');
 let rekaan = 0;
 for (const H of HIKAYAT) {
   for (const k of ['id', 'n', 'z', 'p', 'j', 'i', 'e', 'es']) chk(typeof H[k] === 'string' && H[k].length > 0, `${H.id}: medan ${k}`);
@@ -76,24 +76,8 @@ chk(by('tuah').j === 'pertikai', 'Hang Tuah dipertikai');
 chk(by('siti').st.every(S => S.j === 'lagenda'), 'Cik Siti Wan Kembang: semua lagenda');
 chk(by('nadim').pr && by('nadim').pr.j === 'lagenda', 'Hang Nadim: kisah todak ialah prolog lagenda');
 
-/* ---- perlawanan: setiap tahap sampai tamat, biji kekal ---- */
-const tahap = TAHAP.concat([X.PROLOG]);
-for (const [k, T] of tahap.entries()) for (let g = 0; g < 12; g++) {
-  RNG.seed(1000 * k + g + 1);
-  const s = Laga.baru(7, T.biji, T.lvl), jum = 14 * T.biji;
-  let langkah = 0;
-  while (!s.over && langkah < 2000) {
-    const p = s.p, h = p === 1 ? Laga.ai(s) : X.AI.pick(s.b, 7, 0, 1);
-    const r = Laga.langkah(s, h);
-    if (!r) { chk(false, `tahap ${k}: langkah tidak sah ${h}`); break }
-    if (s.b.reduce((a, b) => a + b, 0) !== jum) { chk(false, `tahap ${k}: biji hilang`); break }
-    if (!s.over && !r.extra) chk(s.p === 1 - p, 'giliran bertukar bila tidak masuk rumah');
-    langkah++;
-  }
-  chk(s.over, `tahap ${k} perlawanan ${g}: tamat`);
-  chk(Laga.skor(s, 0) + Laga.skor(s, 1) === jum, `tahap ${k}: semua biji di rumah selepas tamat`);
-}
-chk(!Laga.sah(Laga.baru(7, 4, 1), 8), 'pemain tidak boleh memilih lubang lawan');
+/* ---- tahap perlawanan: dimainkan oleh Match permainan utama ---- */
+for (const T of TAHAP.concat([X.PROLOG])) chk(T.lvl >= 1 && T.lvl <= 3 && T.biji >= 3 && T.biji <= 7, `tahap ${T.n} sah untuk AI dan papan`);
 RNG.off();
 console.log(ok ? `HIKAYAT OK (${n} semakan, ${rekaan} rekaan dinyatakan)` : 'HIKAYAT GAGAL');
 process.exit(ok ? 0 : 1);

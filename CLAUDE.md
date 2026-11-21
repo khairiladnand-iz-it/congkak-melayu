@@ -95,24 +95,25 @@ Meter ketepatan: `pwr()` = 100·(1−jarak)^1.6, dipaparkan dalam `#mpw`. Bagi p
 Label TEPAT/TERSASAR dan `TEL` masih ikut tiga tahap `ACC`.
 Papan kekunci: anak panah (`AK`: ↑ Atas, →/← Tengah, ↓ Bawah) milik peranan manusia (`arR`); nombor 1/2/3 dan 7/8/9 kekal.
 
-## Hikayat Pahlawan (prototaip berdiri sendiri)
+## Hikayat Pahlawan (menu dalam permainan)
 
-Halaman berasingan `dist/hikayat.html`, dibina oleh `build_hikayat()` dalam `tools/build.py`
-(`--hikayat --out f.html` untuk artifact). Sumber dalam `src/hikayat/`: `data.js` (`HIKAYAT`, 16 pahlawan × 4
-perhentian, Hang Nadim ada prolog todak), `laga.js` (`Laga`, pembalut `Rules`/`AI`), `main.js` (UI), `hikayat.css`, `tpl.html`.
-Guna semula `engine.js`, `RNG` daripada `harian.js` dan 18 potret; **tiada** three.js atau kod permainan lain.
-Label perhentian: `sejarah` / `lagenda` / `pertikai` / **`rekaan`**. Jurang sumber (dulu "perlu semakan") diisi adegan
-atau lawan rekaan, dan **setiap rekaan wajib ada penyataan `r`** yang dipaparkan kepada pemain. Jenis lawan `o`:
-`tokoh` / `watak` / `rekaan`. Kemajuan dalam localStorage `hikayat-pahlawan.v1`. Belum dipaut dari menu utama.
-`cerita.js` (`CERITA`, digabung ke HIKAYAT): babak `a[]` (≥3), penutup `b`, tempat `g`, watak `w`, pembukaan `i2`.
-**Narasi boleh menambah suasana, bukan fakta**; tiada dialog tokoh sebenar; setiap adegan memaparkan nota `DRAMA`.
-`tempat.js` (`TEMPAT` koordinat, `ag:1` = anggaran ditanda *, `DARAT` garis pantai dipermudah) → `peta.js` (`Peta`,
-kanvas 2D: lakar laluan, potret belayar `tunjuk(...,{belayar})`, gugus perhentian berdekatan, ~30 fps, berhenti bila tersembunyi).
-`watak.js` (`WATAK` 54 watak sampingan) + `avatar.js` (SVG chibi sandaran). Potret sebenar: roster pengguna
-`src/assets/watak-roster.png` → `tools/watak_avatar.py` → `src/assets/watak.json` (disuntik sebagai `AVATAR`). Raja Abdullah
-(Johor) tiada dalam roster, jadi memakai SVG; pendua "Bendahara Tun Ali" dalam roster tidak digunakan.
-Diuji oleh `tests/hikayattest.js` (data, cerita, peta, avatar, perlawanan) dan `tests/hikayat.py` (pelayar; CI).
-Draf penuh: Claude Doc "Draf Mod Hikayat Pahlawan".
+Menu **📜 Hikayat** (`data-go="hik"`) membuka lapisan `#hik` (`src/js/hikayat.js`, objek `Hikayat`; CSS `src/css/hikayat.css`,
+semua berskop `#hik`). Data dikongsi dari `src/hikayat/` dan dimuatkan melalui `JS_ORDER` (`hk/data`, `hk/cerita`, `hk/avatar`,
+`hk/watak`, `hk/tempat`, `hk/peta`): `HIKAYAT` 16 pahlawan × 4 perhentian (+ prolog todak Hang Nadim), `CERITA` babak `a[]` (≥3),
+penutup `b`, tempat `g`, watak `w`; `TEMPAT`/`DARAT` + `Peta` (kanvas 2D, laluan dilakar, potret belayar, ~30 fps);
+`WATAK` 54 watak sampingan, potret `AVATAR` daripada `src/assets/watak.json` (dijana `tools/watak_avatar.py` daripada roster
+pengguna `watak-roster.png` + `watak-rajaabdullah_j.png`), sandaran SVG `Avatar`.
+Label: `sejarah`/`lagenda`/`pertikai`/**`rekaan`**; **setiap rekaan wajib ada penyataan `r`**. Narasi menambah suasana,
+**bukan fakta**; tiada dialog tokoh sebenar; setiap adegan memaparkan nota `DRAMA`.
+
+**Perlawanan ialah Match sebenar** (papan 3D, animasi, duel, muzik, XP): `Hikayat.main(i)` menyimpan `Quest.bak` (papan bebas,
+dipulihkan seperti Kembara), menetapkan `cfg` ikut `TAHAP` dan `PAPAN[JENIS_T[g]]`, pemain = pahlawan hikayat, dan
+`Match._hikNext` → `Match.hik`. Watak sampingan **meminjam satu slot HEROES/IMGS** (`pakai`); slot dipulihkan pada setiap
+`Screen.go` selain `match` (dibalut) dan dipasang semula bila perlawanan disambung. `Match.finish` memanggil
+`Hikayat.selesai(res)` → kemajuan `Prof.d.hk_<id>` (disegerak seperti kiraan lain), `bonus` XP ke `Prof.award`, butang
+`hkad`/`hagain`/`hpeta`. Menu lain memanggil `Hikayat.lepas()` (pulihkan `cfg.p`). `dist/hikayat.html` = lencongan ke `./#hikayat`.
+Diuji oleh `tests/hikayattest.js` (data, cerita, peta, avatar) dan `tests/hikayat.py` (aliran penuh dalam pelayar; CI).
+Draf: Claude Doc "Draf Mod Hikayat Pahlawan".
 
 ## Kembara: peringkat seterusnya
 

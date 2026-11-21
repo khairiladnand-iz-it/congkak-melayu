@@ -44,7 +44,7 @@ function wire(){
   document.getElementById('menu').addEventListener('click',e=>{
     const b=e.target.closest('[data-go]');if(!b)return;Snd.tone(500);const g=b.dataset.go;
     /* keluar dari Kembara: pulihkan tetapan pemain yang ditimpa oleh peringkat (dulu tidak pernah dipulihkan) */
-    if(g!=='camp'){Match._campNext=null;if(g!=='cont')Quest.restore()}
+    if(g!=='camp'){Match._campNext=null;if(g!=='cont'&&g!=='hik'){Quest.restore();Hikayat.lepas()}}
     if(g==='cont'){dock();Match.resume()}
     else if(g==='play'){cfg.vs='ai';dock();Match.start()}
     else if(g==='ai'){cfg.vs='ai';Setup.render('mod')}
@@ -52,6 +52,7 @@ function wire(){
     else if(g==='hero')Setup.render('hero');else if(g==='board')Setup.render('board');else if(g==='set')Setup.render('more');
     else if(g==='help')document.getElementById('help').hidden=false;
     else if(g==='camp')Quest.openCamp();
+    else if(g==='hik')Hikayat.buka();
     else if(g==='hist')Hist.open(-1);
     else if(g==='prof')Prof.open();
     else if(g==='net')Net.show();
@@ -103,6 +104,7 @@ function wire(){
     const r=e.target.dataset&&e.target.dataset.r;if(!r)return;document.getElementById('result').hidden=true;
     if(Msg.on){if(r==='again'){Net.restore();Msg.end();Net.tx='';Net.open=false;Screen.go('menu');Net.show()}else{Net.restore();Msg.end();Net.tx='';Net.open=false;Screen.go('menu')}return}
     if(Match.online){if(r==='again')Net.again();else{Net.leave()}return}
+    if(r==='hkad'||r==='hagain'||r==='hpeta')return Hikayat.hasil(r);
     if(r==='next'&&Match._campNx!=null)Quest.play(Match._campNx);
     else if(r==='again'){if(Match._campI!=null)Quest.play(Match._campI);else Match.start()}
     else if(r==='camp'){Screen.go('menu');Quest.openCamp()}
@@ -110,7 +112,7 @@ function wire(){
   });
   document.addEventListener('keydown',e=>{
     if(Screen.cur!=='match'||!Match.s)return;
-    for(const id of['duel','result','help','aved','net','prof','hist'])if(!document.getElementById(id).hidden)return;
+    for(const id of['duel','result','help','aved','net','prof','hist','hik'])if(!document.getElementById(id).hidden)return;
     if(/INPUT|SELECT|TEXTAREA/.test((e.target&&e.target.tagName)||''))return;
     const s=Match.s,k=e.key;
     if(/^[1-9]$/.test(k)){const j=+k-1;if(j<s.n)Match.choose((Match.online?Match.me:s.turn)===0?j:2*s.n-j)}

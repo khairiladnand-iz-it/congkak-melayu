@@ -68,7 +68,8 @@ const Prof={
   /* gabung: ambil nilai tertinggi supaya kemajuan tidak pernah berundur */
   merge(o){
     if(!o)return false;let ch=false;
-    for(const k of['xp','w','g','camp','cap','ko','chain','best','str','seen','hariN','hariS','hariB']){
+    /* semua kiraan yang hanya naik, termasuk kemajuan Hikayat (hk_*) */
+    for(const k of Object.keys(this.d).filter(k=>!['gem','gem2','wpn','cur'].includes(k))){
       const v=+o[k];if(Number.isFinite(v)&&v>(this.d[k]||0)){this.d[k]=v;ch=true}}
     if(o.day&&o.day.d===this.day.d){
       for(let i=0;i<3;i++){const v=+((o.day.p||[])[i]);if(Number.isFinite(v)&&v>this.day.p[i]){this.day.p[i]=v;ch=true}
@@ -123,7 +124,7 @@ const Prof={
   lvOf(k,id){return(k==='wood'?WU:k==='floor'?FU:SU)[id]||1},
   gains(l0,l1){const out=[];for(let L=l0+1;L<=l1;L++){const g=GEM.find(x=>x.lv===L);out.push({L,st:STN[(L-2)%3],gem:g||null,wood:WOODN.filter(w=>WU[w[0]]===L).map(w=>w[1]),seed:SEEDS.filter(s=>SU[s[0]]===L).map(s=>s[1]),floor:FLN.filter(f=>FU[f[0]]===L).map(f=>f[1]),wpn:typeof SENJATA!=='undefined'?SENJATA.filter(w=>w.lv===L):[]})}return out},
   award(o){
-    const b={win:120,draw:70,lose:40}[o.res]||40,xp=Math.round((b+Math.min(o.caps||0,10)*8)*o.mult),l0=this.lvl();
+    const b={win:120,draw:70,lose:40}[o.res]||40,xp=Math.round((b+Math.min(o.caps||0,10)*8)*o.mult)+(o.bonus|0),l0=this.lvl();
     this.d.xp+=xp;this.d.g++;if(o.res==='win')this.d.w++;this.save();const l1=this.lvl();
     return{xp,l0,l1,up:this.gains(l0,l1)};
   },

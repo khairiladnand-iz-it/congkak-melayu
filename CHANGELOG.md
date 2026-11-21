@@ -5,6 +5,19 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.19 — Hikayat Pahlawan dalam Congkak Melayu
+
+_2026-11-21_
+
+- Hikayat Pahlawan kini menu baharu dalam permainan: pilih seorang daripada 16 pahlawan dan ikuti jalan hidupnya di peta Nusantara.
+- Setiap perhentian dimainkan di gelanggang sebenar: papan 3D, animasi biji, pertarungan tikam dan muzik yang sama dengan perlawanan biasa.
+- Setiap perlawanan memberi XP dan menaikkan level. Kemenangan pertama di setiap perhentian memberi XP Hikayat tambahan, dan menamatkan sesuatu hikayat memberi lebih lagi.
+- Selepas menang, kad fakta dibuka dan pahlawan belayar ke perhentian seterusnya. Kalah? Cuba lagi terus dari panel keputusan.
+- Raja Abdullah (Johor) kini ada potret; semua 54 watak sampingan berpotret.
+- Alamat lama hikayat.html kini membuka menu Hikayat dalam permainan.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.18 — Hikayat Pahlawan: Peta, Cerita & Potret Watak
 
 _2026-11-21_
@@ -14,7 +27,7 @@ _2026-11-21_
 - 53 watak sampingan kini ada potret chibi, dan Galeri Watak Sampingan menyenaraikan semuanya mengikut jenis.
 - Setiap adegan menyatakan bahawa narasinya didramatisasi; fakta dan sumber kekal dalam kad selepas menang.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `0437efb` · penyiaran [44899685678](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44899685678)</sub>
 
 ## 0.9.17 — Hikayat Pahlawan (Prototaip)
 

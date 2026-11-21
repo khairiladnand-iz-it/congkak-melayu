@@ -20,7 +20,7 @@ const Match={
   gem(seat){return this.owner(seat)?Prof.gemSel(this.lvOf(seat)):null},
   gems(seat){return this.owner(seat)?Prof.gemSlots(this.lvOf(seat)):[]},
   startOnline(me){
-    this.online=true;this.me=me;this.q=[];this.capN=0;this.camp=null;this._campNext=null;const n=cfg.n,s=this.s={n,b:initView(),turn:0,busy:false,over:false,hist:[],pend:null,caps:[0,0]};
+    this.online=true;this.me=me;this.q=[];this.capN=0;this.camp=null;this._campNext=null;this.hik=null;this._hikNext=null;const n=cfg.n,s=this.s={n,b:initView(),turn:0,busy:false,over:false,hist:[],pend:null,caps:[0,0]};
     this.view=s.b.slice();this.marks={};World.flip=me===1;document.getElementById('match').classList.toggle('flip',me===1);
     this.mount();Screen.go('match');this.say(`${HEROES[cfg.p[0]].n} mula dahulu.`);this.render();
     {const d=document.getElementById('dpost');if(d)d.hidden=!Msg.on}
@@ -35,7 +35,7 @@ const Match={
   canSet(){const s=this.s;if(!s||s.busy||s.over||!this.human())return new Set();return new Set(Rules.legal(this.view,s.n,s.turn))},
   mount(){World.build(this.s.n,cfg.wood);World.setSeedType(cfg.seed);World.sync(this.view);
     try{document.body.classList.toggle('face',cfg.vs==='2'&&cfg.face!==false&&!this.online)}catch(e){}},
-  start(){this.camp=this._campNext!=null?this._campNext:null;
+  start(){this.camp=this._campNext!=null?this._campNext:null;if(this._hikNext){this.hik=this._hikNext;this._hikNext=null}else this.hik=null;
     fixCfg();this.online=false;World.flip=false;document.getElementById('match').classList.remove('flip');const n=cfg.n,s=this.s={n,b:initView(),turn:0,busy:false,over:false,hist:[],pend:null,caps:[0,0]};
     this.view=s.b.slice();this.marks={};saveCfg();this.mount();Screen.go('match');
     {const d=document.getElementById('dpost');if(d)d.hidden=true;const q=document.getElementById('dspd');if(q)q.textContent=['🐢','▶','⏩','⚡','🚀'][[1.6,1,.65,.4,.22].indexOf(cfg.speed)]||'▶'}
@@ -134,7 +134,7 @@ const Match={
     {const ow0=this.online?this.me:0;
      if(w===ow0){Snd.fanfare();Mus.set('win')}else if(w<0){Snd.chime();Mus.set('menu')}else{Snd.lose();Mus.set('menu')}}
     const hw=w<0?null:HEROES[cfg.p[w]];
-    const body=w<0?`<h2>Seri!</h2><p class="winn">${a} – ${c}</p>`:`<h2>PEMENANG</h2><div class="pic"><img src="${IMGS[cfg.p[w]]}" alt=""></div><h2>${esc(hw.n)}${cfg.vs==='ai'&&w===1?' (AI)':''}</h2><p class="winn">${a} lawan ${c}</p><p><i>“${esc(hw.l)}”</i></p>`;
+    const body=w<0?`<h2>Seri!</h2><p class="winn">${a} – ${c}</p>`:`<h2>PEMENANG</h2><div class="pic"><img src="${IMGS[cfg.p[w]]}" alt=""></div><h2>${esc(hw.n)}${cfg.vs==='ai'&&w===1?' (AI)':''}</h2><p class="winn">${a} lawan ${c}</p>${hw.l?`<p><i>“${esc(hw.l)}”</i></p>`:''}`;
     const ow=this.online?this.me:0,res=w<0?'draw':w===ow?'win':'lose';
     if(res==='win')Haptic.win();
     if(typeof Harian!=='undefined'&&Harian.on){
@@ -147,15 +147,17 @@ const Match={
     /* simpan indeks peringkat SEBELUM Quest.done mengosongkannya (dulu kad Kisah tidak pernah muncul) */
     const campI=this.camp;
     const campHtml=Quest.done(res);
+    /* Hikayat Pahlawan: kemajuan, XP tambahan dan butang perjalanan */
+    const hk=this.hik&&typeof Hikayat!=='undefined'?Hikayat.selesai(res):null;
     /* Kembara: terus ke peringkat seterusnya tanpa kembali ke menu */
     const nx=campI!=null&&res==='win'&&campI+1<CAMP.length&&campI+1<=(Prof.d.camp|0)?campI+1:null;this._campNx=nx;this._campI=campI;
-    const btns=campI!=null
+    const btns=hk?hk.btns:campI!=null
       ?(nx!=null?`<div class="center"><button class="btn big" data-r="next">▶ Peringkat ${nx+1}: ${esc(CAMP[nx].t)}</button></div>`:'')
        +`<div class="center"><button class="btn${nx!=null?' sm':''}" data-r="again">${res==='win'?'↻ Ulang Peringkat':'↻ Cuba Lagi'}</button></div><button class="btn sm" data-r="camp">⚑ Peta Kembara</button> `
       :`<div class="center"><button class="btn" data-r="again">Main Semula</button></div>${this.online?'':'<button class="btn sm" data-r="set">Tukar Tetapan</button> '}`;
-    const aw=Prof.award({res,caps:s.caps[ow],mult:this.online?1.3:cfg.vs==='ai'?[0,.6,1,1.6][cfg.lvl]:.5});
+    const aw=Prof.award({res,caps:s.caps[ow],mult:this.online?1.3:cfg.vs==='ai'?[0,.6,1,1.6][cfg.lvl]:.5,bonus:hk?hk.bonus:0});
     const r=document.getElementById('result');
-    r.innerHTML=`<div class="panel">${body}${campHtml}<div class="xpbox"><small>${res==='win'?'Anda menang!':res==='draw'?'Seri':'Anda tewas'}</small>${Prof.resultHtml(aw)}</div>${btns}<button class="btn sm" data-r="menu">Menu Utama</button></div>`;
+    r.innerHTML=`<div class="panel">${body}${campHtml}${hk?hk.html:''}<div class="xpbox"><small>${res==='win'?'Anda menang!':res==='draw'?'Seri':'Anda tewas'}</small>${Prof.resultHtml(aw)}</div>${btns}<button class="btn sm" data-r="menu">Menu Utama</button></div>`;
     if(aw.up.some(g=>g.gem))setTimeout(()=>Snd.fanfare(),900);
     /* Kembara: selepas menewaskan pahlawan, tunjuk kisahnya */
     if(res==='win'&&campI!=null&&typeof Kisah!=='undefined'){

@@ -32,5 +32,11 @@ for r, (cy, sz, xs) in enumerate(ROWS):
         b = io.BytesIO()
         im.crop((x0, y0, x0 + s, y0 + s)).resize((128, 128), Image.LANCZOS).save(b, 'WEBP', quality=78, method=6)
         out[id] = 'data:image/webp;base64,' + base64.b64encode(b.getvalue()).decode()
+# potret berasingan (lembaran watak penuh daripada pengguna): id -> (fail, kotak)
+ASING = {'rajaabdullah_j': ('watak-rajaabdullah_j.png', (250, 190, 710, 650))}
+for id, (f, box) in ASING.items():
+    b = io.BytesIO()
+    Image.open(os.path.join(ROOT, 'src', 'assets', f)).convert('RGB').crop(box).resize((128, 128), Image.LANCZOS).save(b, 'WEBP', quality=78, method=6)
+    out[id] = 'data:image/webp;base64,' + base64.b64encode(b.getvalue()).decode()
 json.dump(out, open(os.path.join(ROOT, 'src', 'assets', 'watak.json'), 'w'), indent=0)
 print(len(out), 'avatar')

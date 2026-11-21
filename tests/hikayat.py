@@ -1,135 +1,123 @@
-"""Penguji pelayar: Hikayat Pahlawan (dist/hikayat.html). Jalankan selepas binaan.
-Perjalanan pemain: pilih pahlawan -> adegan -> perlawanan sebenar -> menang -> kad fakta ->
-perhentian seterusnya -> simpan/sambung; kalah -> cuba lagi; adegan rekaan memaparkan penyataannya.
-Telefon menegak dan desktop. Tangkapan skrin ke /tmp/hk_*.png."""
-import asyncio, os
+"""Penguji pelayar: Hikayat Pahlawan dalam Congkak Melayu (dist/index.html). Jalankan selepas binaan.
+Menu -> Hikayat -> peta -> adegan -> perlawanan SEBENAR (Match, papan 3D) -> menang -> XP + kad ->
+belayar ke perhentian seterusnya; kalah -> cuba lagi; slot pahlawan dipinjam dan dipulihkan.
+THREE_LOCAL=/laluan/three.min.js jika tiada rangkaian. Tangkapan skrin ke /tmp/hk_*.png."""
+import asyncio, os, http.server, threading, functools
 from playwright.async_api import async_playwright
 GAGAL = []
 def ok(c, m):
     print(('LULUS ' if c else 'GAGAL ') + m)
     if not c: GAGAL.append(m)
-URL = 'file://' + os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'dist', 'hikayat.html')
+DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'dist')
 
-# papan: semua kosong kecuali satu biji di lubang 6 (masuk rumah -> baris pemain kosong -> tamat)
-MENANG = "()=>{const G=Hikayat.Gel,s=G.s,n=s.n;s.b=Array(2*n+2).fill(0);s.b[n-1]=1;s.b[n]=30;s.b[n+1]=2;s.b[2*n+1]=5;s.p=0;G.lihat=s.b.slice();G.lukis();}"
-KALAH  = "()=>{const G=Hikayat.Gel,s=G.s,n=s.n;s.b=Array(2*n+2).fill(0);s.b[n-1]=1;s.b[n]=3;s.b[n+1]=9;s.b[2*n+1]=40;s.p=0;G.lihat=s.b.slice();G.lukis();}"
+# tamatkan perlawanan semasa dengan keputusan tertentu (papan disusun, kemudian Match.finish sebenar)
+TAMAT = """async(menang)=>{const s=Match.s,n=s.n;s.b=Array(2*n+2).fill(0);s.b[n]=menang?40:5;s.b[2*n+1]=menang?5:40;
+  Match.view=s.b.slice();World.sync(Match.view);await Match.finish()}"""
 
-async def tunggu_lapis(pg, ms=6000):
-    await pg.wait_for_function("()=>!document.getElementById('lapis').hidden", timeout=ms)
+async def lapis(pg, ms=8000):
+    await pg.wait_for_function("()=>!document.querySelector('#hik .hlapis').hidden", timeout=ms)
 
-async def sesi(b, nama, vp):
+async def sesi(b, nama, vp, port):
     c = await b.new_context(viewport=vp, device_scale_factor=1); pg = await c.new_page()
+    if os.environ.get('THREE_LOCAL'):
+        await pg.route('**/three.min.js', lambda r: r.fulfill(path=os.environ['THREE_LOCAL'], content_type='application/javascript'))
     await pg.route('**/fonts.g*/**', lambda r: r.abort())
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
-    pg.on('console', lambda m: m.type == 'error' and 'ERR_FAILED' not in m.text and errs.append(m.text[:200]))
-    await pg.goto(URL); await pg.wait_for_timeout(400)
-    await pg.evaluate("()=>localStorage.clear()"); await pg.reload(); await pg.wait_for_timeout(400)
+    await pg.goto(f'http://127.0.0.1:{port}/', wait_until='domcontentloaded'); await pg.wait_for_timeout(2500)
+    await pg.evaluate("()=>{Prof.d.seen=99;cfg.fight='skip';saveCfg()}")
     W = vp['width']
-    # ---- rumah ----
-    n = await pg.locator('.hero').count(); ok(n == 16, f'{nama}: 16 pahlawan di rumah ({n})')
-    n = await pg.locator('#label-senarai dt').count(); ok(n == 4, f'{nama}: empat label diterangkan, termasuk Rekaan ({n})')
-    sw = await pg.evaluate("()=>document.documentElement.scrollWidth"); ok(sw <= W, f'{nama}: rumah tiada tatal mendatar ({sw}>{W}?)')
+    p0 = await pg.evaluate("()=>cfg.p.slice()")
+    xp0 = await pg.evaluate("()=>Prof.d.xp")
+    # ---- menu ----
+    ok(await pg.locator('[data-go=hik]').is_visible(), f'{nama}: butang Hikayat Pahlawan di menu')
+    fits = await pg.evaluate("()=>document.querySelector('[data-go=\"set\"]').getBoundingClientRect().bottom<=innerHeight+2")
+    ok(fits, f'{nama}: menu masih muat tanpa tatal')
+    await pg.evaluate("()=>document.querySelector('[data-go=hik]').click()"); await pg.wait_for_timeout(300)
+    ok(await pg.locator('#hik .hhero').count() == 16, f'{nama}: 16 hikayat')
+    sw = await pg.evaluate("()=>document.getElementById('hik').scrollWidth<=document.getElementById('hik').clientWidth+1")
+    ok(sw, f'{nama}: lapisan Hikayat tiada tatal mendatar')
     await pg.screenshot(path=f'/tmp/hk_{nama}_rumah.png')
-    # ---- Hikayat Hang Nadim: prolog + 4 ----
-    k = await pg.evaluate("()=>Hikayat.HIKAYAT.findIndex(H=>H.id==='nadim')")
-    await pg.click(f'.hero[data-h="{k}"]')
-    st = await pg.evaluate("()=>[...document.querySelectorAll('.ph')].map(e=>e.className.split(' ')[1])")
-    ok(st == ['kini', 'kunci', 'kunci', 'kunci', 'kunci'], f'{nama}: Hang Nadim 5 perhentian, hanya prolog terbuka {st}')
-    ok(await pg.locator('.ph.kunci .phb[disabled]').count() == 4, f'{nama}: perhentian terkunci tidak boleh ditekan')
-    await pg.screenshot(path=f'/tmp/hk_{nama}_jalan.png', full_page=True)
-    # ---- peta beranimasi ----
-    await pg.wait_for_timeout(1700)
-    pk = await pg.evaluate("()=>Hikayat.Peta._keadaan()")
-    ok(pk['lakar'] == 1 and pk['n'] == 5 and pk['W'] > 200, f'{nama}: peta dilakar dengan 5 perhentian {pk}')
-    ok(await pg.locator('#plap .pn').count() == 5 and await pg.locator('#plap .pn.kini').count() == 1, f'{nama}: butang perhentian di atas peta')
-    px = await pg.evaluate("()=>{const c=document.getElementById('pcv').getContext('2d'),d=c.getImageData(0,0,c.canvas.width,c.canvas.height).data;let n=0;for(let i=0;i<d.length;i+=4*97)if(d[i]>50&&d[i+1]>35)n++;return n}")
+    # ---- Hang Nadim: peta ----
+    k = await pg.evaluate("()=>HIKAYAT.findIndex(H=>H.id==='nadim')")
+    await pg.click(f'#hik .hhero[data-hh="{k}"]'); await pg.wait_for_timeout(1800)
+    ok(await pg.locator('#hplap .pn').count() == 5 and await pg.locator('#hplap .pn.kini').count() == 1, f'{nama}: peta 5 perhentian, satu terbuka')
+    px = await pg.evaluate("()=>{const c=document.getElementById('hpcv').getContext('2d'),d=c.getImageData(0,0,c.canvas.width,c.canvas.height).data;let n=0;for(let i=0;i<d.length;i+=4*97)if(d[i]>50&&d[i+1]>35)n++;return n}")
     ok(px > 50, f'{nama}: peta melukis darat ({px})')
     await pg.screenshot(path=f'/tmp/hk_{nama}_peta.png')
-    await pg.click('#plap .pn.kini'); await tunggu_lapis(pg)
-    t = await pg.text_content('#lapis'); ok('Prolog' in t and 'Seterusnya' in t and 'Mula Perlawanan' not in t and 'didramatisasi' in t, f'{nama}: adegan dibuka babak demi babak, dengan nota dramatisasi')
-    await pg.click('[data-k=babak]'); await pg.wait_for_timeout(100)
-    ok(await pg.locator('#lapis .babak .narasi').count() == 2, f'{nama}: Seterusnya membuka babak kedua')
-    await pg.click('[data-k=langkau]'); await pg.wait_for_timeout(100)
-    t = await pg.text_content('#lapis'); ok('Todak' in t and 'Mula Perlawanan' in t, f'{nama}: babak akhir menunjukkan lawan Todak')
-    ok(await pg.locator('#lapis .med.av img').count() == 1, f'{nama}: lawan tanpa potret pahlawan diberi avatar chibi')
+    # ---- adegan ----
+    await pg.click('#hplap .pn.kini'); await lapis(pg)
+    t = await pg.text_content('#hik .hkertas'); ok('Seterusnya' in t and 'didramatisasi' in t, f'{nama}: adegan berbabak dengan nota dramatisasi')
+    await pg.click('#hik [data-hk=langkau]'); await pg.wait_for_timeout(100)
+    t = await pg.text_content('#hik .hkertas'); ok('Todak' in t and 'Mula Perlawanan' in t and 'XP' in t, f'{nama}: babak akhir: lawan Todak, XP dinyatakan')
+    ok(await pg.locator('#hik .hkertas .med.av img').count() == 1, f'{nama}: avatar chibi lawan')
     await pg.screenshot(path=f'/tmp/hk_{nama}_adegan.png')
-    await pg.click('[data-k=mula]'); await pg.wait_for_timeout(300)
-    ok(await pg.evaluate("()=>document.body.dataset.skrin") == 'laga', f'{nama}: masuk gelanggang')
-    sah = await pg.locator('.lb.sah').count(); ok(sah == 7, f'{nama}: tujuh lubang pemain boleh dipilih ({sah})')
-    jum = await pg.evaluate("()=>Hikayat.Gel.lihat.reduce((a,b)=>a+b,0)"); ok(jum == 42, f'{nama}: prolog 3 biji x 14 lubang ({jum})')
-    sw = await pg.evaluate("()=>document.documentElement.scrollWidth"); ok(sw <= W, f'{nama}: gelanggang tiada tatal mendatar ({sw})')
-    # langkah sebenar melalui klik: lubang paling kanan pemain (indeks 0)
-    await pg.click('.lb[data-l="0"]')
-    await pg.wait_for_function("()=>!Hikayat.Gel.sibuk", timeout=8000)
-    g = await pg.evaluate("()=>({m:Hikayat.Gel.s.gerak,j:Hikayat.Gel.lihat.reduce((a,b)=>a+b,0),p:Hikayat.Gel.s.p})")
-    ok(g['m'] >= 1 and g['j'] == 42, f'{nama}: klik lubang menabur biji, jumlah kekal {g}')
+    # ---- perlawanan sebenar ----
+    await pg.click('#hik [data-hk=mula]'); await pg.wait_for_timeout(1500)
+    st = await pg.evaluate("()=>({scr:document.body.dataset.screen,hik:document.getElementById('hik').hidden,n:cfg.n,sd:cfg.seeds,p0:cfg.p[0],c1:document.getElementById('c1').textContent,pin:!!Hikayat._pinjam(),view:Match.view.reduce((a,b)=>a+b,0)})")
+    ok(st['scr'] == 'match' and st['hik'], f'{nama}: gelanggang 3D permainan asal dibuka {st["scr"]}')
+    ok(st['n'] == 7 and st['sd'] == 3 and st['view'] == 42, f'{nama}: papan prolog 7 lubang × 3 biji ({st["view"]})')
+    ok('Todak' in st['c1'] and st['pin'], f'{nama}: kad lawan memaparkan watak sampingan ({st["c1"][:40]})')
+    ok(st['p0'] == 4, f'{nama}: pemain bermain sebagai Hang Nadim')
     await pg.screenshot(path=f'/tmp/hk_{nama}_laga.png')
-    # tunggu giliran pemain semula (AI bergerak sendiri)
-    await pg.wait_for_function("()=>Hikayat.Gel.s.over||(Hikayat.Gel.s.p===0&&!Hikayat.Gel.sibuk)", timeout=20000)
-    ok(not await pg.evaluate("()=>Hikayat.Gel.s.over") and await pg.evaluate("()=>Hikayat.Gel.s.p") == 0, f'{nama}: AI bergerak dan giliran kembali kepada pemain')
-    # papan kekunci: 1 = lubang paling kiri (indeks 6)
-    b6 = await pg.evaluate("()=>Hikayat.Gel.s.b[6]")
-    if b6 > 0:
-        await pg.keyboard.press('1'); await pg.wait_for_timeout(80)
-        ok(await pg.evaluate("()=>Hikayat.Gel.s.b[6]") == 0 or await pg.evaluate("()=>Hikayat.Gel.sibuk"), f'{nama}: kekunci 1 memilih lubang paling kiri')
-        await pg.wait_for_function("()=>Hikayat.Gel.s.over||(Hikayat.Gel.s.p===0&&!Hikayat.Gel.sibuk)", timeout=20000)
-    # ---- menang -> kad fakta ----
-    await pg.evaluate(MENANG); await pg.click('.lb[data-l="6"]'); await tunggu_lapis(pg)
-    t = await pg.text_content('#lapis')
-    ok('Menang' in t and 'Sumber:' in t and 'Lagenda' in t, f'{nama}: kad fakta prolog bersumber dan berlabel')
-    ok('Teruskan Perjalanan' in t, f'{nama}: butang teruskan perjalanan')
+    # langkah sebenar melalui Match
+    mv = await pg.evaluate("async()=>{const i=Rules.legal(Match.s.b,Match.s.n,0)[0];await Match.play(i);return Match.s.hist.length}")
+    ok(mv >= 1, f'{nama}: langkah ditabur oleh enjin animasi asal')
+    await pg.wait_for_function("()=>!Match.s.busy", timeout=30000)
+    # ---- menang -> XP + kad ----
+    await pg.evaluate(TAMAT, True); await pg.wait_for_timeout(600)
+    r = await pg.evaluate("()=>({t:document.getElementById('result').textContent,b:[...document.querySelectorAll('#result [data-r]')].map(x=>x.dataset.r),hk:Prof.d.hk_nadim,xp:Prof.d.xp})")
+    ok('hkad' in r['b'] and 'hpeta' in r['b'], f'{nama}: panel keputusan ada butang Hikayat {r["b"]}')
+    ok(r['hk'] == 1 and '+30 XP Hikayat' in r['t'], f'{nama}: kemajuan disimpan dalam Prof dan XP Hikayat diberi')
+    ok(r['xp'] > xp0, f'{nama}: XP dan level bertambah daripada perlawanan ({xp0} -> {r["xp"]})')
+    await pg.screenshot(path=f'/tmp/hk_{nama}_keputusan.png')
+    await pg.click('#result [data-r=hkad]'); await lapis(pg)
+    t = await pg.text_content('#hik .hkertas'); ok('Teruskan Perjalanan' in t and 'Sumber:' in t, f'{nama}: kad fakta selepas menang')
+    s2 = await pg.evaluate("()=>({pin:Hikayat._pinjam(),n:HEROES[2].n,img:IMGS[2]===ASSET.box[2]||IMGS[2].length>0,scr:document.body.dataset.screen})")
+    ok(s2['pin'] is None and s2['n'] == 'Hang Lekiu', f'{nama}: slot pahlawan dipulihkan selepas gelanggang')
     await pg.screenshot(path=f'/tmp/hk_{nama}_kad.png')
-    await pg.click('[data-k=seterus]'); await pg.wait_for_timeout(400)
-    ok(await pg.evaluate("()=>Hikayat.Peta._keadaan().kapal"), f'{nama}: potret belayar di peta ke perhentian seterusnya')
-    await tunggu_lapis(pg, 8000)
-    t = await pg.text_content('#lapis'); ok('Perhentian 1' in t and 'Melaka, 1511' in t, f'{nama}: selepas belayar, adegan perhentian 1 dibuka')
-    await pg.click('[data-k=langkau]')
+    await pg.click('#hik [data-hk=seterus]'); await pg.wait_for_timeout(400)
+    ok(await pg.evaluate("()=>Peta._keadaan().kapal"), f'{nama}: potret belayar di peta')
+    await lapis(pg, 9000)
+    t = await pg.text_content('#hik .hkertas'); ok('Perhentian 1' in t and 'Melaka, 1511' in t, f'{nama}: selepas belayar, adegan perhentian 1')
     # ---- kalah -> cuba lagi ----
-    await pg.click('[data-k=mula]'); await pg.wait_for_timeout(200)
-    await pg.evaluate(KALAH); await pg.click('.lb[data-l="6"]'); await tunggu_lapis(pg)
-    t = await pg.text_content('#lapis'); ok('Cuba Lagi' in t and 'tidak tamat' in t, f'{nama}: kalah memberi cuba lagi, perjalanan tidak tamat')
-    ok(await pg.evaluate("()=>Hikayat.Simpan.maju('nadim')") == 1, f'{nama}: kalah tidak memajukan perjalanan')
-    # ---- simpan / sambung ----
-    await pg.reload(); await pg.wait_for_timeout(300)
-    pip = await pg.locator(f'.hero[data-h="{k}"] .pip i.on').count(); ok(pip == 1, f'{nama}: kemajuan kekal selepas muat semula ({pip})')
-    await pg.click(f'.hero[data-h="{k}"]')
-    st = await pg.evaluate("()=>[...document.querySelectorAll('.ph')].map(e=>e.className.split(' ')[1])")
-    ok(st[:2] == ['selesai', 'kini'], f'{nama}: prolog selesai, perhentian 1 terbuka {st}')
-    await pg.click('.ph.selesai .phb'); await tunggu_lapis(pg)
-    ok('Kad perhentian' in await pg.text_content('#lapis'), f'{nama}: kad yang dimenangi boleh dibaca semula')
-    await pg.keyboard.press('Escape'); ok(await pg.evaluate("()=>document.getElementById('lapis').hidden"), f'{nama}: Escape menutup kad')
-    # ---- adegan rekaan: penyataan wajib kelihatan ----
-    await pg.evaluate("()=>{Hikayat.Simpan.d.maju.abusyahid=2;Hikayat.Simpan.simpan()}")
-    await pg.click('[data-k=rumah]')
-    k2 = await pg.evaluate("()=>Hikayat.HIKAYAT.findIndex(H=>H.id==='abusyahid')")
-    await pg.click(f'.hero[data-h="{k2}"]'); await pg.click('.ph.kini .phb'); await tunggu_lapis(pg); await pg.click('[data-k=langkau]')
-    vis = await pg.locator('#lapis .rekaan').is_visible()
-    t = await pg.text_content('#lapis'); ok(vis and 'Penyataan rekaan' in t, f'{nama}: adegan rekaan memaparkan penyataannya')
-    ok(await pg.locator('#lapis .med.rek').count() == 1, f'{nama}: lawan rekaan bermedalion putus-putus')
-    await pg.screenshot(path=f'/tmp/hk_{nama}_rekaan.png')
-    # ---- tamat perjalanan: epilog & lencana ----
-    await pg.evaluate("()=>{Hikayat.Simpan.d.maju.abusyahid=4;Hikayat.Simpan.simpan()}")
-    await pg.keyboard.press('Escape'); await pg.click('[data-k=rumah]'); await pg.click(f'.hero[data-h="{k2}"]')
-    ok(await pg.locator('#epilog').is_visible() and 'Penghafal Hikayat' in await pg.text_content('#epilog'), f'{nama}: epilog dan lencana selepas 4 perhentian')
-    await pg.click('[data-k=rumah]')
-    ok(await pg.locator(f'.hero[data-h="{k2}"] .lencana').count() == 1, f'{nama}: lencana pada jubin pahlawan')
-    # ---- galeri watak ----
-    await pg.click('[data-k=watak]'); await pg.wait_for_timeout(200)
-    n = await pg.locator('#galeri .gw').count(); nw = await pg.evaluate("()=>Object.keys(Hikayat.WATAK).length")
-    ok(n == nw and n >= 50, f'{nama}: galeri menyenaraikan semua watak sampingan ({n})')
-    ok(await pg.locator('#galeri .gw .med.av').count() == n, f'{nama}: setiap watak ada avatar')
-    ok(await pg.locator('#galeri .gw .med.av img').count() >= n - 1, f'{nama}: avatar chibi daripada roster')
-    sw = await pg.evaluate("()=>document.documentElement.scrollWidth"); ok(sw <= W, f'{nama}: galeri tiada tatal mendatar ({sw})')
+    await pg.click('#hik [data-hk=langkau]'); await pg.click('#hik [data-hk=mula]'); await pg.wait_for_timeout(1200)
+    await pg.evaluate(TAMAT, False); await pg.wait_for_timeout(500)
+    b2 = await pg.evaluate("()=>[...document.querySelectorAll('#result [data-r]')].map(x=>x.dataset.r)")
+    ok('hagain' in b2 and await pg.evaluate("()=>Prof.d.hk_nadim") == 1, f'{nama}: kalah -> Cuba Lagi, kemajuan tidak bertambah')
+    await pg.click('#result [data-r=hagain]'); await pg.wait_for_timeout(1200)
+    ok(await pg.evaluate("()=>document.body.dataset.screen==='match'&&Match.s.turn===0&&!Match.s.over&&/Pengawal/.test(document.getElementById('c1').textContent)"), f'{nama}: Cuba Lagi memulakan semula perhentian yang sama')
+    # ---- keluar ke menu: tetapan pemain dipulihkan ----
+    await pg.evaluate("()=>Screen.go('menu')"); await pg.wait_for_timeout(300)
+    ok(await pg.evaluate("()=>!document.getElementById('cont').hidden"), f'{nama}: perlawanan Hikayat boleh disambung dari menu')
+    await pg.evaluate("()=>{document.querySelector('[data-go=cont]').click()}"); await pg.wait_for_timeout(600)
+    ok(await pg.evaluate("()=>/Pengawal/.test(document.getElementById('c1').textContent)&&cfg.p[0]===4"), f'{nama}: sambung perlawanan memulihkan lawan Hikayat')
+    await pg.evaluate("()=>Screen.go('menu')"); await pg.wait_for_timeout(200)
+    await pg.evaluate("()=>{document.querySelector('[data-go=hist]').click();document.getElementById('hist').hidden=true}"); await pg.wait_for_timeout(200)
+    p1 = await pg.evaluate("()=>cfg.p.slice()")
+    ok(p1 == p0 and await pg.evaluate("()=>!Hikayat._pinjam()&&Quest.bak==null"), f'{nama}: memilih menu lain memulihkan pahlawan dan tetapan pemain {p0} -> {p1}')
+    # ---- galeri ----
+    await pg.evaluate("()=>document.querySelector('[data-go=hik]').click()"); await pg.wait_for_timeout(200)
+    await pg.click('#hik [data-hk=watak]'); await pg.wait_for_timeout(200)
+    n = await pg.locator('#hik .gw').count(); ni = await pg.locator('#hik .gw .med.av img').count()
+    ok(n == 54 and ni == 54, f'{nama}: galeri 54 watak, semuanya berpotret ({n}/{ni})')
     await pg.screenshot(path=f'/tmp/hk_{nama}_galeri.png')
-    ok(not errs, f'{nama}: tiada ralat konsol {errs[:3]}')
+    # ---- alamat lama ----
+    await pg.goto(f'http://127.0.0.1:{port}/hikayat.html'); await pg.wait_for_timeout(3500)
+    ok(await pg.evaluate("()=>!document.getElementById('hik').hidden"), f'{nama}: hikayat.html lama membuka Hikayat dalam permainan')
+    ok(not errs, f'{nama}: tiada ralat JS {errs[:3]}')
     await c.close()
 
 async def main():
+    h = functools.partial(http.server.SimpleHTTPRequestHandler, directory=DIST)
+    h.log_message = lambda *a: None
+    httpd = http.server.ThreadingHTTPServer(('127.0.0.1', 0), h); port = httpd.server_address[1]
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
     async with async_playwright() as p:
         b = await p.chromium.launch()
-        await sesi(b, 'telefon', {'width': 390, 'height': 844})
-        await sesi(b, 'desktop', {'width': 1280, 'height': 860})
+        await sesi(b, 'telefon', {'width': 390, 'height': 844}, port)
+        await sesi(b, 'desktop', {'width': 1280, 'height': 860}, port)
         await b.close()
+    httpd.shutdown()
     print('HIKAYAT PELAYAR', 'GAGAL: ' + str(len(GAGAL)) if GAGAL else 'LULUS SEMUA')
     raise SystemExit(1 if GAGAL else 0)
 asyncio.run(main())
