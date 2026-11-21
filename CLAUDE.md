@@ -35,6 +35,11 @@ bash tools/test.sh                # bina + sintaks + 6 set ujian
 ```
 
 Binaan menukar semua seni JPEG kepada WebP (−22%). `--no-webp` untuk melangkaunya.
+Seni pahlawan sudah dibesarkan 2x (potret 720/512px, poster 1920px) dengan `tools/perbesar_seni.py`, dan avatar
+watak 4x→256px oleh `tools/watak_avatar.py`; kedua-duanya guna `tools/w2x.py` (waifu2x upconv_7 anime dalam numpy).
+Berat model tiada dalam repo: `git clone --filter=blob:none --sparse https://github.com/lltcggie/waifu2x-caffe` +
+`sparse-checkout set bin/models/upconv_7_anime_style_art_rgb`, kemudian `W2X_MODELS=<folder itu>`. Jangan besarkan dua kali
+(skrip melangkau imej yang sudah besar). Seni baharu: besarkan dahulu sebelum dimasukkan.
 
 ## Susunan `src/js` (susunan binaan penting — lihat `JS_ORDER` dalam `tools/build.py`)
 

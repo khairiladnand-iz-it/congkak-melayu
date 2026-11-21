@@ -1,9 +1,24 @@
 #!/usr/bin/env python3
 """Potong avatar watak sampingan Hikayat daripada src/assets/watak-roster.png (seni pengguna)
--> src/assets/watak.json (WebP 128px). Jalankan semula jika roster diganti.
+-> src/assets/watak.json (WebP 256px). Wajah dalam roster hanya ~100px, jadi dibesarkan 4x dengan
+waifu2x (tools/w2x.py; tetapkan W2X_MODELS) sebelum dikecilkan ke 256px supaya tajam pada skrin padat piksel.
+Jalankan semula jika roster diganti.
 Kotak: pusat muka (y), saiz, dan x bagi setiap baris; ADJ untuk pelarasan individu."""
-import json, base64, io, os
+import json, base64, io, os, sys
+import numpy as np
 from PIL import Image
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from w2x import up2
+SZ = 256
+
+def tajam(im):
+    a = np.asarray(im)
+    if im.width < SZ * 2:
+        a = up2(a)
+    if a.shape[1] < SZ * 2:
+        a = up2(a)
+    return Image.fromarray(a).resize((SZ, SZ), Image.LANCZOS)
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 im = Image.open(os.path.join(ROOT, 'src', 'assets', 'watak-roster.png')).convert('RGB')
 X10=[72,222,372,525,677,830,985,1137,1290,1442]
@@ -30,13 +45,14 @@ for r, (cy, sz, xs) in enumerate(ROWS):
             continue
         dx, dy, ds = ADJ.get(id, [0, 0, 0]); s = sz + ds; x0 = x + dx - s // 2; y0 = cy + dy - s // 2
         b = io.BytesIO()
-        im.crop((x0, y0, x0 + s, y0 + s)).resize((128, 128), Image.LANCZOS).save(b, 'WEBP', quality=78, method=6)
+        tajam(im.crop((x0, y0, x0 + s, y0 + s))).save(b, 'WEBP', quality=80, method=6)
         out[id] = 'data:image/webp;base64,' + base64.b64encode(b.getvalue()).decode()
 # potret berasingan (lembaran watak penuh daripada pengguna): id -> (fail, kotak)
 ASING = {'rajaabdullah_j': ('watak-rajaabdullah_j.png', (250, 190, 710, 650))}
 for id, (f, box) in ASING.items():
     b = io.BytesIO()
-    Image.open(os.path.join(ROOT, 'src', 'assets', f)).convert('RGB').crop(box).resize((128, 128), Image.LANCZOS).save(b, 'WEBP', quality=78, method=6)
+    im2 = Image.open(os.path.join(ROOT, 'src', 'assets', f)).convert('RGB').crop(box)
+    tajam(im2).save(b, 'WEBP', quality=80, method=6)
     out[id] = 'data:image/webp;base64,' + base64.b64encode(b.getvalue()).decode()
 json.dump(out, open(os.path.join(ROOT, 'src', 'assets', 'watak.json'), 'w'), indent=0)
 print(len(out), 'avatar')

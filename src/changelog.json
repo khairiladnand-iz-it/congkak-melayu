@@ -1,5 +1,17 @@
 [
  {
+  "v": "0.9.20",
+  "d": "2026-11-21",
+  "t": "Potret Pahlawan Lebih Tajam",
+  "n": [
+   "Potret 18 pahlawan dibesarkan dua kali ganda dengan pembesar anime berasaskan rangkaian neural: garisan lebih tajam dan kesan pecah JPEG dibuang, terutama pada panel pemenang, kad Kisah dan skrin telefon.",
+   "Poster pahlawan di muka hadapan kini 1920 piksel lebar.",
+   "Potret 54 watak sampingan Hikayat juga dibesarkan dan kini tajam pada saiz penuh."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.19",
   "d": "2026-11-21",
   "t": "Hikayat Pahlawan dalam Congkak Melayu",
@@ -11,8 +23,8 @@
    "Raja Abdullah (Johor) kini ada potret; semua 54 watak sampingan berpotret.",
    "Alamat lama hikayat.html kini membuka menu Hikayat dalam permainan."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "7812cc1",
+  "run": 44902548835
  },
  {
   "v": "0.9.18",

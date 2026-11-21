@@ -5,6 +5,16 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.20 — Potret Pahlawan Lebih Tajam
+
+_2026-11-21_
+
+- Potret 18 pahlawan dibesarkan dua kali ganda dengan pembesar anime berasaskan rangkaian neural: garisan lebih tajam dan kesan pecah JPEG dibuang, terutama pada panel pemenang, kad Kisah dan skrin telefon.
+- Poster pahlawan di muka hadapan kini 1920 piksel lebar.
+- Potret 54 watak sampingan Hikayat juga dibesarkan dan kini tajam pada saiz penuh.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.19 — Hikayat Pahlawan dalam Congkak Melayu
 
 _2026-11-21_
@@ -16,7 +26,7 @@ _2026-11-21_
 - Raja Abdullah (Johor) kini ada potret; semua 54 watak sampingan berpotret.
 - Alamat lama hikayat.html kini membuka menu Hikayat dalam permainan.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `7812cc1` · penyiaran [44902548835](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44902548835)</sub>
 
 ## 0.9.18 — Hikayat Pahlawan: Peta, Cerita & Potret Watak
 
