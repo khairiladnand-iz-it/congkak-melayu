@@ -5,6 +5,17 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.15 — Serangan Balas Mencederakan & Angka Kuasa
+
+_2026-11-21_
+
+- Penyerang kini ada HP sebenar dalam pertarungan tikam. Sebelum ini bar HP penyerang tidak pernah berubah.
+- Tangkis sempurna menyengat penyerang (−5 HP). Balas Maut memukulnya (−16 HP, atau −22 jika unsur anda mengatasi penyerang), dan penyerang terhumban ke belakang.
+- Jika HP penyerang habis, pertarungan tamat dengan “Penyerang Tumbang”: penyerang tiada bonus serangan, dan anda diberi ganjaran kerana bertahan.
+- Meter tikam kini menunjukkan angka kuasa: 100% tepat di tengah, makin jauh makin rendah. Kerosakan tikaman anda mengikut angka itu.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.14 — Changelog & Kegunaan Akademik
 
 _2026-11-21_
@@ -12,7 +23,7 @@ _2026-11-21_
 - Skrin sejarah perubahan kini dinamakan Changelog.
 - Kad Kisah Pahlawan dan kad sejarah senjata kini dinyatakan untuk kegunaan akademik.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `788aa94` · penyiaran [44886382164](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44886382164)</sub>
 
 ## 0.9.13 — Sejarah Perubahan
 

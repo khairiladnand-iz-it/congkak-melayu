@@ -84,6 +84,16 @@ Mandau 24, Keris Taming Sari 30), dipilih dalam tab **Senjata** di skrin Pangkat
 Setiap senjata ada kad sejarah dengan peraturan yang **sama seperti Kisah**: `j`, zaman, tempat,
 kisah, "Tahukah anda", dan **sumber**. Taming Sari kekal `pertikai`. Diuji oleh `tests/senjatatest.js`.
 
+## Pertarungan tikam: HP kedua-dua pihak
+
+Penyerang ada `hpA` (dulu tiada; bar kiri tidak pernah berubah). Tangkis sempurna −5, Balas Maut
+−16 (+6 jika `adv<0`). **Tiada rawak** dalam kerosakan balas supaya HP sama di kedua-dua peranti
+dalam talian (dikira daripada `blk`/`bl` dalam mesej `dh`). `hpA<=0` → `done(false,0,true)`:
+"PENYERANG TUMBANG", `mA=0`, `mD+=6`; mesej `de` membawa `ka`. Diuji oleh `tests/balas.py`.
+Meter ketepatan: `pwr()` = 100·(1−jarak)^1.6, dipaparkan dalam `#mpw`. Bagi pemain, kerosakan
+= ×(0.45 + 1.2·kuasa/100) — angka yang dilihat ialah angka yang digunakan. AI kekal `AMUL[ac]`.
+Label TEPAT/TERSASAR dan `TEL` masih ikut tiga tahap `ACC`.
+
 ## Kembara: peringkat seterusnya
 
 Panel keputusan Kembara memberi `▶ Peringkat N` (selepas menang), `↻ Cuba Lagi`/`Ulang`, dan
@@ -187,7 +197,7 @@ belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
 `p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa),
 `perftest`, `hariantest`, `senjatatest` (integriti kad sejarah senjata, buka/pilih), `audiotest`, `changelogtest`.
-`tests/hero.py` menguji Latar 3D (12 semakan); `tests/senjata_kembara.py` menguji Kembara dan Senjata dalam pelayar (10 semakan).
+`tests/hero.py` menguji Latar 3D (12 semakan); `tests/balas.py` menguji HP penyerang selepas tangkis/balas; `tests/senjata_kembara.py` menguji Kembara dan Senjata dalam pelayar (10 semakan).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
 **Selepas push, semak `gh run list`** — ujian tempatan tanpa three.js tidak menguji susun atur 3D.
 Jalankan ujian pelayar dengan `THREE_LOCAL=/laluan/three.min.js` (r128) supaya sama dengan CI.

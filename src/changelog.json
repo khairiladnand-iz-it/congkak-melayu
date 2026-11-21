@@ -1,5 +1,18 @@
 [
  {
+  "v": "0.9.15",
+  "d": "2026-11-21",
+  "t": "Serangan Balas Mencederakan & Angka Kuasa",
+  "n": [
+   "Penyerang kini ada HP sebenar dalam pertarungan tikam. Sebelum ini bar HP penyerang tidak pernah berubah.",
+   "Tangkis sempurna menyengat penyerang (−5 HP). Balas Maut memukulnya (−16 HP, atau −22 jika unsur anda mengatasi penyerang), dan penyerang terhumban ke belakang.",
+   "Jika HP penyerang habis, pertarungan tamat dengan “Penyerang Tumbang”: penyerang tiada bonus serangan, dan anda diberi ganjaran kerana bertahan.",
+   "Meter tikam kini menunjukkan angka kuasa: 100% tepat di tengah, makin jauh makin rendah. Kerosakan tikaman anda mengikut angka itu."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.14",
   "d": "2026-11-21",
   "t": "Changelog & Kegunaan Akademik",
@@ -7,8 +20,8 @@
    "Skrin sejarah perubahan kini dinamakan Changelog.",
    "Kad Kisah Pahlawan dan kad sejarah senjata kini dinyatakan untuk kegunaan akademik."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "788aa94",
+  "run": 44886382164
  },
  {
   "v": "0.9.13",

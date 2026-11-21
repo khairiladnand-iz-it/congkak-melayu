@@ -326,9 +326,9 @@ const Duel={
     const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>${l.t} [${l.k}]</u></button>`).join('');
     const jrb=JUR.map(w=>`<button class="wb${w.sp===3?' gem':w.sp===2?' ult':' sp'}" data-w="${w.k}"${hAtk?'':' disabled'} style="--c:${w.sk.c}">${w.sk.e}<span>${esc(w.sk.n)} [${w.k}]</span><em>⚡${w.cost}</em><u></u></button>`).join('');
     const gdb=LN.map(l=>`<button class="lb3 d" data-g="${l.k}"${hDef?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>[${l.g}]</u></button>`).join('');
-    t.innerHTML=`<div class="rays"></div><div class="dvig"></div><canvas id="dcv"></canvas><div class="lb a"></div><div class="lb b"></div><div class="flash" id="fl"></div><div class="duel"><div class="hps"><div class="hp"><b>${esc(A.n)} ${elBadge(ia,1)}</b><small>${esc(A.t)}</small><div class="bar"><i style="width:100%"></i></div></div><div class="hp r"><b>${elBadge(iv,1)} ${esc(V.n)}</b><small>${esc(V.t)}</small><div class="bar"><i id="vhp" style="width:100%"></i></div></div></div><div class="arena" id="ar" style="--ea:${EA.c};--ev:${EV.c}"><div class="fgt el" id="fa" style="--c:${EA.c}"><img src="${IMGS[ia]}" alt=""></div><div class="fgt el r" id="fv" style="--c:${EV.c}"><img src="${IMGS[iv]}" alt=""></div><div class="vsb" id="vsb">VS</div><div id="fx"></div><div class="shield" id="shd"></div><div id="cmb"></div><div class="tel" id="tel"></div><div class="gln" id="gln"></div></div>
+    t.innerHTML=`<div class="rays"></div><div class="dvig"></div><canvas id="dcv"></canvas><div class="lb a"></div><div class="lb b"></div><div class="flash" id="fl"></div><div class="duel"><div class="hps"><div class="hp"><b>${esc(A.n)} ${elBadge(ia,1)}</b><small>${esc(A.t)}</small><div class="bar"><i id="ahp" style="width:100%"></i></div></div><div class="hp r"><b>${elBadge(iv,1)} ${esc(V.n)}</b><small>${esc(V.t)}</small><div class="bar"><i id="vhp" style="width:100%"></i></div></div></div><div class="arena" id="ar" style="--ea:${EA.c};--ev:${EV.c}"><div class="fgt el" id="fa" style="--c:${EA.c}"><img src="${IMGS[ia]}" alt=""></div><div class="fgt el r" id="fv" style="--c:${EV.c}"><img src="${IMGS[iv]}" alt=""></div><div class="vsb" id="vsb">VS</div><div id="fx"></div><div class="shield" id="shd"></div><div id="cmb"></div><div class="tel" id="tel"></div><div class="gln" id="gln"></div></div>
       <div class="sem"><div class="sa"><small>Semangat</small><div class="sbar"><i id="sea"></i></div></div><div class="sd"><small>Semangat</small><div class="sbar"><i id="sed"></i></div></div></div><h2 id="dt">BERSEDIA!</h2><p id="dq"><b>${esc(A.n)}</b>: “${esc(A.l)}”</p><div class="tbar"><i id="tb" style="width:100%"></i></div>${live?`<div class="ctl"><div class="grp atk"><small>${esc(A.n)} menyerang</small>
-      <div class="meter" id="mtr"><span class="zb"></span><span class="zg"></span><i id="mpin"></i></div>
+      <div class="mrow"><div class="meter" id="mtr"><span class="zb"></span><span class="zg"></span><i id="mpin"></i></div><b class="mpw" id="mpw" aria-live="off">0%</b></div>
       <div class="lns">${lnb}</div><div class="jrs">${jrb}</div></div>
       <div class="grp def"><small>${esc(V.n)} bertahan — padankan garis</small><div class="lns">${gdb}</div></div></div>`:''}<button class="skip" id="skp">Langkau ⏩</button></div>`;
     const q=id=>t.querySelector('#'+id),fl=(e,c)=>{e.classList.remove(c);void e.offsetWidth;e.classList.add(c)};
@@ -371,7 +371,7 @@ const Duel={
           <div class="dtg">
             <div><b>⚔️ Menyerang</b>
               <p>Pilih <b>garis</b>: ↑ Atas · → Tengah · ↓ Bawah.</p>
-              <p>Tekan ketika penunjuk meter berada di <b>zon putih di tengah</b> — tikaman <b>TEPAT</b>, lebih kuat dan lebih laju.</p>
+              <p>Tekan ketika penunjuk meter berada di <b>zon putih di tengah</b> — tikaman <b>TEPAT</b>, lebih kuat dan lebih laju. Angka <b>kuasa</b> di sisi meter: 100% tepat di tengah, makin jauh makin lemah.</p>
               <p>Setiap tikaman mengisi <b>⚡ Semangat</b>. Cukup semangat, barulah jurus boleh dilepaskan.</p><p><b>Jurus Gemilang</b> dipilih dalam skrin Pangkat sebelum perlawanan, dan muncul sebagai butang tambahan di sini. Level 25 membuka slot kedua.</p></div>
             <div><b>🛡️ Bertahan</b>
               <p>Bulatan merah muncul pada garis yang akan datang — itu amaran.</p>
@@ -389,7 +389,8 @@ const Duel={
     if(live){for(const n of['3','2','1']){const c=document.createElement('div');c.className='dcd';c.textContent=n;
       t.appendChild(c);Snd.drum('tik',.3);await sleep(390);c.remove()}}
     return await new Promise(res=>{
-      let hp=100,fin=false,combo=0,last=0,semA=0,semD=0,recov=0,mpos=0;
+      /* hpA: nyawa penyerang — dikurangkan oleh tangkis sempurna dan Balas Maut (dulu tiada langsung) */
+      let hp=100,hpA=100,nC=0,fin=false,combo=0,last=0,semA=0,semD=0,recov=0,mpos=0;
       let gL=-1,gAt=0,gUntil=0,gcdU=0,stag=0,rz=null;
       let nH=0,nT=0,nP=0;                       /* kena, tepat, tangkis sempurna */
       const tm=[];
@@ -398,25 +399,30 @@ const Duel={
         const sb=q('sed')&&q('sed').parentNode;if(sb&&sb.classList)sb.classList.toggle('full',semD>=100)};
       /* meter ketepatan: berayun, tekan di tengah untuk tikaman tepat */
       const loop=()=>{if(fin||t.hidden)return;const ph=(Date.now()%PER)/PER;mpos=Math.abs(Math.sin(ph*Math.PI));
-        const pin=q('mpin');if(pin)pin.style.left=(mpos*100)+'%'};
+        const pin=q('mpin');if(pin)pin.style.left=(mpos*100)+'%';
+        const pe=q('mpw');if(pe){const v=pwr();pe.textContent=v+'%';pe.dataset.lv=v>=90?2:v>=50?1:0}};
       const acc=()=>ACC(Math.abs(mpos-.5)*2);
+      /* kuasa tikaman: 100% tepat di tengah meter, menurun licin ke 0% di hujung */
+      const pwr=()=>Math.round(100*Math.pow(Math.max(0,1-Math.abs(mpos-.5)*2),1.6));
       /* lawan komputer: ketepatan mengikut tahap, bukan meter */
       const aiAcc=()=>{const L=cfg.vs==='ai'?cfg.lvl:2,r2=Math.random(),pt=[0,.12,.22,.34][L]||.2,pb=[0,.52,.56,.52][L]||.54;
         return r2<pt?2:r2<pt+pb?1:0};
       const rg=m=>{if(!m)return;
         if(m.t==='dg')guardPress(+m.L,1);
         else if(m.t==='dh')strike(m.j?((m.j==='6'||m.j==='0')&&m.g!==undefined?gmw(GEM[m.g],m.j):JUR.find(x=>x.k===m.j)):null,+m.L,m);
-        else if(m.t==='dz')rz=m;else if(m.t==='de')done(!!m.ko,1)};
+        else if(m.t==='dz')rz=m;else if(m.t==='de')done(!!m.ko,1,!!m.ka)};
       const kd=e=>{
         const k=e.key;
         if(hAtk){const l=LN.find(x=>x.k===k);if(l)return strike(null,LN.indexOf(l));
           const w=JUR.find(x=>x.k===k);if(w)return strike(w,1)}
         if(hDef){const g=LN.findIndex(x=>x.g===k||x.k===k);if(g>=0&&LN[g].g===k){e.preventDefault();guardPress(g)}}};
-      const done=async(ko,rem)=>{
+      const done=async(ko,rem,ka)=>{
         if(fin)return;fin=true;
-        if(on){Net.duelH=null;if(role==='a'&&!rem)Net.send({t:'de',ko:!!ko})}
+        if(on){Net.duelH=null;if(role==='a'&&!rem)Net.send({t:'de',ko:!!ko,ka:ka?1:0})}
         tm.forEach(x=>{clearInterval(x);clearTimeout(x)});t.onpointerdown=null;document.removeEventListener('keydown',kd);
         if(ko)mA+=6;
+        /* penyerang tumbang: tiada bonus serangan, pertahanan diberi ganjaran */
+        if(ka){mA=0;mD+=6}
         let sA,sD;
         if(fx){sA=fx.a|0;sD=fx.d|0;ko=!!fx.ko}
         else if(rz){sA=rz.a|0;sD=rz.d|0}
@@ -427,8 +433,10 @@ const Duel={
         else{sA=0;sD=0}
         const bonus=sA;
         if(on&&role==='a'&&!rem)Net.send({t:'dz',a:sA,d:sD});
-        q('dt').textContent=ko?'KO! TIKAM MAUT!':nH===0?'TIKAMAN TERTAHAN!':'TIKAM BERJAYA!';
-        q('fv').classList.remove('hurt','big','blk');q('fv').classList.add('ko');q('fa').classList.remove('wind');fl(q('fa'),'win');t.classList.add('fin');
+        q('dt').textContent=ka?'PENYERANG TUMBANG!':ko?'KO! TIKAM MAUT!':nH===0?'TIKAMAN TERTAHAN!':'TIKAM BERJAYA!';
+        if(ka){q('fa').classList.remove('hurt','big','wind','go');q('fa').classList.add('ko');fl(q('fv'),'win')}
+        else{q('fv').classList.remove('hurt','big','blk');q('fv').classList.add('ko');q('fa').classList.remove('wind');fl(q('fa'),'win')}
+        t.classList.add('fin');
         {const[x,y]=DFX.at(q('fv')),[ax,ay]=DFX.at(q('fa'));
           if(ko){fl(q('fl'),'fz');t.classList.add('kofin');DFX.ring(x,y,'#fff',260);DFX.burst(x,y,'#ffd45a',50,700);DFX.confetti(ax,ay)}
           else DFX.burst(x,y,'#ffd45a',24,420);
@@ -438,6 +446,8 @@ const Duel={
           if(nS)rows.push(`<i class="s">Jurus pahlawan ×${nS}</i>`);
           if(nG)rows.push(`<i class="g">Jurus Gemilang ×${nG}</i>`);
           if(ko)rows.push('<i class="k">KO!</i>');
+          if(nC)rows.push(`<i class="b">Penyerang terkena balas ×${nC} · HP ${hpA}</i>`);
+          if(ka)rows.push('<i class="k">Penyerang tumbang</i>');
           if(nB)rows.push(`<i class="b">Tangkis ×${nB}</i>`);
           if(nP)rows.push(`<i class="p">Tangkis sempurna ×${nP}</i>`);
           const none=nH===0&&(nB+nP)>0;
@@ -459,9 +469,11 @@ const Duel={
           recov=now+(w?900:560);
         }
         const ac=rep?(+rep.a||0):(hAtk?acc():aiAcc());
+        /* pemain: kerosakan ikut angka kuasa yang dipaparkan (0% = ×0.45, 100% = ×1.65); AI kekal tiga tahap */
+        const pw=!rep&&hAtk?pwr():null,pm=pw!=null?.45+1.2*pw/100:AMUL[ac];
         let tel=TEL[ac];
         combo=rep?rep.cb:(now-last<1600?combo+1:1);last=now;
-        let d=rep?rep.d:Math.round((w?w.d[0]+Math.random()*(w.d[1]-w.d[0]):11+Math.random()*7)*am*AMUL[ac]*(1+Math.min(combo,8)*.07));
+        let d=rep?rep.d:Math.round((w?w.d[0]+Math.random()*(w.d[1]-w.d[0]):11+Math.random()*7)*am*pm*(1+Math.min(combo,8)*.07));
         /* telegraf: lawan nampak garis sebelum kena */
         const te=q('tel');te.dataset.l=L;te.dataset.sp=w?'1':'0';te.innerHTML=`<i>${LN[L].e}</i><b>${esc(w?w.sk.n:LN[L].t)}</b>`;fl(te,'go');
         if(w){
@@ -482,6 +494,8 @@ const Duel={
             fa.classList.remove('go');fl(fa,'wind')},wS));
           tm.push(setTimeout(()=>{if(fin)return;fa.classList.remove('wind','aur');fl(fa,'go');fa._goEnd=Date.now()+360;Snd.whoosh(.2)},lt))}
         if(!rep&&ac===2){mkFx(q('fx'),'acc','TEPAT!','',600);Snd.tone(880,.12,'triangle',.07)}
+        if(pw!=null){const pe=q('mpw');if(pe){pe.classList.remove('hit');void pe.offsetWidth;pe.classList.add('hit')}
+          mkFx(q('fx'),'acc kpw','KUASA '+pw+'%',`--pc:${pw>=90?'#ffd45a':pw>=50?'#fff':'#ff8a7a'}`,700)}
         /* AI bertahan: cuba teka garis */
         if(!rep&&!hDef&&!on&&Math.random()<.78){
           const pr=[0,.2,.32,.46][cfg.lvl]||.3;
@@ -521,6 +535,14 @@ const Duel={
             DFX.burst(x+ox,y+oy,w?w.sk.c:'#ffd070',d>=24?40:16,d>=24?620:400);
             if(d>=24){DFX.ring(x,y,w?w.sk.c:'#fff',200);fl(q('ar'),'quake');fl(q('fl'),'fz')}else fl(q('ar'),'hs');Snd.hit();Haptic.hit()}
           if(myAtk&&!blk)wFx(x,y);
+          /* serangan balas: tangkis sempurna menyengat (5), Balas Maut memukul (16, +6 jika unsur lawan mengatasi).
+             Tiada rawak di sini supaya HP penyerang sama di kedua-dua peranti dalam talian. */
+          if(blk===2){const cd=balas?16+(adv<0?6:0):5;hpA=Math.max(force===false?1:0,hpA-cd);nC++;
+            q('ahp').style.width=hpA+'%';t.classList.toggle('alow',hpA<=30);
+            {const fa=q('fa');fa.classList.remove('hurt','big','wind','go');fl(fa,'hurt');fa.classList.toggle('big',balas)}
+            const[ax,ay]=DFX.at(q('fa'));DFX.burst(ax,ay,'#7ad0ff',balas?30:12,balas?560:360);if(balas)DFX.ring(ax,ay,'#9fe0ff',190);
+            mkFx(q('fx'),'dmg ka'+(balas?' crit':''),(balas?'BALAS -':'-')+cd,`left:${4+Math.random()*14}%;top:${14+Math.random()*16}%;--r:${(Math.random()-.5)*16}deg`,900);
+            if(hpA<=0&&!rep){Haptic.ko();return done(false,0,true)}}
           /* unsur penyerang kelihatan pada setiap hentaman; lebih besar bila ia mengatasi lawan.
              Bila unsur lawan lebih kuat dan ia menahan, unsur lawan pula yang menyala. */
           if(!blk){const up=adv>0;DFX.burst(x+ox*.5,y+oy*.5,EA.c,up?30:20,up?600:480);DFX.ring(x,y,EA.c,up?170:110);

@@ -267,3 +267,26 @@ body.face #duel .grp.def::after{content:'↕ kawalan ini untuk pemain seberang';
   padding:3px 9px;border-radius:999px;background:rgba(20,6,8,.82);color:var(--wc);border:1px solid var(--wc);box-shadow:0 0 12px color-mix(in srgb,var(--wc) 50%,transparent);pointer-events:none}
 #duel .fx .elp.wfx{font-size:clamp(30px,6.5vw,54px)}
 @media(prefers-reduced-motion:reduce){#duel .fgt.wpn img,#duel .fgt.wpn .wring{animation:none}}
+
+/* penyerang (kiri) terkena serangan balas: terhumban ke KIRI, menjauhi lawan */
+#duel #fa.hurt{animation:hurtL .5s}
+@keyframes hurtL{0%{transform:none}18%{transform:translateX(-42px) rotate(-9deg) scale(.95);filter:brightness(1.9) saturate(.4)}40%{transform:translateX(-30px) rotate(-5deg)}70%{transform:translateX(6px) rotate(2deg)}100%{transform:none}}
+#duel #fa.hurt.big{animation:hurtL 1s}
+#duel #fa.ko{animation:koL 1s cubic-bezier(.3,0,.6,1) forwards}
+@keyframes koL{25%{transform:translate(-8%,-14%) rotate(-18deg) scale(1.08);filter:brightness(2.4)}100%{transform:translate(-34%,26%) rotate(-80deg) scale(.86);filter:grayscale(.8) brightness(.6);opacity:.75}}
+#duel .fx .dmg.ka{color:#d8f2ff;text-shadow:0 0 14px #7ad0ff,0 2px 0 #06202e}
+#duel.alow .hp:not(.r) .bar i{background:linear-gradient(90deg,#ff3b3b,#ff8a5a);animation:hplowp .8s ease-in-out infinite alternate}
+@keyframes hplowp{to{filter:brightness(1.4)}}
+@media(prefers-reduced-motion:reduce){#duel #fa.hurt,#duel #fa.ko{animation:none}}
+
+/* angka kuasa di sisi meter ketepatan */
+#duel .mrow{display:flex;align-items:center;gap:8px;margin:0 0 7px}
+#duel .mrow .meter{flex:1;margin:0}
+#duel .mpw{min-width:52px;text-align:right;font:900 16px/1 'Cinzel',serif;font-variant-numeric:tabular-nums;color:#ff9a8a;
+  text-shadow:0 1px 0 #2a0606;transition:color .08s}
+#duel .mpw[data-lv="1"]{color:#fff}
+#duel .mpw[data-lv="2"]{color:#ffd45a;text-shadow:0 0 10px rgba(255,212,90,.7),0 1px 0 #3a2400}
+#duel .mpw.hit{animation:mpwh .35s ease-out}@keyframes mpwh{40%{transform:scale(1.35)}}
+#duel .fx .acc.kpw{color:var(--pc);top:30%}
+@media(max-width:700px){#duel .mrow{margin-bottom:4px}#duel .mpw{min-width:44px;font-size:13px}}
+@media(prefers-reduced-motion:reduce){#duel .mpw.hit{animation:none}}
