@@ -191,15 +191,18 @@ const World={
   /* ---- biji ---- */
   look(type){
     const P=o=>new THREE.MeshPhysicalMaterial(o),S=o=>new THREE.MeshStandardMaterial(o);
+    /* three.js r128 (CDN kita): sheen ialah Color dan tiada thickness. Dalam r130+ sheen ialah nombor
+       + sheenColor. Tersalah API = pelorek gagal, papan dan label jumlah hilang (pepijat Pantai Mahsuri). */
+    const R130=+THREE.REVISION>=130,shn=c=>R130?{sheen:1,sheenColor:new THREE.Color(c)}:{sheen:new THREE.Color(c)},thk=R130?{thickness:.6}:{};
     switch(type){
       case 'guli':return{sc:[1,1,1],m:[0x1f6fd0,0x2aa84a,0xd9a21c,0xc8321e,0x7a3fc0,0x18a0a0].map(c=>P({color:c,roughness:.04,clearcoat:1,clearcoatRoughness:.03,envMapIntensity:1.7}))};
       case 'batu':return{sc:[1.1,.75,.95],m:[0x8d9196,0x6f747a,0xa9aca8].map(c=>S({color:c,roughness:.86}))};
       case 'kulit':return{sc:[1.25,.6,.95],m:[0xf3e6cc,0xe6d2ae].map(c=>S({color:c,roughness:.35}))};
       case 'emas':return{sc:[1,1,1],m:[S({color:0xffc24a,metalness:1,roughness:.22})]};
-      case 'mutiara':return{sc:[1,1,1],m:[0xfdf6ee,0xf4e8ee,0xeef2f8].map(c=>P({color:c,roughness:.18,metalness:.05,clearcoat:1,clearcoatRoughness:.08,sheen:1,sheenColor:new THREE.Color(0xffd0f0),envMapIntensity:1.6}))};
-      case 'zamrud':return{sc:[1,.9,1.1],m:[0x0fa860,0x0c8a50].map(c=>P({color:c,roughness:.03,transmission:.6,thickness:.6,ior:1.57,clearcoat:1,envMapIntensity:2,emissive:c,emissiveIntensity:.12}))};
-      case 'delima':return{sc:[1,.9,1.1],m:[0xd0143c,0xa8102e].map(c=>P({color:c,roughness:.03,transmission:.5,thickness:.6,ior:1.76,clearcoat:1,envMapIntensity:2,emissive:c,emissiveIntensity:.15}))};
-      case 'nilam':return{sc:[1,.9,1.1],m:[0x1c3fd0,0x2a5ae0].map(c=>P({color:c,roughness:.03,transmission:.5,thickness:.6,ior:1.77,clearcoat:1,envMapIntensity:2,emissive:c,emissiveIntensity:.15}))};
+      case 'mutiara':return{sc:[1,1,1],m:[0xfdf6ee,0xf4e8ee,0xeef2f8].map(c=>P({color:c,roughness:.18,metalness:.05,clearcoat:1,clearcoatRoughness:.08,...shn(0xffd0f0),envMapIntensity:1.6}))};
+      case 'zamrud':return{sc:[1,.9,1.1],m:[0x0fa860,0x0c8a50].map(c=>P({color:c,roughness:.03,transmission:.6,...thk,ior:1.57,clearcoat:1,envMapIntensity:2,emissive:c,emissiveIntensity:.12}))};
+      case 'delima':return{sc:[1,.9,1.1],m:[0xd0143c,0xa8102e].map(c=>P({color:c,roughness:.03,transmission:.5,...thk,ior:1.76,clearcoat:1,envMapIntensity:2,emissive:c,emissiveIntensity:.15}))};
+      case 'nilam':return{sc:[1,.9,1.1],m:[0x1c3fd0,0x2a5ae0].map(c=>P({color:c,roughness:.03,transmission:.5,...thk,ior:1.77,clearcoat:1,envMapIntensity:2,emissive:c,emissiveIntensity:.15}))};
       case 'bara':return{sc:[1,1,1],m:[0xff6a1a,0xff3a0a,0xffa030].map(c=>S({color:0x301008,emissive:c,emissiveIntensity:1.1,roughness:.5}))};
       case 'planet':return{sc:[1.08,1.08,1.08],m:[[0x3a7ad8,0x2ea860],[0xd8883a,0xa8441c],[0x9a5ad8,0x4a2a9a],[0x38c8c8,0x1a6a8a],[0xe8d8a0,0xb89a58]].map(([a,b])=>{const cv=document.createElement('canvas');cv.width=128;cv.height=64;const g=cv.getContext('2d');g.fillStyle='#'+a.toString(16).padStart(6,'0');g.fillRect(0,0,128,64);g.fillStyle='#'+b.toString(16).padStart(6,'0');for(let i=0;i<9;i++){g.globalAlpha=.55;g.beginPath();g.ellipse(Math.random()*128,Math.random()*64,10+Math.random()*30,4+Math.random()*8,0,0,7);g.fill()}const t=new THREE.CanvasTexture(cv);t.encoding=THREE.sRGBEncoding;return P({map:t,roughness:.45,clearcoat:.5})})};
       case 'bintang':return{sc:[1,1,1],m:[0xfff2b0,0xffffff,0xbfe6ff].map(c=>P({color:c,emissive:c,emissiveIntensity:.9,roughness:.1,clearcoat:1}))};
@@ -356,7 +359,8 @@ const World={
     const sp=Math.sin(this.pol);this.cam.position.set(tx+this.dist*sp*Math.sin(this.az),.4+this.dist*Math.cos(this.pol),tz+this.dist*sp*Math.cos(this.az));this.cam.lookAt(tx,.4,tz);
     const pulse=.55+.4*Math.sin(now*.006);for(const r of this.rings)if(r.visible)r.material.opacity=pulse;
     if(this.fMat&&this.fId==='langit')this.fMat.emissiveIntensity=.45+.25*Math.sin(now*.0016);
-    this.R.render(this.scene,this.cam);
+    /* satu bahan rosak tidak boleh menghentikan label jumlah di bawah: tangkap, beritahu sekali, teruskan */
+    try{this.R.render(this.scene,this.cam)}catch(e){if(!this.err){this.err=1;console.error(e);try{Toast.show('Ralat 3D: '+e.message)}catch(x){}}}
     /* Istana pada separuh kadar: pemapar perisian, paling mahal */
     if(this.mode!=='menu'&&this.rugR&&(++this._istN%this.istEvery===0)){const r=this.rugR;let a=1e9,b=-1e9;for(const x of[-r.x,r.x])for(const z of[-r.z,r.z]){const q=this.screen(x,0,z);if(q.y<a)a=q.y;if(q.y>b)b=q.y}this.rugTop=this.rugTop==null?a:this.rugTop+(a-this.rugTop)*.25;this.rugBot=b;Istana.frame(now,this.az,this.rugTop,this.w,this.h)}
     if(this.mode!=='menu'&&this.lab.length){

@@ -102,6 +102,12 @@ Tween tetap dikemas kini setiap bingkai supaya tiada gerakan tergantung.
 
 **Jangan naikkan `World.fps`** tanpa sebab kukuh — ini permainan bergilir.
 
+**three.js ialah r128** (CDN). API r130+ seperti `sheen:1`+`sheenColor` atau `thickness` memecahkan
+pelorek atau memberi amaran: `World.look()` memilih ikut `THREE.REVISION`. Dulu biji `mutiara`
+(Pantai Mahsuri, Peterana Tun Fatimah) menghentikan lukisan dan menyorokkan label jumlah.
+`World.frame` kini menangkap ralat lukisan supaya label tetap dikemas kini.
+`tests/biji.py` melukis setiap biji dan setiap peringkat Kembara (46 semakan).
+
 ## Latar 3D (muka hadapan)
 
 Poster pahlawan (`ART2.bg`/`bg2`) dilukis oleh three.js dalam `latar.js`, bukan CSS: satah

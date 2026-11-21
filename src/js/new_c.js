@@ -39,6 +39,8 @@ const Setup={tab:'mod',
 function wire(){
   const opt=(id,list,cur)=>{document.getElementById(id).innerHTML=list.map(([v,t])=>`<option value="${v}"${v===cur?' selected':''}>${t}</option>`).join('')};
   const dock=()=>{const L=Prof.lvl();opt('dWood',WOODN.filter(w=>Prof.okWood(w[0],L)||w[0]===cfg.wood),cfg.wood);opt('dSeed',SEEDS.filter(w=>Prof.okSeed(w[0],L)||w[0]===cfg.seed),cfg.seed)};
+  /* Kembara memulakan perlawanan tanpa melalui menu: dedahkan supaya pilihan kayu/biji selari dengan papan */
+  window.Dock=dock;
   document.getElementById('menu').addEventListener('click',e=>{
     const b=e.target.closest('[data-go]');if(!b)return;Snd.tone(500);const g=b.dataset.go;
     /* keluar dari Kembara: pulihkan tetapan pemain yang ditimpa oleh peringkat (dulu tidak pernah dipulihkan) */

@@ -105,7 +105,7 @@ const Quest={
     Object.assign(cfg,{vs:'ai',lvl:c.ai,n:c.n,seeds:c.s,wood:c.w,floor:c.f,seed:c.sd});
     cfg.p=[HEROES[cfg.p[0]]?cfg.p[0]:0,c.h];
     if(cfg.p[0]===c.h)cfg.p[0]=c.h===0?1:0;
-    this.closeCamp();Match._campNext=i;Match.start();
+    this.closeCamp();Match._campNext=i;if(typeof Dock==='function')Dock();Match.start();
   },
   /* ---- selepas perlawanan ---- */
   done(res){
