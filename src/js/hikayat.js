@@ -36,7 +36,7 @@ const Hikayat = (() => {
   function cip(j, kecil) { const L = LABEL[j] || LABEL.lagenda; return `<b class="cip${kecil ? ' sm' : ''}" style="--lc:${L.c}">${L.l}</b>` }
   function potret(h, nama, o, besar, w) {
     if (h != null && IMGS[h]) return `<span class="med${besar ? ' lg' : ''}"><img src="${IMGS[h]}" alt=""></span>`;
-    if (w && WATAK[w]) return `<span class="med av${o === 'rekaan' ? ' rek' : ''}${besar ? ' lg' : ''}">${avatarWatak(w)}</span>`;
+    if (w && WATAK[w]) return `<span class="med hav${o === 'rekaan' ? ' rek' : ''}${besar ? ' lg' : ''}">${avatarWatak(w)}</span>`;
     return `<span class="med${besar ? ' lg' : ''}"></span>`;
   }
   const lawanP = (S, b) => potret(S.h, S.l, S.o, b, S.w);
@@ -217,6 +217,7 @@ const Hikayat = (() => {
       else if (k === 'rumah') { Lapis.tutup(); lukisRumah(); ke('hrumah') }
       else if (k === 'watak') { lukisGaleri(); ke('hgaleri') }
       else if (k === 'kisah') { if (typeof Kisah !== 'undefined') Kisah.open() }
+      else if (k === 'sejarah') { if (typeof Hist !== 'undefined') Hist.open(-1) }
       else if (k === 'keluar') tutup();
     });
     document.addEventListener('keydown', e => {

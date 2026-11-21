@@ -1,5 +1,16 @@
 [
  {
+  "v": "0.9.22",
+  "d": "2026-11-21",
+  "t": "Menu Lebih Ringkas & Potret Bulat",
+  "n": [
+   "Jubin Sejarah dikeluarkan dari menu hadapan; Garis Masa Sejarah kini dibuka dari halaman Hikayat, bersama Kad Kisah Pahlawan. Jubin menu tinggal satu baris.",
+   "Potret dalam Galeri Watak Sampingan dan peta Hikayat kini memenuhi bulatan, tanpa bingkai kotak di dalamnya."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.21",
   "d": "2026-11-21",
   "t": "Ikon Jurus Baharu & Latar Hikayat",
@@ -10,8 +21,8 @@
    "Halaman Hikayat kini berlatarkan poster pahlawan.",
    "Potret watak sampingan dikemas kini daripada roster baharu yang lebih besar dan tajam, termasuk Adi Putera sebagai guru silat tua."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "b11f284",
+  "run": 44910589373
  },
  {
   "v": "0.9.20",

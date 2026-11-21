@@ -79,7 +79,7 @@ kegunaan akademik: pembaca belajar membezakan catatan daripada cerita rakyat.
 
 **Jangan tambah atau ubah kisah tanpa sumber.** Jangan naikkan sesuatu daripada `lagenda`
 kepada `sejarah` tanpa rujukan. Kad ditunjukkan selepas menewaskan pahlawan dalam Kembara,
-dan boleh dilayari melalui butang **Kad Kisah Pahlawan** di halaman Hikayat (jubin Kisah di menu hadapan sudah dibuang).
+dan boleh dilayari melalui butang **Kad Kisah Pahlawan** di halaman Hikayat (jubin Kisah dan Sejarah di menu hadapan sudah dibuang; `Hist.open(-1)` juga dari Hikayat; `#kisah,#hist` z-index 70 di atas `#hik`).
 
 ## Senjata Pusaka
 
@@ -110,7 +110,7 @@ semua berskop `#hik`). Data dikongsi dari `src/hikayat/` dan dimuatkan melalui `
 penutup `b`, tempat `g`, watak `w`; `TEMPAT`/`DARAT` + `Peta` (kanvas 2D, laluan dilakar, potret belayar, ~30 fps);
 `WATAK` 54 watak sampingan, potret `AVATAR` daripada `src/assets/watak.json` (dijana `tools/watak_avatar.py` daripada roster
 pengguna `watak-roster.png`, `watak-roster2.png` (28 watak, lebih tajam, menimpa roster pertama), `watak-rajaabdullah_j.png`,
-`watak-kumpulan2.webp` (Adi Putera)), sandaran SVG `Avatar`. Latar `#hik` = `ART2.bg` (`--hbg`).
+`watak-kumpulan2.webp` (Adi Putera)), sandaran SVG `Avatar`. Latar `#hik` = `ART2.bg` (`--hbg`). Medalion avatar guna kelas `hav` — **bukan `av`**, yang bertembung dengan `.av img` pemilih pahlawan (bingkai kotak 72px).
 Label: `sejarah`/`lagenda`/`pertikai`/**`rekaan`**; **setiap rekaan wajib ada penyataan `r`**. Narasi menambah suasana,
 **bukan fakta**; tiada dialog tokoh sebenar; setiap adegan memaparkan nota `DRAMA`.
 

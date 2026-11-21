@@ -42,7 +42,7 @@ async def main():
             # setiap jubin koleksi mesti ada ikon SVG sendiri, berapa pun bilangannya
             tiles = await pg.evaluate('document.querySelectorAll(".mt").length')
             icons = await pg.evaluate('document.querySelectorAll(".mt u svg").length')
-            if tiles < 6 or icons != tiles:
+            if tiles < 5 or icons != tiles:
                 bad.append(f'{name}: {tiles} jubin tetapi {icons} ikon')
 
             # klik melalui JS: pada runner CI kanvas 3D boleh melindungi butang

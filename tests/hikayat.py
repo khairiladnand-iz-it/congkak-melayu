@@ -49,7 +49,7 @@ async def sesi(b, nama, vp, port):
     t = await pg.text_content('#hik .hkertas'); ok('Seterusnya' in t and 'didramatisasi' in t, f'{nama}: adegan berbabak dengan nota dramatisasi')
     await pg.click('#hik [data-hk=langkau]'); await pg.wait_for_timeout(100)
     t = await pg.text_content('#hik .hkertas'); ok('Todak' in t and 'Mula Perlawanan' in t and 'XP' in t, f'{nama}: babak akhir: lawan Todak, XP dinyatakan')
-    ok(await pg.locator('#hik .hkertas .med.av img').count() == 1, f'{nama}: avatar chibi lawan')
+    ok(await pg.locator('#hik .hkertas .med.hav img').count() == 1, f'{nama}: avatar chibi lawan')
     await pg.screenshot(path=f'/tmp/hk_{nama}_adegan.png')
     # ---- perlawanan sebenar ----
     await pg.click('#hik [data-hk=mula]'); await pg.wait_for_timeout(1500)
@@ -92,14 +92,16 @@ async def sesi(b, nama, vp, port):
     await pg.evaluate("()=>{document.querySelector('[data-go=cont]').click()}"); await pg.wait_for_timeout(600)
     ok(await pg.evaluate("()=>/Pengawal/.test(document.getElementById('c1').textContent)&&cfg.p[0]===4"), f'{nama}: sambung perlawanan memulihkan lawan Hikayat')
     await pg.evaluate("()=>Screen.go('menu')"); await pg.wait_for_timeout(200)
-    await pg.evaluate("()=>{document.querySelector('[data-go=hist]').click();document.getElementById('hist').hidden=true}"); await pg.wait_for_timeout(200)
+    await pg.evaluate("()=>{document.querySelector('[data-go=help]').click();document.getElementById('help').hidden=true}"); await pg.wait_for_timeout(200)
     p1 = await pg.evaluate("()=>cfg.p.slice()")
     ok(p1 == p0 and await pg.evaluate("()=>!Hikayat._pinjam()&&Quest.bak==null"), f'{nama}: memilih menu lain memulihkan pahlawan dan tetapan pemain {p0} -> {p1}')
     # ---- galeri ----
     await pg.evaluate("()=>document.querySelector('[data-go=hik]').click()"); await pg.wait_for_timeout(200)
     await pg.click('#hik [data-hk=watak]'); await pg.wait_for_timeout(200)
-    n = await pg.locator('#hik .gw').count(); ni = await pg.locator('#hik .gw .med.av img').count()
+    n = await pg.locator('#hik .gw').count(); ni = await pg.locator('#hik .gw .med.hav img').count()
     ok(n == 54 and ni == 54, f'{nama}: galeri 54 watak, semuanya berpotret ({n}/{ni})')
+    bentuk = await pg.evaluate("()=>[...document.querySelectorAll('#hgaleri .gw .med img')].every(i=>{const r=i.getBoundingClientRect(),m=i.parentElement.getBoundingClientRect(),c=getComputedStyle(i);return Math.abs(r.width-m.width+4)<=1&&parseFloat(c.borderTopWidth)===0})")
+    ok(bentuk, f'{nama}: potret memenuhi medalion bulat, tiada bingkai kotak')
     await pg.screenshot(path=f'/tmp/hk_{nama}_galeri.png')
     # ---- alamat lama ----
     await pg.goto(f'http://127.0.0.1:{port}/hikayat.html'); await pg.wait_for_timeout(3500)

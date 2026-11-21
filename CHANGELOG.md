@@ -5,6 +5,15 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.22 — Menu Lebih Ringkas & Potret Bulat
+
+_2026-11-21_
+
+- Jubin Sejarah dikeluarkan dari menu hadapan; Garis Masa Sejarah kini dibuka dari halaman Hikayat, bersama Kad Kisah Pahlawan. Jubin menu tinggal satu baris.
+- Potret dalam Galeri Watak Sampingan dan peta Hikayat kini memenuhi bulatan, tanpa bingkai kotak di dalamnya.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.21 — Ikon Jurus Baharu & Latar Hikayat
 
 _2026-11-21_
@@ -15,7 +24,7 @@ _2026-11-21_
 - Halaman Hikayat kini berlatarkan poster pahlawan.
 - Potret watak sampingan dikemas kini daripada roster baharu yang lebih besar dan tajam, termasuk Adi Putera sebagai guru silat tua.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `b11f284` · penyiaran [44910589373](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44910589373)</sub>
 
 ## 0.9.20 — Potret Pahlawan Lebih Tajam
 
