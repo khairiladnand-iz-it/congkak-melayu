@@ -21,8 +21,10 @@
 #duel .fgt img{border-width:4px;border-radius:18px;box-shadow:0 0 0 2px #2a0a08,0 14px 40px rgba(0,0,0,.8),0 0 30px rgba(255,200,90,.25);animation:idle 2.4s ease-in-out infinite}
 #duel .fgt+.fgt img{animation-delay:-1.2s;border-color:#ff8a6a}
 @keyframes idle{50%{transform:translateY(-7px) rotate(-1.2deg)}}
-#duel .fgt.go{animation:go2 .36s cubic-bezier(.3,.1,.3,1)}@keyframes go2{0%{transform:none}22%{transform:translateX(-14px) scale(.96) rotate(-4deg)}52%{transform:translateX(min(26vw,190px)) scale(1.16) rotate(7deg);filter:brightness(1.25)}100%{transform:none}}
-#duel .fgt.hurt{animation:hurt2 .42s}@keyframes hurt2{0%{transform:none}18%{transform:translateX(24px) rotate(7deg) scale(.96);filter:brightness(2.4) saturate(0) sepia(1) hue-rotate(-50deg) saturate(9)}55%{transform:translateX(-9px) rotate(-2deg)}100%{transform:none}}
+/* ancang-ancang: undur dan bongkok, ditahan sehingga terjangan */
+#duel .fgt.wind{animation:wind2 var(--tw,600ms) cubic-bezier(.2,.7,.3,1) forwards}@keyframes wind2{0%{transform:none}60%{transform:translateX(-36px) translateY(6px) scale(.9) rotate(-11deg);filter:brightness(1.15)}80%{transform:translateX(-32px) translateY(5px) scale(.91) rotate(-9deg)}100%{transform:translateX(-38px) translateY(6px) scale(.9) rotate(-11deg);filter:brightness(1.2)}}
+#duel .fgt.go{animation:go2 .36s cubic-bezier(.3,.1,.3,1)}@keyframes go2{0%{transform:translateX(-38px) translateY(6px) scale(.9) rotate(-11deg)}22%{transform:translateX(-14px) scale(.96) rotate(-4deg)}52%{transform:translateX(min(26vw,190px)) scale(1.16) rotate(7deg);filter:brightness(1.25)}100%{transform:none}}
+#duel .fgt.hurt{animation:hurt2 .5s}@keyframes hurt2{0%{transform:none}18%{transform:translateX(42px) rotate(9deg) scale(.95);filter:brightness(2.4) saturate(0) sepia(1) hue-rotate(-50deg) saturate(9)}40%{transform:translateX(30px) rotate(5deg)}70%{transform:translateX(-6px) rotate(-2deg)}100%{transform:none}}
 #duel .fgt.hurt.big{animation:hurt3 .55s}@keyframes hurt3{0%{transform:none}15%{transform:translateX(52px) rotate(14deg) scale(.9);filter:brightness(3) saturate(0)}35%{filter:brightness(1.6) sepia(1) hue-rotate(-50deg) saturate(9)}60%{transform:translateX(-14px) rotate(-4deg)}100%{transform:none}}
 #duel .fgt.blk{animation:blk2 .32s}@keyframes blk2{30%{transform:translateX(8px) scale(.97);filter:brightness(1.5) hue-rotate(170deg)}}
 #duel .fgt.ko{animation:ko2 1s cubic-bezier(.3,0,.6,1) forwards}@keyframes ko2{25%{transform:translate(8%,-14%) rotate(18deg) scale(1.08);filter:brightness(2.4)}100%{transform:translate(34%,26%) rotate(78deg) scale(.82);filter:grayscale(1) brightness(.45);opacity:.65}}
@@ -75,6 +77,7 @@
 @keyframes ela{30%{filter:drop-shadow(0 0 26px var(--ec)) saturate(1.3)}}
 #duel .fx .elp{position:absolute;right:calc(14% + var(--x,0px));top:var(--y,26%);font-size:clamp(24px,5vw,44px);
   filter:drop-shadow(0 0 12px var(--c));animation:elp .9s ease-out both;pointer-events:none}
+#duel .fx .elp.up{font-size:clamp(32px,7vw,58px)}
 @keyframes elp{0%{opacity:0;transform:scale(.4) rotate(-20deg)}22%{opacity:1;transform:scale(1.5) rotate(6deg)}
   100%{opacity:0;transform:translateY(-62px) scale(.9) rotate(16deg)}}
 #duel .fx .dmg.el{color:#fff;text-shadow:0 0 14px var(--c),0 2px 0 #3a1200}

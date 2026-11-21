@@ -411,7 +411,7 @@ const Duel={
         const bonus=sA;
         if(on&&role==='a'&&!rem)Net.send({t:'dz',a:sA,d:sD});
         q('dt').textContent=ko?'KO! TIKAM MAUT!':nH===0?'TIKAMAN TERTAHAN!':'TIKAM BERJAYA!';
-        q('fv').classList.remove('hurt','big','blk');q('fv').classList.add('ko');fl(q('fa'),'win');t.classList.add('fin');
+        q('fv').classList.remove('hurt','big','blk');q('fv').classList.add('ko');q('fa').classList.remove('wind');fl(q('fa'),'win');t.classList.add('fin');
         {const[x,y]=DFX.at(q('fv')),[ax,ay]=DFX.at(q('fa'));
           if(ko){fl(q('fl'),'fz');t.classList.add('kofin');DFX.ring(x,y,'#fff',260);DFX.burst(x,y,'#ffd45a',50,700);DFX.confetti(ax,ay)}
           else DFX.burst(x,y,'#ffd45a',24,420);
@@ -454,7 +454,16 @@ const Duel={
           const fxd=FXK[w.sk.k](q('fx'),w.sk,{aura:()=>{q('fa').style.setProperty('--c',w.sk.c);fl(q('fa'),'aur')}});
           tel=Math.max(tel,(+fxd||0)+260);   /* biar kesan jurus habis dahulu sebelum hentaman */
         }else{mkFx(q('fx'),'pj',LN[L].e,'',520);mkFx(q('fx'),'slx','',`--rt:${-40+Math.random()*30}deg`,420)}
-        fl(q('fa'),'go');Snd.whoosh(.2);
+        /* ancang-ancang semasa telegraf, kemudian terjang supaya puncak terjangan
+           (52% daripada go2 = 187ms) mendarat tepat pada hentaman. Visual sahaja:
+           tel ialah tetingkap tangkisan pemain dan tidak diubah. */
+        {const fa=q('fa'),lt=Math.max(0,tel-187),wAt=Math.max(0,(fa._goEnd||0)-Date.now());
+          /* jangan potong terjangan yang masih di udara: ancang-ancang menunggu ia habis */
+          /* ancang-ancang pendek (≤340ms) tepat sebelum terjangan; lebih lama dibaca sebagai goyangan kosong */
+          const wS=Math.max(wAt,lt-340);
+          if(wS<lt)tm.push(setTimeout(()=>{if(fin)return;fa.style.setProperty('--tw',Math.max(120,lt-wS)+'ms');
+            fa.classList.remove('go');fl(fa,'wind')},wS));
+          tm.push(setTimeout(()=>{if(fin)return;fa.classList.remove('wind','aur');fl(fa,'go');fa._goEnd=Date.now()+360;Snd.whoosh(.2)},lt))}
         if(!rep&&ac===2){mkFx(q('fx'),'acc','TEPAT!','',600);Snd.tone(880,.12,'triangle',.07)}
         /* AI bertahan: cuba teka garis */
         if(!rep&&!hDef&&!on&&Math.random()<.78){
@@ -494,9 +503,13 @@ const Duel={
           else{DFX.slash(x+ox*.4,y+oy*.4,w?w.sk.c:ac===2?'#fff0a0':'#ffeaa0');
             DFX.burst(x+ox,y+oy,w?w.sk.c:'#ffd070',d>=24?40:16,d>=24?620:400);
             if(d>=24){DFX.ring(x,y,w?w.sk.c:'#fff',200);fl(q('ar'),'quake');fl(q('fl'),'fz')}else fl(q('ar'),'hs');Snd.hit();Haptic.hit()}
-          if(adv>0&&!blk){DFX.burst(x+ox*.5,y+oy*.5,EA.c,22,520);DFX.ring(x,y,EA.c,150);
-            mkFx(q('fx'),'elp',EA.e,`--c:${EA.c};--y:${18+Math.random()*34}%;--x:${-10+Math.random()*20}px`,900);
-            q('ar').style.setProperty('--ec',EA.c);fl(q('ar'),'ela')}
+          /* unsur penyerang kelihatan pada setiap hentaman; lebih besar bila ia mengatasi lawan.
+             Bila unsur lawan lebih kuat dan ia menahan, unsur lawan pula yang menyala. */
+          if(!blk){const up=adv>0;DFX.burst(x+ox*.5,y+oy*.5,EA.c,up?30:20,up?600:480);DFX.ring(x,y,EA.c,up?170:110);
+            mkFx(q('fx'),'elp'+(up?' up':''),EA.e,`--c:${EA.c};--y:${18+Math.random()*34}%;--x:${-10+Math.random()*20}px`,up?900:650);
+            if(up){q('ar').style.setProperty('--ec',EA.c);fl(q('ar'),'ela')}}
+          else if(adv<0){DFX.burst(x,y,EV.c,14,420);
+            mkFx(q('fx'),'elp sm',EV.e,`--c:${EV.c};--y:${30+Math.random()*20}%;--x:${-10+Math.random()*20}px`,650)}
           mkFx(q('fx'),'dmg'+(blk===2?' p':blk?' b':d>=24?' crit':'')+(adv>0&&!blk?' el':''),
             blk===2?'TANGKIS SEMPURNA':blk?'TANGKIS '+d:'-'+d,
             `right:${4+Math.random()*16}%;top:${12+Math.random()*18}%;--r:${(Math.random()-.5)*16}deg`,900);
