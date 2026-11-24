@@ -1,13 +1,24 @@
 [
  {
+  "v": "0.9.24",
+  "d": "2026-11-24",
+  "t": "Lawan Komputer Lebih Adil",
+  "n": [
+   "Komputer tahap Sederhana dan Susah kini bermain seperti manusia: kadang-kadang ia nampak langkah terbaik, kadang-kadang tidak. Dulu ia mengira setiap rantaian sambung dengan tepat pada setiap giliran, jadi hampir mustahil dikalahkan.",
+   "Sederhana kini seimbang untuk pemain baharu, dan Susah masih mencabar tetapi boleh dimenangi. Peringkat akhir Kembara dan Congkak Harian turut menjadi lebih adil."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.23",
   "d": "2026-11-24",
   "t": "Telefon Lebih Sejuk",
   "n": [
    "Latar Istana Melaka di belakang papan kini jauh lebih ringan untuk dilukis: awan, bukit dan pokok nyiur yang kabur disediakan sekali sahaja, bukan dikaburkan semula setiap bingkai. Telefon tidak sepanas dahulu semasa perlawanan panjang, dan bateri lebih tahan. Rupanya kekal sama."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "fddb40b",
+  "run": 45353162418
  },
  {
   "v": "0.9.22",

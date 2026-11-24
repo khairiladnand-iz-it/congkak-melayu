@@ -142,6 +142,10 @@ sehari. **Keadilannya bergantung sepenuhnya pada determinisme**, jadi:
   kedua-dua pihak dapat susunan yang sama.
 - **Jangan masukkan apa-apa yang rawak ke dalam laluan permainan tanpa melalui `RNG`.**
 
+**AI (`engine.js`)**: `AI.Q=[0,0,.1,.3]` ialah peluang mengira tepat setiap giliran; selebihnya `AI.nampak`
+(langkah yang manusia nampak tanpa mengira rantaian sambung). Dulu Sederhana/Susah mengira tepat setiap giliran:
+pemula menang 15%/0%. Kini ~44%/~33% (`tests/aitest.js`). Jangan naikkan `Q` tanpa simulasi semula.
+
 Skor disimpan dalam `Prof.d.hariN/hariS/hariB` (mesti ada dalam senarai kunci `Prof.apply`).
 Diuji oleh `tests/hariantest.js`.
 
@@ -230,7 +234,7 @@ belum bersedia menerima sambungan, dan ia tidak patut dilaporkan sebagai gagal.
 `NO3D=1` mematikan stub three.js. Set ujian: `t` (enjin, 300 perlawanan), `t2` (sejarah/jam),
 `t3` (profil), `lobitest` (tapisan bahasa, nick, frasa, cabaran, audio),
 `p2ptest` (shim Trystero diuji terhadap bilik tiruan), `animtest` (lengkung pelonggaran & kadar masa),
-`perftest`, `hariantest`, `senjatatest` (integriti kad sejarah senjata, buka/pilih), `audiotest`, `changelogtest`.
+`perftest`, `hariantest`, `aitest` (keseimbangan tahap AI), `senjatatest` (integriti kad sejarah senjata, buka/pilih), `audiotest`, `changelogtest`.
 `tests/hero.py` menguji Latar 3D (12 semakan); `tests/balas.py` menguji HP penyerang selepas tangkis/balas; `tests/senjata_kembara.py` menguji Kembara dan Senjata dalam pelayar (10 semakan).
 `tests/smoke.py` membuka keluaran sebenar dalam Chromium (telefon & desktop) — dijalankan oleh CI.
 **Selepas push, semak `gh run list`** — ujian tempatan tanpa three.js tidak menguji susun atur 3D.

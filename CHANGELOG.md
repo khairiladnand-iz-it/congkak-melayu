@@ -5,13 +5,22 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.24 — Lawan Komputer Lebih Adil
+
+_2026-11-24_
+
+- Komputer tahap Sederhana dan Susah kini bermain seperti manusia: kadang-kadang ia nampak langkah terbaik, kadang-kadang tidak. Dulu ia mengira setiap rantaian sambung dengan tepat pada setiap giliran, jadi hampir mustahil dikalahkan.
+- Sederhana kini seimbang untuk pemain baharu, dan Susah masih mencabar tetapi boleh dimenangi. Peringkat akhir Kembara dan Congkak Harian turut menjadi lebih adil.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.23 — Telefon Lebih Sejuk
 
 _2026-11-24_
 
 - Latar Istana Melaka di belakang papan kini jauh lebih ringan untuk dilukis: awan, bukit dan pokok nyiur yang kabur disediakan sekali sahaja, bukan dikaburkan semula setiap bingkai. Telefon tidak sepanas dahulu semasa perlawanan panjang, dan bateri lebih tahan. Rupanya kekal sama.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `fddb40b` · penyiaran [45353162418](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/45353162418)</sub>
 
 ## 0.9.22 — Menu Lebih Ringkas & Potret Bulat
 

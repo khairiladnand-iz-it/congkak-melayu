@@ -42,10 +42,19 @@ const AI={
     }
     return best;
   },
-  /* tahap 1 rawak · 2 tamak · 3 carian 4 langkah */
+  /* Langkah "mata manusia": nampak biji yang jatuh tepat ke rumah tanpa sambung; selain itu lubang terbesar atau rawak.
+     Rantaian sambung tidak boleh dikira oleh manusia, jadi AI yang mengiranya setiap giliran tidak boleh dikalahkan
+     (dulu: pemula 15% menang lawan Sederhana, 0% lawan Susah). */
+  nampak(b,n,p,mv){const st=Rules.store(n,p),d=mv.filter(h=>b[h]===st-h);
+    if(d.length&&RNG.next()<.8)return d[RNG.next()*d.length|0];
+    return RNG.next()<.5?mv.reduce((a,h)=>b[h]>b[a]?h:a,mv[0]):mv[RNG.next()*mv.length|0]},
+  /* peluang mengira tepat bagi setiap tahap; selebihnya bermain seperti manusia */
+  Q:[0,0,.1,.3],
+  /* tahap 1 rawak · 2 manusia, sekali-sekala tamak · 3 manusia, kerap mencari 4 langkah */
   pick(b,n,p,lvl){
     const mv=Rules.legal(b,n,p);if(!mv.length)return -1;
     if(lvl<=1)return mv[RNG.next()*mv.length|0];
+    if(RNG.next()>=(AI.Q[lvl]??1))return AI.nampak(b,n,p,mv);
     let best=-1e9,bm=mv[0];
     for(const m of mv){
       const r=Rules.resolve(b,n,p,m),s=Rules.store(n,p);
