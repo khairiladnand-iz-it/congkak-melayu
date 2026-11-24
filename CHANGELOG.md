@@ -5,6 +5,14 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.23 — Telefon Lebih Sejuk
+
+_2026-11-24_
+
+- Latar Istana Melaka di belakang papan kini jauh lebih ringan untuk dilukis: awan, bukit dan pokok nyiur yang kabur disediakan sekali sahaja, bukan dikaburkan semula setiap bingkai. Telefon tidak sepanas dahulu semasa perlawanan panjang, dan bateri lebih tahan. Rupanya kekal sama.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.22 — Menu Lebih Ringkas & Potret Bulat
 
 _2026-11-21_
@@ -12,7 +20,7 @@ _2026-11-21_
 - Jubin Sejarah dikeluarkan dari menu hadapan; Garis Masa Sejarah kini dibuka dari halaman Hikayat, bersama Kad Kisah Pahlawan. Jubin menu tinggal satu baris.
 - Potret dalam Galeri Watak Sampingan dan peta Hikayat kini memenuhi bulatan, tanpa bingkai kotak di dalamnya.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `f109ef8` · penyiaran [44911985574](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/44911985574)</sub>
 
 ## 0.9.21 — Ikon Jurus Baharu & Latar Hikayat
 

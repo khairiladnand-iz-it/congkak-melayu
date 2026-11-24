@@ -1,5 +1,15 @@
 [
  {
+  "v": "0.9.23",
+  "d": "2026-11-24",
+  "t": "Telefon Lebih Sejuk",
+  "n": [
+   "Latar Istana Melaka di belakang papan kini jauh lebih ringan untuk dilukis: awan, bukit dan pokok nyiur yang kabur disediakan sekali sahaja, bukan dikaburkan semula setiap bingkai. Telefon tidak sepanas dahulu semasa perlawanan panjang, dan bateri lebih tahan. Rupanya kekal sama."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.22",
   "d": "2026-11-21",
   "t": "Menu Lebih Ringkas & Potret Bulat",
@@ -7,8 +17,8 @@
    "Jubin Sejarah dikeluarkan dari menu hadapan; Garis Masa Sejarah kini dibuka dari halaman Hikayat, bersama Kad Kisah Pahlawan. Jubin menu tinggal satu baris.",
    "Potret dalam Galeri Watak Sampingan dan peta Hikayat kini memenuhi bulatan, tanpa bingkai kotak di dalamnya."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "f109ef8",
+  "run": 44911985574
  },
  {
   "v": "0.9.21",

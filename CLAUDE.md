@@ -154,6 +154,11 @@ melangkau lukisan sepenuhnya apabila tab tersembunyi atau lapisan penuh menutup 
 Tween tetap dikemas kini setiap bingkai supaya tiada gerakan tergantung.
 `MenuFx` dihadkan sama. Diuji oleh `tests/perftest.js`.
 
+**Jangan tetapkan `ctx.filter` dalam `Istana.frame`.** Dulu awan, tiga lapis bukit dan nyiur dikaburkan
+setiap bingkai: ~575 ms/bingkai dalam Chromium tanpa GPU, kini ~40 ms (rupa sama, beza purata <1/255).
+Awan dibakar sekali per saiz (`bakeClouds`), bukit per saiz + 32 langkah siang/malam (`bakeHills`,
+paralaks = anjakan), nyiur dilukis pada separuh resolusi lalu dibesarkan. `perftest.js` menyemak ini.
+
 **Jangan naikkan `World.fps`** tanpa sebab kukuh — ini permainan bergilir.
 
 **three.js ialah r128** (CDN). API r130+ seperti `sheen:1`+`sheenColor` atau `thickness` memecahkan

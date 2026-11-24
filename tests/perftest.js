@@ -33,4 +33,9 @@ chk(drawn>=24&&drawn<=31,'skrin 60Hz -> '+drawn+' lukisan sesaat, bukan 60');
 
 chk(typeof World.covered==='function','pengesan lapisan wujud');
 chk(MenuFx.fps===30,'kelopak menu dihadkan 30 fps: '+MenuFx.fps);
+
+/* ctx.filter (blur) dalam gelung bingkai Istana dulu ~14x lebih mahal: kabur mesti dibakar sekali */
+{const src=Istana.frame.toString();
+ chk(!/\.filter\s*=/.test(src),'Istana.frame tidak menetapkan ctx.filter setiap bingkai');
+ chk(typeof Istana.bakeHills==='function'&&typeof Istana.bakeClouds==='function','awan & bukit dibakar ke kanvas tersembunyi');}
 console.log(ok?'PERF OK':'PERF FAILED');
