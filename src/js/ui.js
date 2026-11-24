@@ -328,7 +328,7 @@ const Duel={
    penyerang jika menyerang, penahan jika bertahan; dua pemain satu peranti = penyerang (penahan guna 7/8/9). */
 const arR=hAtk?'a':hDef?'d':'',AK={ArrowUp:0,ArrowRight:1,ArrowLeft:1,ArrowDown:2,Up:0,Right:1,Left:1,Down:2};
 const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>${l.t} [${l.k}${arR==='a'?' · '+l.e:''}]</u></button>`).join('');
-    const jrb=JUR.map(w=>`<button class="wb${w.sp===3?' gem':w.sp===2?' ult':' sp'}" data-w="${w.k}"${hAtk?'':' disabled'} style="--c:${w.sk.c}"><i class="ik">${IKON.svg(w.sk.e)}</i><span>${esc(w.sk.n)} [${w.k}]</span><em>⚡${w.cost}</em><u></u></button>`).join('');
+    const jrb=JUR.map(w=>`<button class="wb${w.sp===3?' gmb':w.sp===2?' ult':' sp'}" data-w="${w.k}"${hAtk?'':' disabled'} style="--c:${w.sk.c}"><i class="ik">${IKON.svg(w.sk.e)}</i><span>${esc(w.sk.n)} [${w.k}]</span><em>⚡${w.cost}</em><u></u></button>`).join('');
     const gdb=LN.map(l=>`<button class="lb3 d" data-g="${l.k}"${hDef?'':' disabled'}><i>${l.e}</i><b>${l.n}</b><u>[${l.g}${arR==='d'?' · '+l.e:''}]</u></button>`).join('');
     t.innerHTML=`<div class="rays"></div><div class="dvig"></div><canvas id="dcv"></canvas><div class="lb a"></div><div class="lb b"></div><div class="flash" id="fl"></div><div class="duel"><div class="hps"><div class="hp"><b>${esc(A.n)} ${elBadge(ia,1)}</b><small>${esc(A.t)}</small><div class="bar"><i id="ahp" style="width:100%"></i></div></div><div class="hp r"><b>${elBadge(iv,1)} ${esc(V.n)}</b><small>${esc(V.t)}</small><div class="bar"><i id="vhp" style="width:100%"></i></div></div></div><div class="arena" id="ar" style="--ea:${EA.c};--ev:${EV.c}"><div class="fgt el" id="fa" style="--c:${EA.c}"><img src="${IMGS[ia]}" alt=""></div><div class="fgt el r" id="fv" style="--c:${EV.c}"><img src="${IMGS[iv]}" alt=""></div><div class="vsb" id="vsb">VS</div><div id="fx"></div><div class="shield" id="shd"></div><div id="cmb"></div><div class="tel" id="tel"></div><div class="gln" id="gln"></div></div>
       <div class="sem"><div class="sa"><small>Semangat</small><div class="sbar"><i id="sea"></i></div></div><div class="sd"><small>Semangat</small><div class="sbar"><i id="sed"></i></div></div></div><h2 id="dt">BERSEDIA!</h2><p id="dq"><b>${esc(A.n)}</b>: “${esc(A.l)}”</p><div class="tbar"><i id="tb" style="width:100%"></i></div>${live?`<div class="ctl"><div class="grp atk"><small>${esc(A.n)} menyerang</small>
@@ -377,7 +377,7 @@ const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><
               <p>Pilih <b>garis</b>: ↑ Atas · → Tengah · ↓ Bawah.</p>
               <p>Tekan ketika penunjuk meter berada di <b>zon putih di tengah</b> — tikaman <b>TEPAT</b>, lebih kuat dan lebih laju. Angka <b>kuasa</b> di sisi meter: 100% tepat di tengah, makin jauh makin lemah.</p>
               <p>Di komputer: anak panah <b>↑ → ↓</b> memilih garis Atas, Tengah dan Bawah, sama ada menyerang atau bertahan.</p>
-              <p>Setiap tikaman mengisi <b>⚡ Semangat</b>. Cukup semangat, barulah jurus boleh dilepaskan.</p><p><b>Jurus Gemilang</b> dipilih dalam skrin Pangkat sebelum perlawanan, dan muncul sebagai butang tambahan di sini. Level 25 membuka slot kedua.</p></div>
+              <p>Setiap tikaman mengisi <b>⚡ Semangat</b>. Cukup semangat, barulah jurus boleh dilepaskan. Semangat <b>dibawa ke tikaman seterusnya</b> dalam perlawanan yang sama, termasuk yang dikumpul semasa menangkis.</p><p><b>Jurus Gemilang</b> dipilih dalam skrin Pangkat sebelum perlawanan, dan muncul sebagai butang tambahan di sini. Level 25 membuka slot kedua.</p></div>
             <div><b>🛡️ Bertahan</b>
               <p>Bulatan merah muncul pada garis yang akan datang — itu amaran.</p>
               <p>Tekan butang tangkis pada <b>garis yang sama</b>. Tekan <b>lewat sikit</b>, hampir dengan hentaman, untuk <b>TANGKIS SEMPURNA</b>: sifar kerosakan.</p>
@@ -396,12 +396,16 @@ const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><
     return await new Promise(res=>{
       /* hpA: nyawa penyerang — dikurangkan oleh tangkis sempurna dan Balas Maut (dulu tiada langsung) */
       let hp=100,hpA=100,nC=0,fin=false,combo=0,last=0,semA=0,semD=0,recov=0,mpos=0;
+      /* Semangat dibawa antara tikaman dalam satu perlawanan (Match.sem[kerusi]). Dulu bermula 0 setiap tikaman (~10 s),
+         jadi Jurus Gemilang (⚡100) hampir tidak pernah boleh dilepaskan. */
+      const SB=Match.sem||[0,0];semA=Math.min(100,SB[p]|0);semD=Math.min(100,SB[1-p]|0);
       let gL=-1,gAt=0,gUntil=0,gcdU=0,stag=0,rz=null;
       let nH=0,nT=0,nP=0;                       /* kena, tepat, tangkis sempurna */
       const tm=[];
       const setSem=()=>{q('sea').style.width=Math.min(100,semA)+'%';q('sed').style.width=Math.min(100,semD)+'%';
         for(const w of JUR){const b=t.querySelector(`.wb[data-w="${w.k}"]`);if(b)b.classList.toggle('rdy',semA>=w.cost)}
         const sb=q('sed')&&q('sed').parentNode;if(sb&&sb.classList)sb.classList.toggle('full',semD>=100)};
+      if(semA||semD)try{setSem()}catch(e){}   /* tunjuk Semangat yang dibawa sejak skrin pembukaan */
       /* meter ketepatan: berayun, tekan di tengah untuk tikaman tepat */
       const loop=()=>{if(fin||t.hidden)return;const ph=(Date.now()%PER)/PER;mpos=Math.abs(Math.sin(ph*Math.PI));
         const pin=q('mpin');if(pin)pin.style.left=(mpos*100)+'%';
@@ -424,6 +428,7 @@ const lnb=LN.map(l=>`<button class="lb3" data-w="${l.k}"${hAtk?'':' disabled'}><
         if(hDef){const g=LN.findIndex(x=>x.g===k||x.k===k);if(g>=0&&LN[g].g===k){e.preventDefault();guardPress(g)}}};
       const done=async(ko,rem,ka)=>{
         if(fin)return;fin=true;
+        if(Match.sem){Match.sem[p]=Math.max(0,Math.min(100,semA|0));Match.sem[1-p]=Math.max(0,Math.min(100,semD|0))}
         if(on){Net.duelH=null;if(role==='a'&&!rem)Net.send({t:'de',ko:!!ko,ka:ka?1:0})}
         tm.forEach(x=>{clearInterval(x);clearTimeout(x)});t.onpointerdown=null;if(typeof removeEventListener==='function')removeEventListener('keydown',kd,true);
         if(ko)mA+=6;

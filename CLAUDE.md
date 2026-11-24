@@ -99,6 +99,9 @@ dalam talian (dikira daripada `blk`/`bl` dalam mesej `dh`). `hpA<=0` → `done(f
 Meter ketepatan: `pwr()` = 100·(1−jarak)^1.6, dipaparkan dalam `#mpw`. Bagi pemain, kerosakan
 = ×(0.45 + 1.2·kuasa/100) — angka yang dilihat ialah angka yang digunakan. AI kekal `AMUL[ac]`.
 Label TEPAT/TERSASAR dan `TEL` masih ikut tiga tahap `ACC`.
+**Semangat dibawa** antara tikaman dalam satu perlawanan: `Match.sem[kerusi]` (0..100, kosong pada `Match.start`/`startOnline`);
+`Duel.run` mula dengan `semA=sem[p]`, `semD=sem[1-p]` dan menyimpannya dalam `done`. Butang Jurus Gemilang guna kelas **`gmb`, bukan `gem`**
+(`.gem` = kad senarai Jurus di Pangkat: teks gelap + ikon mutlak; dulu nama jurus tidak kelihatan). Diuji oleh `tests/semangat.py` (CI).
 Papan kekunci: anak panah (`AK`: ↑ Atas, →/← Tengah, ↓ Bawah) milik peranan manusia (`arR`); nombor 1/2/3 dan 7/8/9 kekal.
 `kd` didaftar pada **window, fasa tangkap** (dulu pada document) dan `<select>`/`<input>` yang difokus dilepaskan bila duel bermula.
 

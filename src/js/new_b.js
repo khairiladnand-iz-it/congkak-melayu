@@ -20,7 +20,7 @@ const Match={
   gem(seat){return this.owner(seat)?Prof.gemSel(this.lvOf(seat)):null},
   gems(seat){return this.owner(seat)?Prof.gemSlots(this.lvOf(seat)):[]},
   startOnline(me){
-    this.online=true;this.me=me;this.q=[];this.capN=0;this.camp=null;this._campNext=null;this.hik=null;this._hikNext=null;const n=cfg.n,s=this.s={n,b:initView(),turn:0,busy:false,over:false,hist:[],pend:null,caps:[0,0]};
+    this.online=true;this.me=me;this.q=[];this.capN=0;this.camp=null;this._campNext=null;this.hik=null;this._hikNext=null;const n=cfg.n,s=this.s={n,b:initView(),turn:0,busy:false,over:false,hist:[],pend:null,caps:[0,0]};this.sem=[0,0];
     this.view=s.b.slice();this.marks={};World.flip=me===1;document.getElementById('match').classList.toggle('flip',me===1);
     this.mount();Screen.go('match');this.say(`${HEROES[cfg.p[0]].n} mula dahulu.`);this.render();
     {const d=document.getElementById('dpost');if(d)d.hidden=!Msg.on}
@@ -36,7 +36,7 @@ const Match={
   mount(){World.build(this.s.n,cfg.wood);World.setSeedType(cfg.seed);World.sync(this.view);
     try{document.body.classList.toggle('face',cfg.vs==='2'&&cfg.face!==false&&!this.online)}catch(e){}},
   start(){this.camp=this._campNext!=null?this._campNext:null;if(this._hikNext){this.hik=this._hikNext;this._hikNext=null}else this.hik=null;
-    fixCfg();this.online=false;World.flip=false;document.getElementById('match').classList.remove('flip');const n=cfg.n,s=this.s={n,b:initView(),turn:0,busy:false,over:false,hist:[],pend:null,caps:[0,0]};
+    fixCfg();this.online=false;World.flip=false;document.getElementById('match').classList.remove('flip');const n=cfg.n,s=this.s={n,b:initView(),turn:0,busy:false,over:false,hist:[],pend:null,caps:[0,0]};this.sem=[0,0];
     this.view=s.b.slice();this.marks={};saveCfg();this.mount();Screen.go('match');
     {const d=document.getElementById('dpost');if(d)d.hidden=true;const q=document.getElementById('dspd');if(q)q.textContent=['🐢','▶','⏩','⚡','🚀'][[1.6,1,.65,.4,.22].indexOf(cfg.speed)]||'▶'}
     this.say(`${HEROES[cfg.p[0]].n} mula dahulu. Tekan lubang yang bercahaya.`);this.render();

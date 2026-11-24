@@ -5,6 +5,15 @@ Dijana daripada `src/changelog.json` oleh `tools/build.py`. **Jangan edit fail i
 Satu versi = satu penyiaran ke GitHub Pages yang mengubah apa yang pemain terima.
 Penyiaran yang hanya menukar ujian atau CI tidak diberi versi; penyiaran yang gagal tidak dikira.
 
+## 0.9.25 — Jurus Gemilang Boleh Digunakan
+
+_2026-11-24_
+
+- Butang Jurus Gemilang di gelanggang kini menunjukkan nama jurus dan kekuncinya, contohnya "Tiupan Serunai [6]". Sebelum ini namanya tidak kelihatan dan ikon terletak di tepi, jadi butang itu nampak seperti hiasan.
+- Semangat kini dibawa dari satu tikaman ke tikaman seterusnya dalam perlawanan yang sama, termasuk Semangat yang dikumpul semasa menangkis. Jurus yang memerlukan ⚡100 kini boleh dikumpul dan dilepaskan pada giliran menyerang. Perlawanan baharu bermula semula dari kosong.
+
+<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+
 ## 0.9.24 — Lawan Komputer Lebih Adil
 
 _2026-11-24_
@@ -12,7 +21,7 @@ _2026-11-24_
 - Komputer tahap Sederhana dan Susah kini bermain seperti manusia: kadang-kadang ia nampak langkah terbaik, kadang-kadang tidak. Dulu ia mengira setiap rantaian sambung dengan tepat pada setiap giliran, jadi hampir mustahil dikalahkan.
 - Sederhana kini seimbang untuk pemain baharu, dan Susah masih mencabar tetapi boleh dimenangi. Peringkat akhir Kembara dan Congkak Harian turut menjadi lebih adil.
 
-<sub>belum disiarkan (sumber akan diisi pada siaran berikutnya)</sub>
+<sub>sumber `041ff19` · penyiaran [45384192695](https://github.com/khairiladnand-iz-it/congkak-melayu/actions/runs/45384192695)</sub>
 
 ## 0.9.23 — Telefon Lebih Sejuk
 

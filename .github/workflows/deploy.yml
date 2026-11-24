@@ -50,6 +50,9 @@ jobs:
       - name: Hikayat Pahlawan dalam pelayar
         run: python3 tests/hikayat.py
 
+      - name: Jurus Gemilang & Semangat dibawa
+        run: python3 tests/semangat.py
+
       - name: Penguji dalam talian (dua pemain, empat senario)
         continue-on-error: true      # runner perlahan boleh tersasar masa; jangan sekat penyiaran
         env:

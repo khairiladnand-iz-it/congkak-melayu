@@ -1,5 +1,16 @@
 [
  {
+  "v": "0.9.25",
+  "d": "2026-11-24",
+  "t": "Jurus Gemilang Boleh Digunakan",
+  "n": [
+   "Butang Jurus Gemilang di gelanggang kini menunjukkan nama jurus dan kekuncinya, contohnya \"Tiupan Serunai [6]\". Sebelum ini namanya tidak kelihatan dan ikon terletak di tepi, jadi butang itu nampak seperti hiasan.",
+   "Semangat kini dibawa dari satu tikaman ke tikaman seterusnya dalam perlawanan yang sama, termasuk Semangat yang dikumpul semasa menangkis. Jurus yang memerlukan ⚡100 kini boleh dikumpul dan dilepaskan pada giliran menyerang. Perlawanan baharu bermula semula dari kosong."
+  ],
+  "sha": "pending",
+  "run": null
+ },
+ {
   "v": "0.9.24",
   "d": "2026-11-24",
   "t": "Lawan Komputer Lebih Adil",
@@ -7,8 +18,8 @@
    "Komputer tahap Sederhana dan Susah kini bermain seperti manusia: kadang-kadang ia nampak langkah terbaik, kadang-kadang tidak. Dulu ia mengira setiap rantaian sambung dengan tepat pada setiap giliran, jadi hampir mustahil dikalahkan.",
    "Sederhana kini seimbang untuk pemain baharu, dan Susah masih mencabar tetapi boleh dimenangi. Peringkat akhir Kembara dan Congkak Harian turut menjadi lebih adil."
   ],
-  "sha": "pending",
-  "run": null
+  "sha": "041ff19",
+  "run": 45384192695
  },
  {
   "v": "0.9.23",

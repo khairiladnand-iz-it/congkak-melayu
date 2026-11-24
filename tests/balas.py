@@ -40,7 +40,7 @@ async def main():
         ok(any('Penyerang terkena balas' in x for x in r['rows']),'ringkasan menyebut balasan pada penyerang')
         # ---- angka kuasa pada meter (pemain menyerang) ----
         await pg.wait_for_timeout(2500)
-        await pg.evaluate("()=>{document.getElementById('duel').hidden=true;window.__r2=Duel.run(0,14)}")
+        await pg.evaluate("()=>{document.getElementById('duel').hidden=true;Match.sem=[0,0];window.__r2=Duel.run(0,14)}")
         await pg.wait_for_function("()=>{const d=document.getElementById('dt');return d&&/LAWAN/.test(d.textContent)}",timeout=10000)
         smp=await pg.evaluate("""()=>new Promise(r=>{const o=[];const iv=setInterval(()=>{const p=document.getElementById('mpin'),w=document.getElementById('mpw');
           if(p&&w)o.push([parseFloat(p.style.left)/100,parseInt(w.textContent)]);if(o.length>=60){clearInterval(iv);r(o)}},23)})""")
